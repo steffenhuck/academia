@@ -166,6 +166,54 @@ you can't do yet is part of the picture.
 
 ---
 
+## Storylines
+
+A storyline is a list of event ids in order, with a gap in terms between steps:
+
+```js
+{id:"breach", steps:["C5","C6"], gap:[4,7]}
+```
+
+The first step is an ordinary event and is drawn like any other. **Later steps
+are never drawn at random** — once the first step fires, the storyline is open
+and the engine schedules the next step for `gap` terms later. It takes the
+first of the term's two slots when due. A step whose branch flag was not set
+(you cited the Hungarian, so the provenance paper never comes) is skipped; a
+step whose rank band or stat gate is not yet met waits. A storyline ends when
+its steps run out; it does not need a tidy ending.
+
+Two events a term. A publication card is news and does not take a slot.
+
+To add a storyline: write the events, give each later step a `ga.flag` for the
+branch it belongs to (not `since` — timing is the storyline's job now), and add
+one line to `ARCS`. Twenty-six exist.
+
+## The cast
+
+Recurring people have names, in `CAST`, and the prose refers to them with
+placeholders: `{advisor}` for the full name and title, `{advisorS}` for the
+surname alone. They are filled in when the card renders, so a name can be
+changed in one place.
+
+| placeholder | who |
+|---|---|
+| `{advisor}` | Professor Cornelius Vandersloot — has not read the chapter; wants his name on the job market paper; you write his obituary |
+| `{discussant}` | Professor Dr. Dr. h.c. mult. Klaus-Dieter Frobenius — the theorem you extended; "confused"; a possible letter writer; on the Harwich longlist |
+| `{star}` | Casimir Blunt — two papers in the Quarterly at thirty-four; the email; gives your talk better than you, later |
+| `{calderon}` | Professor Aurelio Santangelo — replaces you at the whiteboard |
+| `{student}` | Mira Halloran — the first student; the idea; Harwich; the inaugural lecture |
+| `{rival}` | Yulia Sorokina — the Harwich job talk in your cohort; the reunion |
+| `{laureate}` | Sir Alasdair Penhaligon-Brack — the oysters; his hand; his bad paper at the Review |
+| `{editor}` | Gerald Fenn-Whistler — dinner, monthly, with everyone you are compared to |
+| `{dean}` `{provost}` | Dean Constance Abara; Provost Leopold Marchand |
+| `{admin}` | Bernadette — nine years; the petty cash |
+| `{trustee}` | Chuck Kowalczyk III — logistics software; the resort; his roommate's fund |
+| `{chair}` | Professor Ruth Eldridge — takes you for coffee in year six |
+| `{postdoc}` | Lena Vogt |
+| `{firm}` | Perpetua Vance, of Vance & Halloway — the search firm |
+| `{hungarian}` `{historian}` `{prewitt}` `{chile}` | Ödön Székely-Bartha (1961); Dr. Winifred Scaife; Ottoline Prewitt, second-year with time; Joaquín Errázuriz, who read it |
+| `{coauthor}` `{mostcited}` `{shouter}` | Dominic Fairweather, who stopped replying; Professor Gideon Marsh, most cited; Professor Rupert Coldstream, nine hours a year |
+
 ## Flags currently in play
 
 Every flag set by an event is listed in `EPITHETS` in the source, with the line
