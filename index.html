@@ -948,12 +948,12 @@ function denialCascade(){
    THE ENDGAME ROLLS
    ============================================================ */
 function nobelEligible(){
- return !g.nobelDead && g.rank>=4 && aplus()>=3 && g.R>=60 && age()>=52;
+ return !g.nobelDead && g.rank>=4 && aplus()>=5 && g.R>=68 && age()>=52;
 }
 function octoberPass(){
  if(g.turn%2!==0) return false;            /* Fall only */
  if(!nobelEligible()) return false;
- const p = sig(-8.8 + 2.5*g.M/100 + 2.0*g.N/100 + 1.2*g.P/100 + 1.0*g.R/100
+ const p = sig(-10.2 + 2.5*g.M/100 + 2.0*g.N/100 + 1.2*g.P/100 + 1.0*g.R/100
               + 1.7*prestige() + (g.flags.CHAIR?0.8:0) + 0.9*clamp(g.cites/3000,0,1.2));
  if(Math.random()<p){ end("NOBEL"); return true; }
  if(Math.random()<p*4.5){
@@ -1006,6 +1006,8 @@ const ENDTEXT={
  BOTH:()=>["Both","You have the medal and you have the office. At the inauguration, the provost's introduction mentions the prize before your name. You notice that you minded, very slightly, and then you notice that you noticed."],
  NOBEL_MISS:()=>["The perpetual shortlist","You have the Clark, the BBVA, two honorary doctorates and a lecture series named after you. Every October a journalist calls on the Monday. "+g.shortlists+" times the phone did not ring on the Thursday, and the field's polite explanation — that the committee works in mysterious ways — has never once been offered to anyone who actually won."],
  PRES_MISS:()=>["President of somewhere","You are the president of "+UNIS[g.uni].n+". Enrollment is "+ri(9,18)+",000. The football program runs a deficit and is untouchable. You do the job well, and at the conference in June people introduce you, with complete sincerity and a half-second pause, as a university president."],
+ BOTH_HALF_N:()=>["The medal, not the office","You have the prize. The presidency went to a former dean of a medical school with a good manner and no publications, and the board described the appointment as a bold choice. At the alumni dinner you are seated at the head table, and the man in the chair you wanted introduces you, generously, at length."],
+ BOTH_HALF_P:()=>["The office, not the medal","You have the office, the endowment, the protests and the board. Stockholm has never in its history called a sitting university president, and you knew that in "+(25+Math.floor((g.turn)/4))+", and you took the office anyway, and you would again."],
  TENURE_OUT:()=>["Out","The second letter is shorter than the first. There is a period during which you apply for things and a later period during which you do not. The field closes over the gap in about nine months, the way water does."],
  BURNOUT:()=>["What it cost","You stopped, finally, and the stopping was not a decision. "+g.lostYears+" year"+(g.lostYears===1?"":"s")+" went to it. The department was generous in the way institutions are generous: completely, for a while, and then structurally not at all."],
  EXIT:()=>["The other building","The money is roughly four times and the problems are, on inspection, more tractable. At 5 p.m. on a Tuesday you notice you have not thought about a referee report in eleven weeks. On Sunday nights, occasionally, you read something in your old field and find you can no longer quite follow the notation."],
@@ -1319,7 +1321,7 @@ function runTerm(){
 
  /* hard stops */
  if(g.B>=100){ render(); collapse(); return; }
- if(g.turn>=80){ render(); end(vowMet()?(g.vow==="NOBEL"?"NOBEL":"PRES"):(g.won.NOBEL||g.won.PRES?"PRES_MISS":nearMissKind())); return; }
+ if(g.turn>=80){ render(); end(timeUpKind()); return; }
  if(g.clock!==null){
   g.clock--;
   if(g.clock<=0){ render(); tenureVote(); return; }
@@ -1344,8 +1346,13 @@ function runTerm(){
  }
  render();
 }
-function nearMissKind(){
- if(g.vow==="PRES"||g.vow==="BOTH") return g.won.PRESALT?"PRES_MISS":(g.shortlists?"NOBEL_MISS":"TIME");
+function timeUpKind(){
+ if(g.vow==="BOTH"){
+  if(g.won.NOBEL&&g.won.PRES) return "BOTH";
+  if(g.won.NOBEL) return "BOTH_HALF_N";
+  if(g.won.PRES)  return "BOTH_HALF_P";
+ }
+ if(g.won.PRESALT) return "PRES_MISS";
  return g.shortlists?"NOBEL_MISS":"TIME";
 }
 
