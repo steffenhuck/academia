@@ -1989,6 +1989,9 @@ function drawEvent(){
    else s-=1.1;
   }
   if(e.once) s+=0.7;
+  /* a consequence that never arrives is a broken promise: once a follow-up's
+     gate opens, it should fire within a few terms even in a pool this size */
+  if(e.ga&&(e.ga.since||e.ga.flags||e.ga.flag)) s+=2.0;
   s-=1.4*Math.log(1+(g.seen[e.id]||0));
   pool.push([e,Math.exp(s)]);
  }
