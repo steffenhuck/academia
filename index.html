@@ -376,7 +376,7 @@ function newGame(){
   R:14, K:8, N:10, P:4, S:0, E:35, B:8, M:12, Mshown:12,
   papers:[], queue:[], wip:0, cites:0,
   enemies:[], flags:{}, seen:{}, jit:{}, mods:{},
-  clock:null, clockLen:0, tenured:false, denials:0, postdocEnd:null,
+  clock:null, clockLen:0, tenured:false, denials:0, postdocEnd:null, presSince:null,
   tdebt:0, shortlists:0, lostYears:0, collapses:0,
   alloc:{write:0,net:0,pub:0,serv:0,teach:0,rest:0},
   skip:0, ended:null, nobelDead:false, presDead:false, won:{}
@@ -971,23 +971,37 @@ function presSearchReady(){
  return !g.presDead && !g.won.PRES && !!g.target && g.office>=2 && g.K>=58;
 }
 function presSearch(){
+ const sitting=!!g.won.PRESALT;
+ const yrs=Math.max(1,Math.floor((g.turn-(g.presSince||g.turn))/2));
  const tp=UNIS[g.target].p;
  const p = sig(-3.4 + 3.1*g.K/100 + 2.5*g.N/100 + 1.0*g.P/100 + 0.7*g.R/100
-              + 2.2*prestige() - 3.4*Math.max(0,tp-prestige()) + (g.flags.CANDID?-0.2:0.2));
- card({cls:"gold",kicker:"THE SEARCH",ti:"The committee of nineteen",
-  sc:"A search firm is involved. There are nineteen people on the committee, of whom four matter, and a confidentiality protocol that leaks within a fortnight. You are flown somewhere and asked, by a student representative, what your vision for the undergraduate experience is.<br><br>The post is the presidency of <em>"+UNIS[g.target].n+"</em>.",
-  ch:[{t:"Give them the vision.",fn(){
-    if(Math.random()<p){ g.won.PRES=1; g.office=4; g.uni=g.target; pendingNext=()=>end("PRES"); return "They call on a Sunday."; }
-    /* near miss */
-    if(Math.random()<0.62){
+              + 2.2*prestige() + (sitting?2.0:0)
+              - 3.4*Math.max(0,tp-prestige())*(sitting?0.5:1)
+              + (g.flags.CANDID?-0.2:0.2));
+ const sc = sitting
+  ? "You are the president of <em>"+uniName()+"</em>. You have done it for "+yrs+" year"+(yrs===1?"":"s")+" and you have been, by every measure the trustees use, good at it.<br><br>The search firm on the phone is <em>"+UNIS[g.target].n+"</em>\u2019s. They stress that the conversation is exploratory. Search firms stress this immediately before it stops being true."
+  : "A search firm is involved. There are nineteen people on the committee, of whom four matter, and a confidentiality protocol that leaks within a fortnight. You are flown somewhere and asked, by a student representative, what your vision for the undergraduate experience is.<br><br>The post is the presidency of <em>"+UNIS[g.target].n+"</em>.";
+ card({cls:"gold",kicker:"THE SEARCH",ti: sitting?"The call from the better school":"The committee of nineteen",
+  sc:sc,
+  ch:[{t: sitting?"Take the exploratory conversation.":"Give them the vision.",fn(){
+    if(Math.random()<p){
+     g.won.PRES=1; g.office=4; g.uni=g.target; g.S+=60;
+     pendingNext=()=>end("PRES");
+     return "They call on a Sunday.";
+    }
+    /* not the one you named \u2014 but a presidency is a rung, not a terminus */
+    if(!sitting && Math.random()<0.62){
      const alt=pick(LOW.concat(["FENWICK"]));
      g.won.PRESALT=alt; g.office=4; g.uni=alt; g.S+=70;
-     pendingNext=()=>end("PRES_MISS");
-     return "They appoint an internal candidate. Eleven weeks later, a different search firm calls.";
+     g.presSince=g.turn; g.mods.searchcool=g.turn+8;
+     g.K=clamp(g.K+10,0,100); g.B=clamp(g.B+14,0,100);
+     return "They appoint an internal candidate. Eleven weeks later a different search firm calls \u2014 about "+UNIS[alt].n+", "+UNIS[alt].note+" \u2014 and you hear yourself saying yes before you have finished deciding. You are a university president. It is not the one you named, and the job is, in every particular except the address, identical.";
     }
     g.N=clamp(g.N-6,0,100); g.E=clamp(g.E-12,0,100); g.B=clamp(g.B+12,0,100);
-    g.mods.searchcool=g.turn+8;
-    return "The announcement names someone from a medical school. You read it on your phone in a corridor, and then you go and chair the meeting you were going to chair anyway.";
+    g.mods.searchcool=g.turn+(sitting?10:8);
+    return sitting
+     ? "They appoint a sitting president from a larger system. You read the announcement in your own office, which is a real office, in a building with your name on the letterhead, and it stings precisely as much as it did the first time."
+     : "The announcement names someone from a medical school. You read it on your phone in a corridor, and then you go and chair the meeting you were going to chair anyway.";
   }}]});
  return true;
 }
@@ -1369,7 +1383,7 @@ function boot(){
   ch:[
    {t:"The Nobel Prize.",why:"you want the call",fn(){ g.vow="NOBEL"; pendingNext=phdStart; return "Said out loud, at twenty-five, it sounds absurd. You will not say it out loud again for thirty years."; }},
    {t:"A university presidency.",why:"you want the office",fn(){ g.vow="PRES"; pendingNext=targetStep; return "The honest version of the ambition, which almost nobody gives."; }},
-   {t:"Both.",why:"harder than either — and neither ends the game alone",fn(){ g.vow="BOTH"; pendingNext=targetStep; return "Both. Note that the clock does not adjust for this, and neither does the body."; }}
+   {t:"Both.",why:"what else?",fn(){ g.vow="BOTH"; pendingNext=targetStep; return "Both. Note that the clock does not adjust for this, and neither does the body."; }}
   ]
  });
 }
