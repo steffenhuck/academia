@@ -1308,7 +1308,7 @@ function denialCascade(){
    THE ENDGAME ROLLS
    ============================================================ */
 function nobelEligible(){
- return !g.nobelDead && !g.won.NOBEL && g.rank>=4 && aplus()>=4 && g.R>=58 && age()>=52;
+ return !g.nobelDead && !g.won.NOBEL && g.rank>=4 && aplus()>=3 && g.R>=55 && age()>=52;
 }
 function octoberPass(){
  if(g.turn%2!==0) return false;            /* Fall only */
