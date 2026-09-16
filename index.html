@@ -172,13 +172,21 @@ header.mast .tag{
 .choices button.risky{border-color:#6B3A44}
 .choices button.risky:hover:not(:disabled){border-color:var(--rose)}
 .outcome{
-  margin-top:12px;padding-top:11px;border-top:1px dashed #413D55;
-  font-size:14.5px;line-height:1.5;color:var(--mint);font-weight:600;
+  margin-top:14px;padding:13px 15px 14px;border-radius:12px;
+  background:rgba(62,217,164,.09);border:1.5px solid rgba(62,217,164,.38);
+  font-size:15px;line-height:1.52;color:var(--chalk);font-weight:500;
 }
-.outcome.bad{color:var(--rose)}
-.deltas{
-  margin-top:8px;font-family:"Space Mono",monospace;font-size:11.5px;color:var(--dim);
-  display:flex;flex-wrap:wrap;gap:4px 10px
+.outcome::before{
+  content:"What happened";display:block;font-size:10px;font-weight:800;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--mint);margin-bottom:6px;
+}
+.outcome.bad{background:rgba(255,90,107,.09);border-color:rgba(255,90,107,.42)}
+.outcome.bad::before{color:var(--rose);content:"What happened \2014 badly"}
+.outcome .go{margin-top:12px}
+.deltas{margin-top:11px;display:flex;flex-wrap:wrap;gap:6px}
+.deltas span{
+  font-family:"Space Mono",monospace;font-size:11.5px;font-weight:700;
+  padding:3px 9px;border-radius:999px;border:1.5px solid currentColor;
 }
 .deltas .up{color:var(--mint)} .deltas .dn{color:var(--rose)}
 
@@ -405,7 +413,7 @@ function newGame(){
   clock:null, clockLen:0, tenured:false, denials:0, postdocEnd:null, presSince:null,
   tdebt:0, shortlists:0, lostYears:0, collapses:0,
   alloc:{write:0,net:0,pub:0,serv:0,teach:0,rest:0},
-  skip:0, ended:null, nobelDead:false, presDead:false, won:{}
+  skip:0, ended:null, nobelDead:false, presDead:false, won:{}, taxes:[]
  };
  for(const e of EVENTS) g.jit[e.id]=Math.random()*1.1-0.55;
 }
@@ -415,9 +423,11 @@ const termName = ()=>(g.turn%2? "Spring term":"Fall term");
 const prestige = ()=>g.uni?UNIS[g.uni].p:0.5;
 const uniName  = ()=>g.uni?UNIS[g.uni].n:"—";
 const uniShort = ()=>g.uni?UNIS[g.uni].s:"—";
-const budget   = ()=>5+(g.rank>=4?1:0)+(g.office>=2?1:0);
+const taxed    = ()=>(g.taxes||[]).filter(u=>u>g.turn).length;
+const budget   = ()=>Math.max(3, 5+(g.rank>=4?1:0)+(g.office>=2?1:0)-taxed());
 const spent    = ()=>Object.values(g.alloc).reduce((a,b)=>a+b,0);
 const aplus    = ()=>g.papers.filter(p=>p.tier==="A+").length;
+const foesOf   = k=>g.enemies.filter(f=>f.poisons===k).length;
 const title    = ()=>g.office? OFFICES[g.office] : (g.flags.CHAIR? "Distinguished Professor":RANKS[g.rank]);
 
 function hIndex(){
@@ -656,7 +666,301 @@ const EVENTS=[
  sc:"Your advisor has died. The department asks you to write the appreciation for the newsletter. You have not spoken to him in nine years, for a reason you would struggle to state out loud.",
  ch:[
  {t:"Write it warmly.",fx:{N:4,E:-3,flag:"OBIT"},say:"Eight hundred words, all of them true, none of them complete. His widow writes to thank you. You put the letter in the drawer with the chapter he never read."},
- {t:"Let someone else do it.",fx:{},say:"Someone does. It is fine. It mentions you, in a list."}]}
+ {t:"Let someone else do it.",fx:{},say:"Someone does. It is fine. It mentions you, in a list."}]},
+/* ================================================================
+   BATCH 2 — from Steffen's sketches, then twenty more
+   ================================================================ */
+
+/* ---------- early: the proof, the discussant, the visit ---------- */
+{id:"P7",ti:"The Proofs",b:[0,2],ex:{base:.9},once:1,
+ sc:"The paper is accepted. You are reading the proofs — the typeset pages, the last moment anything can change — and in Lemma 2 you see it. The inequality goes the wrong way. The result survives, probably, with a different argument you do not currently have.",
+ ch:[
+ {t:"Write to the editor tonight.",fx:{R:4,N:3,B:5,flag:"OWNED_ERROR"},say:"The editor is, unexpectedly, gracious: “better now than in a comment.” Publication slips eight months. The corrected lemma is better than the original, and nobody but the two of you will ever know there was a first version."},
+ {t:"Fix it in the proofs. Say nothing.",fx:{E:3,flag:"SILENT_FIX"},say:"You rewrite two lines under the heading “typographical corrections.” The typesetter does not read mathematics. It goes through. For about three years you will feel a small cold thing whenever anyone cites Lemma 2."},
+ {t:"It's a lemma. Let it go.",fx:{R:-2,flag:"LEFT_ERROR"},say:"The paper appears. The lemma is wrong in print. The result, as it happens, is true anyway — which is not the same as the proof being right, and one day a graduate student with time on their hands will notice the difference."}]},
+
+{id:"G12",ti:"The Graduate Student With Time",b:[2,4],ex:{base:.6},ga:{since:["LEFT_ERROR",8]},once:1,
+ sc:"An email from a second-year at Ostrander State, with a PDF attached. The PDF is four pages long and its title is “A Note on Lemma 2.” It is polite, correct, and already on the working paper series.",
+ ch:[
+ {t:"Reply warmly. Concede in print.",fx:{R:2,N:5,E:-5,flag:"CONCEDED"},say:"You write back the same day and post a corrigendum the same week. The student, who had braced for a war, is disarmed and slightly disappointed. Years later they say you were “decent about it,” which is what the profession says instead of “right.”"},
+ {t:"Reply coolly. Note that the result holds.",fx:{E:4,N:-4,foe:{why:"you patronised them about Lemma 2",poisons:"referee"}},say:"Your reply is two paragraphs and uses the phrase “as is well known.” The result does hold. The student, who is now in their fourth year and will one day referee something of yours, has a file."}]},
+
+{id:"P8",ti:"The Discussant",b:[0,2],ex:{base:1},
+ sc:"Session 4B. Your discussant is a senior man whose name is on the theorem you extended, and he has decided, in front of forty people, that your identification is “not merely wrong but confused.” He is wrong. You know exactly why he is wrong. He is also the person who will referee this.",
+ ch:[
+ {t:"Push back, on the spot.",roll:{stat:"R",pivot:40,
+   win:{fx:{R:4,N:5,mom:7,E:6},say:"You take him through it in ninety seconds, slowly, the way you would explain it to a student. Silence, then somebody at the back says “that's right, actually.” He does not concede. The room does, and the room is what travels."},
+   lose:{fx:{E:-8,N:-3,foe:{why:"you corrected them in Session 4B, badly",poisons:"referee"}},say:"You are right and you are flustered, and flustered is what forty people saw. He smiles. “We'll take this offline.” Offline is where he referees things."}}},
+ {t:"Thank him for the excellent point.",fx:{N:3,E:-5,flag:"ACQUIESCED"},say:"“That's very helpful, thank you, I'll think about it.” You will not think about it, because there is nothing to think about. He beams. Two people who understood the paper look at you with something that is not quite contempt."},
+ {t:"Say nothing. Let the chair move on.",fx:{E:-2},say:"The session runs over. Nobody remembers your paper; everybody remembers his sentence. That is what a discussant is for."}]},
+
+{id:"P9",ti:"The Visit",b:[1,2],ex:{base:.9},once:1,
+ sc:"Eleven months of video calls with a senior coauthor at Calderon — the best project you have ever been near. You fly out for the week that was going to finish it. In his office is another postdoc, at the whiteboard, using your notation. Nobody has told you anything, which is itself the information.",
+ ch:[
+ {t:"Say it out loud, in the office.",fx:{N:-5,E:4,B:4,foe:{why:"you made a scene in their office about a coauthorship",poisons:"referee"}},say:"He is startled that you would raise it. Startled is the key word: it had not occurred to him that this required a conversation. You are off the project by Friday, cleanly, with an acknowledgment footnote promised and, to be fair, delivered."},
+ {t:"Say nothing. Go home.",fx:{E:-6,B:6,flag:"REPLACED_SILENT"},say:"You stay the week. You are useful. You fly home with your name in the acknowledgments. The paper, when it appears, will do very well — you know that already, and it is the whole of the difficulty."}]},
+
+{id:"G13",ti:"The Paper You Weren't On",b:[1,4],ex:{base:.7},ga:{since:["REPLACED_SILENT",6]},once:1,
+ sc:"The paper is everywhere. Two hundred citations in its first year, a policy brief, a line in a central banker's speech. Your notation is on every slide. The acknowledgments thank you “for early conversations.” A junior colleague forwards it to you, not unkindly, with the subject line “isn't this your thing?”",
+ ch:[
+ {t:"Write to him now, and copy the journal.",roll:{stat:"E",pivot:55,
+   win:{fx:{R:5,N:-4,mom:5,E:8,flag:"CRIED_FOUL_LATE"},say:"A corrigendum appears adding your name. It is the least gracious document in the journal's history. Your citation count doubles, and three people in the field stop replying to your emails."},
+   lose:{fx:{N:-8,E:-6,foe:{why:"you tried to claim their paper two years after the fact",poisons:"committee"}},say:"He replies at length, copying the other coauthor, with a timeline. The timeline is accurate and devastating: eleven months and no draft. The junior colleague who forwarded it never mentions it again."}}},
+ {t:"Let it be his.",fx:{R:3,flag:"LET_IT_GO"},say:"You cite it, correctly, in your next three papers. Somewhere in the discipline's oral tradition your name is attached to it in a subordinate clause, and that clause, it turns out, is worth something after all."}]},
+
+{id:"D4",ti:"Istanbul",b:[1,3],ex:{base:.9},
+ sc:"The conference dinner is on a roof above the Bosphorus and the rakı arrives before the food. The senior people are at the far end of the table. Somewhere around the third glass, the far end stops being far.",
+ ch:[
+ {t:"Stay. Drink. Bond.",fx:{N:9,B:7,E:3,mom:3},say:"By one in the morning you have been told which editor is “finished,” who is leaving Pelham, and the real reason a famous paper has never been replicated. You remember about half of it and are remembered by all of it. This is what the field means by “community.”"},
+ {t:"Go home early. You present at nine.",fx:{R:3,B:-3},say:"Your talk at nine is crisp, to a room of eleven, four of whom are asleep. The far end of the table remembers that you left."}]},
+
+{id:"D5",ti:"The Email",b:[1,2],ex:{base:.9},once:1,
+ sc:"Subject line: “Really liked your talk.” The sender is thirty-four, has two papers in the Quarterly, and is the person everyone at your stage would give a year to be. The email is three lines long. The third line proposes you write the next version together.",
+ ch:[
+ {t:"Say yes.",fx:{N:10,mom:9,wip:20,R:2,flag:"STAR_COAUTHOR"},say:"The paper is finished in five months and appears in fourteen. It is the first time anyone outside your building has known your name. Also: his name is first, alphabetically and otherwise, and the seminar invitations that follow are addressed to him."},
+ {t:"Say thank you, and keep it yours.",fx:{R:5,wip:12,E:3,flag:"KEPT_IT"},say:"It takes three years and lands a tier lower. It is entirely yours. When people describe it, they describe the result and not the person, which is either the point or the price."}]},
+
+/* ---------- mid: boards and editors ---------- */
+{id:"A8",ti:"The Board of the Bulletin",b:[2,4],ex:{base:.8},once:1,
+ sc:"The Bulletin of Applied Economics invites you to join its editorial board. It is the journal you would send something to as a last exit, and both of you know it. The invitation mentions your “growing reputation” twice.",
+ ch:[
+ {t:"Accept. A line is a line.",fx:{K:3,N:2,P:-2,flag:"BULLETIN_BOARD"},say:"Your CV acquires a line. Eleven manuscripts a year arrive, none of which should have been written. A colleague at Pelham, reading your web page, says “oh” in a particular tone."},
+ {t:"Decline, politely.",fx:{},say:"They ask someone else, who accepts, and whose CV now has a line. Nothing else changes. Integrity is very quiet."}]},
+
+{id:"A9",ti:"The Board of the Journal",b:[2,4],ex:{base:.8,highMom:1.2},ga:{N:35},once:1,
+ sc:"The Journal of Economic Theory and Practice wants you on its board. This is a real journal and a real job: forty manuscripts a year, a meeting in April, an editor who notices when reports are late. The line on the CV is worth something. So is the time.",
+ ch:[
+ {t:"Accept.",fx:{N:7,mom:5,K:4,tax:8,flag:"ED_BOARD"},say:"For the next four years you are one point down every term. You did not agree to that in so many words. Nobody ever does."},
+ {t:"Decline, citing the clock.",fx:{R:3,N:-2},say:"The editor understands, in the way editors understand things, which is to say she remembers."}]},
+
+{id:"N7",ti:"Co-editor of the Review",b:[3,4],ex:{base:.8,highMom:1.6},ga:{N:55,R:50},once:1,
+ sc:"The Review would like you as a co-editor. Three hundred papers a year across your desk, a term of five years, a name on the masthead that changes how rooms treat you. It will cost, in every term of those five years, time you do not have.",
+ ch:[
+ {t:"Accept.",fx:{N:12,mom:14,E:8,K:5,tax:10,flag:"COEDITOR"},say:"You now decide, in part, what the field is. For five years you are one point down every term, and for the rest of your life people will tell you, at conferences, which of their papers you rejected."},
+ {t:"Decline.",fx:{R:6,wip:20},say:"They ask a colleague at Calderon, who accepts, and who now decides what the field is, including the part of it you work in."}]},
+
+{id:"E1",ti:"The Laureate's Paper",b:[3,4],ex:{base:1.2},ga:{flag:"COEDITOR"},once:1,
+ sc:"A submission from a Nobel laureate. It is, by any honest reading, not good: a twenty-year-old idea with new notation and no result. The referees will know who wrote it; everyone knows how he writes. Your name will be on the decision letter.",
+ ch:[
+ {t:"Reject it. Politely. Yourself.",fx:{R:4,E:6,K:3,foe:{why:"you rejected their paper at the Review",poisons:"committee"},flag:"REJECTED_LAUREATE"},say:"The letter is two paragraphs and takes you a weekend. He replies to the managing editor, not to you, asking whether the Review has “changed its standards.” It has not; that is the problem. He sits on two committees you will care about."},
+ {t:"Send it to referees who will do it for you.",fx:{K:5,N:2,B:4},say:"The referees are brave the way referees are brave, which is anonymously. The rejection carries their reports and your signature. He knows exactly who chose the referees. This is the ordinary form of editorial courage, and it is not nothing."},
+ {t:"Accept it. Minor revisions.",fx:{N:6,E:-4,R:-3,flag:"WAVED_LAUREATE"},say:"It appears. It is cited nine times, all by him. A graduate student at Pelham writes a post titled “How Did This Get In?” that gets forty thousand views and does not mention your name, which is the last kindness the internet will do you."}]},
+
+{id:"E2",ti:"The Glowing Report",b:[3,4],ex:{base:1.1},ga:{flag:"COEDITOR"},once:1,
+ sc:"One of the two reports on a paper you are handling is remarkable: generous, detailed, plainly written by someone who has thought about the problem for years. You are drafting the acceptance when you check the referee's web page and find the author's name on three of their papers.",
+ ch:[
+ {t:"Discard the report. Get a third.",fx:{K:6,N:-2,B:4,flag:"CAUGHT_IT"},say:"The third report is lukewarm. The paper is rejected, and the author, who never knew how close it came, blames the Review's “declining standards.” The referee, who knows exactly what happened, never referees for you again."},
+ {t:"Accept the paper. The report is, after all, correct.",fx:{E:3,N:4,flag:"LET_IT_THROUGH"},say:"It is a good paper. That was never the question. Two years later the editorial board adopts a conflict-of-interest form, and the managing editor, introducing it, looks at nobody in particular."},
+ {t:"Write to the referee and ask them to explain.",fx:{K:3,N:-4,E:2,foe:{why:"you accused them of a conflict of interest",poisons:"referee"}},say:"They explain, at length, that co-authorship “in a different area” is not a conflict, and that they are offended you would suggest it. They are, as it happens, on the Review's board. The paper is rejected anyway, which nobody will let you forget."}]},
+
+/* ---------- the chair: five things nobody prepares you for ---------- */
+{id:"C1",ti:"The Petty Cash",b:[3,4],ex:{base:1.1,office:1.5},ga:{office:1},once:1,
+ sc:"You are chair. The department administrator, whom you have known for nine years, has been taking money from the petty cash — not a great deal, over a long time, with a consistency that in another context would be called discipline. The bursar has the spreadsheet. The bursar would like to know what you intend to do.",
+ ch:[
+ {t:"Report it. It isn't yours to forgive.",fx:{K:6,N:-4,B:6,flag:"REPORTED_CASH"},say:"She is gone in a month. The department loses the only person who knew how the room bookings worked, and for a year nothing gets booked. Several colleagues feel you could have handled it “more humanely,” by which they mean without them noticing."},
+ {t:"Handle it quietly. Repayment, resignation, no file.",fx:{K:3,N:3,B:4,flag:"QUIET_CASH"},say:"She repays it and leaves “for family reasons.” Everyone is grateful. Eighteen months later the bursar's successor finds the spreadsheet, and the question becomes not what she did but why there is no record of what you did."}]},
+
+{id:"C2",ti:"The Email to the MSc",b:[3,4],ex:{base:1.1,office:1.5},ga:{office:1},once:1,
+ sc:"At 11:40 p.m. every student on the MSc receives an email containing a racial slur and the name of a lecturer. By 8 a.m. it is on two student forums and one national newspaper site, and the Dean's office has called your mobile, which it has never done before.",
+ ch:[
+ {t:"Statement by nine. Investigation by noon. Name nothing.",fx:{K:9,B:10,N:2},say:"The statement is four sentences and says nothing anyone could object to, which is its purpose. The investigation takes three months and finds a compromised account. Nobody thanks you for the four sentences. Three colleagues think they were too weak and two think they were too strong, and the newspaper never runs a follow-up."},
+ {t:"Wait for the facts before saying anything.",fx:{K:-4,N:-6,B:12,P:-3},say:"By noon the silence is the story. The Dean issues a statement instead, which names the department and implies you. You learn that in this job the facts arrive after the verdict, and the verdict is about whoever spoke last."}]},
+
+{id:"C3",ti:"The Complaint",b:[3,4],ex:{base:1,office:1.5},ga:{office:1},once:1,
+ sc:"Two colleagues who have hated each other since 2031 have each filed a formal complaint of bullying against the other, on the same day, with the same HR officer. One of them cried in your office. Then the other one did. The HR officer would like a “chair's view.”",
+ ch:[
+ {t:"Give a view. Say what you actually think happened.",fx:{K:5,N:-5,E:3,foe:{why:"you took the other side in the complaint",poisons:"vote"}},say:"Your view is careful and accurate, and one of them will never forgive it. The other will never thank you, because being believed is not gratitude-shaped. The case takes eleven months and concludes that “communication could be improved.”"},
+ {t:"Decline to have a view. Process, not people.",fx:{K:4,N:-2,B:5},say:"You say “I think this needs to go through the proper process” eleven times in one meeting. Both of them conclude you are a coward. HR concludes you are helpful. Everyone is correct."},
+ {t:"Get them in a room and sort it.",roll:{stat:"K",pivot:55,
+   win:{fx:{K:8,N:6,flag:"PEACEMAKER"},say:"Forty minutes, no minutes taken, a great deal of shouting, then something that in another department would be called an apology. It holds for six years. Nobody knows what you did and you cannot tell them."},
+   lose:{fx:{K:-3,N:-6,B:8,foe:{why:"you put them in a room with their enemy",poisons:"vote"}},say:"It goes as badly as a meeting can go without furniture. One of them files a third complaint, about you, for holding the meeting. HR asks, in a tone, whether you had “considered the process.”"}}}]},
+
+{id:"C4",ti:"Shouted At",b:[3,4],ex:{base:1,office:1.4},ga:{office:1},
+ sc:"A full professor with a named chair and no recent papers stands in your office and shouts at you for eleven minutes about his teaching load, which is nine hours a year. You can hear the administrator in the corridor deciding not to come in.",
+ ch:[
+ {t:"Let him finish. Say “noted.” Change nothing.",fx:{K:4,E:-3,B:5},say:"He leaves with the feeling of having been heard, which is most of what he came for. His load remains nine hours. Your administrator brings you a coffee without being asked, which is the department's highest honour."},
+ {t:"Shout back.",roll:{stat:"E",pivot:55,
+   win:{fx:{E:6,N:3,K:2},say:"He is so surprised that he stops. Nobody has raised their voice to him since 2019. A week later he sends a paper to the reading group, unprompted. Something has been restored that you did not know was missing."},
+   lose:{fx:{E:-4,N:-5,foe:{why:"you shouted at them in your own office",poisons:"vote"}},say:"It becomes, within the hour, “the chair lost it.” He tells it well. He has told stories for a living for forty years."}}},
+ {t:"Give him a course release to make it stop.",fx:{K:-3,N:2,B:-2,flag:"PAID_OFF"},say:"It stops. Every other full professor learns, by Tuesday, that shouting works. You have set a price, and the price was low."}]},
+
+{id:"C5",ti:"The Breach",b:[3,4],ex:{base:1,office:1.5},ga:{office:1},once:1,
+ sc:"A spreadsheet with every colleague's salary, and several people's medical leave, has been sitting on a shared drive with the wrong permissions for a month. You know who did it: a well-meaning person who would be destroyed by a formal process. Nobody outside the department knows yet.",
+ ch:[
+ {t:"Fix it yourself. Quietly. No process.",fx:{K:3,N:3,B:6,flag:"QUIET_BREACH"},say:"Permissions corrected, a quiet word, a note in a drawer. The person is grateful in a way that is almost unbearable. You have done the humane thing and, in the College's terms, the wrong one, and the College's terms are the ones written down."},
+ {t:"Report it. Start the process.",fx:{K:7,N:-6,B:8,flag:"REPORTED_BREACH"},say:"The investigation takes seven months and ends the well-meaning person's career, which everyone agrees was disproportionate and nobody could stop. You are described, in a corridor, as “by the book,” which is not a compliment in this building."}]},
+
+{id:"C6",ti:"The Envelope",b:[3,4],ex:{base:1.4},ga:{since:["QUIET_BREACH",4]},once:1,
+ sc:"An email from an address that does not exist. It contains three lines from the salary spreadsheet and a request for a course allocation that would not otherwise be made. It notes, helpfully, that you chose not to report the breach.<br><br>The College, when you tell them, insists on an investigation — and informs you that you will not be leading it, for the simple reason that you are now a suspect.",
+ ch:[
+ {t:"Cooperate fully. Hold the blame.",fx:{K:5,N:-5,E:-8,B:12,flag:"HELD_BLAME"},say:"Four months. Your emails are read by a lawyer. You are cleared, in a letter that uses “regrettable” about the process and “appropriate” about the outcome. Nobody is ever caught. What you learn, afterwards, is that when something bad happens blame must be assigned, and you had it in your hands and did not move it on."},
+ {t:"Move the blame on. Name the person who left the file.",fx:{K:8,N:-3,E:2,foe:{why:"you named them to the investigation to save yourself",poisons:"vote"},flag:"MOVED_BLAME"},say:"The investigation has a name and stops looking for another. You are chair for the rest of your term and something else for the rest of your life. The well-meaning person leaves academia. You have learned the lesson everyone who survives this job learns, and you do not like having learned it."},
+ {t:"Resign the chair. Let someone else hold it.",fx:{K:-6,N:2,B:-10,mod:"resignOffice",flag:"RESIGNED_CHAIR"},say:"The Dean accepts with visible relief and a paragraph about your “contribution.” The investigation continues without you and finds nothing. You go back to your papers, which have been waiting, and which do not blackmail anyone."}]},
+
+/* ---------- any stage: gods and editors ---------- */
+{id:"G7",ti:"The God's Footnote",b:[1,4],ex:{base:.8,highR:.8},once:1,
+ sc:"The paper has four thousand citations and a name on it that appears in the textbook. Its main result depends on an assumption in footnote 11 that, you have realised on a Sunday, does not hold. You have checked four times. It is Sunday evening and nobody knows but you.",
+ ch:[
+ {t:"Write a comment. Submit it to the same journal.",roll:{stat:"R",pivot:50,
+   win:{fx:{R:8,mom:10,P:6,N:3,E:8,flag:"CORRECTED_GOD"},say:"Published, after two years and a referee who was plainly him. Your comment is cited more than any paper you have written. He never acknowledges it. Three of his students, over the years, tell you quietly that you were right."},
+   lose:{fx:{R:2,E:-8,N:-4,foe:{why:"you wrote a comment on their famous paper",poisons:"referee"}},say:"Rejected — “technically correct but of limited interest.” The editor was his student. The paper keeps its four thousand citations and gains the next four thousand. You have made an enemy of a textbook."}}},
+ {t:"Write to him privately.",roll:{stat:"N",pivot:45,
+   win:{fx:{N:8,R:3,mom:4,flag:"GOD_GRATEFUL"},say:"He replies in nine minutes. “You're right. Nobody has noticed in twenty years.” A corrigendum appears with your name in the acknowledgments. He writes you a letter, unasked, four years later, at exactly the moment you need one."},
+   lose:{fx:{E:-3},say:"No reply. Then, eight months later, a working paper by him and a student “clarifying” footnote 11, with no mention of your email. You have been useful. It is not the same as being cited."}}},
+ {t:"Leave it. Gods are for other people to fight.",fx:{B:-2,E:-2},say:"Footnote 11 stands. Somebody else finds it in 2044 and gets a job at Harwich for the comment. You read the comment in your office and recognise every step."}]},
+
+{id:"G8",ti:"The Editor's Friend",b:[1,4],ex:{base:.9,lowMom:.8},
+ sc:"Rejected. Two reports: one has misread the model, the other has misread the first report. The editor's letter agrees with both and is signed by a man who has dinner, monthly, with everyone you have ever been compared to.",
+ ch:[
+ {t:"Appeal, with a point-by-point.",roll:{stat:"N",pivot:55,
+   win:{fx:{R:3,N:4,mom:5,mod:"resubmit"},say:"A third referee. Nine months. An acceptance letter that reads as if the whole thing had been the editor's idea. You have learned that appeals work exactly when you are already known, which is the one case in which you do not need them."},
+   lose:{fx:{E:-6,N:-4,foe:{why:"you appealed their rejection in writing",poisons:"referee"}},say:"“The decision stands.” Four words. He handles a third of the field's submissions and now recognises your name, which is not the kind of recognition you were building toward."}}},
+ {t:"Send it down a tier, tomorrow.",fx:{E:-3,mod:"resubmit"},say:"It lands somewhere decent in due course. Something about the paper's ambition quietly resizes itself to fit."},
+ {t:"Send him the email you are composing in your head.",fx:{E:6,N:-8,B:-4,foe:{why:"you sent them the email",poisons:"referee"}},say:"It is a very good email. It is forwarded, by him, to nine people, with no comment, because none is needed. For a decade you will be introduced at conferences with a slight pause before your name."}]},
+
+/* ---------- twenty more ---------- */
+{id:"P10",ti:"The Cohort",b:[0,0],ex:{base:1},once:1,
+ sc:"Someone in your year has a job talk at Harwich. She started the same September you did. At the lunch where this is mentioned, nobody looks at you, which is how you learn that everyone had been wondering.",
+ ch:[
+ {t:"Congratulate her. Mean it.",fx:{N:5,E:-3,flag:"GRACIOUS"},say:"She remembers. In a profession this small, remembering is a currency; in eleven years she is on a search committee reading your file, and says “they were decent to me when it cost something.”"},
+ {t:"Ask her for her slides.",fx:{R:4,K:2,E:-2},say:"They are extremely good. You learn what a job market paper looks like when it is actually finished, which nobody had shown you. Envy has, occasionally, a syllabus."},
+ {t:"Say nothing and work until two.",fx:{R:3,wip:15,B:6,E:2},say:"The work is good. The lunch was worse than the work was good, and you will remember the lunch."}]},
+
+{id:"P11",ti:"The Advisor's Name",b:[0,0],ex:{base:1},once:1,
+ sc:"Your job market paper is done. Your advisor, who has read it twice and improved it once, mentions — lightly, as if it were the weather — that it “might travel better” with his name on it. He is, in the sense that matters, not wrong.",
+ ch:[
+ {t:"Add his name.",fx:{N:6,mom:6,R:-2,E:-4,flag:"SHARED_JMP"},say:"It travels. Three flyouts become six. At every one of them someone asks, kindly, what your contribution was. You have a good answer. You will give it for a decade."},
+ {t:"Keep it single-authored.",fx:{R:5,E:4,N:-3},say:"Three flyouts. He is gracious about it, and slightly less available for the letter, which arrives late and is one paragraph shorter than the one he wrote for the person who said yes."}]},
+
+{id:"D6",ti:"The Second Postdoc",b:[1,1],ex:{base:1.2},once:1,
+ sc:"The market has produced no job. It has produced another postdoc, at Bellweather, two years, slightly more money. Everyone says two postdocs is fine now. Everyone who says it has a job.",
+ ch:[
+ {t:"Take it. Two more years to write.",fx:{R:5,wip:20,B:5,E:-4,S:4,flag:"SECOND_POSTDOC"},say:"Two years. The papers get better. The word “postdoc” on your conference badge acquires a faint smell that you can detect and nobody mentions."},
+ {t:"Take the teaching job at Cranmoor A&M instead. A real line.",fx:{K:5,S:8,R:-3,B:3,mod:"toCranmoor"},say:"Tenure-track, four courses a year, an office with a door. The papers slow. The door, it turns out, was the thing you wanted, and you were not supposed to want it."}]},
+
+{id:"D7",ti:"The Seminar Dinner",b:[1,2],ex:{base:.9},
+ sc:"Dinner after the seminar. You have been seated next to the woman who chairs the hiring committee at Ostrander State, which is not an accident, and she has asked what you thought of the speaker's paper, which was not good.",
+ ch:[
+ {t:"Say it was not good, and why.",roll:{stat:"R",pivot:35,
+   win:{fx:{N:7,R:2,E:4},say:"She agrees, and adds two things you had missed. By dessert you are having the conversation people describe afterwards as “the interview.” It was."},
+   lose:{fx:{N:-4,E:-4,foe:{why:"you were rude about their coauthor's paper at dinner",poisons:"search"}},say:"He is her coauthor. This was on the paper. You did not read the paper."}}},
+ {t:"Say it was interesting.",fx:{N:2},say:"It was not interesting and she knows it. You have passed the test of being harmless, which is a real test, and not the one you wanted to pass."}]},
+
+{id:"A10",ti:"The First Student",b:[2,3],ex:{base:1},once:1,
+ sc:"A second-year has asked you to supervise. She is bright, anxious, and will need, over five years, roughly two hundred hours you do not have. The clock does not count students.",
+ ch:[
+ {t:"Take her on. Properly.",fx:{B:6,N:3,K:2,R:-2,flag:"FIRST_STUDENT"},say:"Two hundred hours becomes three hundred. She finishes in five years and places at Fenwick, then Ostrander. In 2046 she is on a panel and cites you unprompted, and you find you have to look at the ceiling for a moment."},
+ {t:"Decline. Suggest someone with tenure.",fx:{R:3,wip:8,E:-2},say:"She goes to someone with tenure who is not very good at it. She finishes anyway; the good ones do. She does not cite you. There was nothing to cite."}]},
+
+{id:"A11",ti:"The Letter Writers",b:[2,2],ex:{base:1},once:1,
+ sc:"The chair needs six names for your tenure letters. You may suggest three. One of them could be the famous man who said your identification was “confused,” and who has since, you are told, come round.",
+ ch:[
+ {t:"Name him. Test it.",roll:{stat:"N",pivot:50,
+   win:{fx:{N:6,mom:6,flag:"BRAVE_LETTER"},say:"His letter, you learn years later, was the strongest of the six. “I was wrong about this candidate, and I am rarely wrong.” The committee reads that sentence twice."},
+   lose:{fx:{N:-4,B:8,foe:{why:"you asked them for a tenure letter and they said what they thought",poisons:"vote"}},say:"His letter is two paragraphs and uses the word “competent” as if it cost him money. The chair shows it to you afterwards, which chairs are not supposed to do, and says only “well.”"}}},
+ {t:"Name three safe people.",fx:{N:2,K:2},say:"Three warm letters from three people nobody has heard of. The committee notes that the letters are “uniformly positive,” in a tone suggesting uniformity was the finding."}]},
+
+{id:"A12",ti:"The Course Nobody Wants",b:[2,4],ex:{base:.9,tdebt:.8},
+ sc:"The core econometrics course for the MSc. Two hundred students, four hours a week, a reputation for destroying whoever teaches it. The chair has asked you “as a favour,” which is what it is called when there is no choice.",
+ ch:[
+ {t:"Teach it. Properly.",fx:{K:4,B:9,R:-2,N:3,flag:"TAUGHT_CORE"},say:"You lose a term. The students are, for once, taught. Nobody on any committee ever reads a teaching evaluation, but the chair remembers who said yes, and the chair is one vote."},
+ {t:"Teach it. Badly.",fx:{B:3,N:1},say:"You reuse someone's slides from 2029. The evaluations are terrible and, as far as you can tell, weightless. The clock ticks. This is what the incentives said to do, and you did it, and something small in you has been noted."},
+ {t:"Refuse, citing the clock.",fx:{R:3,wip:10,N:-4,foe:{why:"you refused the core course they then had to teach",poisons:"vote"}},say:"An associate professor teaches it instead, badly, and does not forgive you. The clock is a good reason. It is also, in this building, an insult."}]},
+
+{id:"A13",ti:"The Thread",b:[2,4],ex:{base:.7,highP:1.6},
+ sc:"You have written eleven posts about a policy paper by a rival. They are correct, funny, and slightly cruel. Your thumb is over the button.",
+ ch:[
+ {t:"Post it.",roll:{stat:"P",pivot:35,
+   win:{fx:{P:11,N:4,mom:6,E:5,R:-2,flag:"THREAD"},say:"Nine thousand shares. Two journalists. A podcast. Your rival replies, badly. For a month you are the economist people have heard of, and the paper you should have been writing is one month older."},
+   lose:{fx:{P:5,N:-6,E:-4,foe:{why:"your thread about their paper",poisons:"referee"}},say:"It does not travel. It is seen by the rival, the rival's students, and the rival's friend on the editorial board. You have spent the goodwill of a small profession on a joke nobody laughed at."}}},
+ {t:"Delete the draft.",fx:{R:2,B:-1},say:"Eleven posts, unpublished, join the drawer where about forty percent of your best sentences live."}]},
+
+{id:"A14",ti:"The Referee Request",b:[2,4],ex:{base:.8,highR:.6},once:1,
+ sc:"The Quarterly asks you to referee a paper. It is by the person whose result you have been racing for two years, and it is, you see within a page, better than yours.",
+ ch:[
+ {t:"Recuse yourself.",fx:{K:2,N:2,E:-3,flag:"RECUSED"},say:"The editor thanks you and finds someone slower. The paper appears in eighteen months. Yours appears in twenty, in a lower journal, cited in a footnote as “contemporaneous work.” You did the right thing, and it is footnote-shaped."},
+ {t:"Referee it. Honestly. Fast.",fx:{R:3,N:4,E:-2,flag:"FAIR_REF"},say:"Your report is the best they get. It appears in nine months. Yours is now a comment on theirs. The editor, who guessed exactly what you were doing, sends a note that says only “thank you — I know.”"},
+ {t:"Referee it. Slowly. Thoroughly.",fx:{R:2,E:4,B:4,flag:"SLOW_REF"},say:"Fourteen months and a report that asks for a different paper. Yours comes out first. Nobody can prove anything. You know, and the editor suspects, and the author — who will one day sit on something you want — has a theory."}]},
+
+{id:"S6",ti:"The External Review",b:[3,4],ex:{base:.9,highK:.8},ga:{K:30},once:1,
+ sc:"Every seven years three people from other universities spend two days deciding whether your department exists. The chair has asked you to write the self-study, a ninety-page document whose only purpose is to be skimmed.",
+ ch:[
+ {t:"Write it. Make it say what the department should become.",fx:{K:10,N:5,B:8,flag:"SELF_STUDY"},say:"Ninety pages. The reviewers quote four of them in their report, and those four become policy. You have discovered that the person who writes the document is the person who decides, and that nobody else has noticed."},
+ {t:"Write it. Copy last time's and update the numbers.",fx:{K:3,B:3},say:"It is skimmed, as intended. The reviewers recommend what they recommended last time. Nothing changes, which was the department's preference all along."}]},
+
+{id:"S7",ti:"The Student at Harwich",b:[3,4],ex:{base:.9},ga:{since:["FIRST_STUDENT",16]},once:1,
+ sc:"Your first student has been made a full professor at Harwich College. You are not at Harwich College. She sends a kind email. It contains the phrase “I owe you so much,” which is true, and which nobody at Harwich will ever say to you.",
+ ch:[
+ {t:"Reply with pride. Mean every word.",fx:{N:6,E:-2,mom:3,flag:"PROUD"},say:"You write four paragraphs. She keeps the email; you learn this at her inaugural lecture, where she reads a line of it aloud. You look at the ceiling again. The ceiling at Harwich is very fine."},
+ {t:"Reply briefly. Feel what you feel.",fx:{E:-5,B:3},say:"“Congratulations — well deserved.” Six words. She notices the six words. Some things are not the student's fault and are held against her anyway, quietly, forever."}]},
+
+{id:"N8",ti:"The Handbook Chapter",b:[3,4],ex:{base:.8},once:1,
+ sc:"You have been asked to write the chapter on your field for the Handbook. Sixty pages, no original result, cited by everyone who does not want to read the papers. It is the most useful thing you will write and the one you will least want on your CV.",
+ ch:[
+ {t:"Write it.",fx:{N:6,P:4,mom:5,R:-3,B:6,flag:"HANDBOOK"},say:"It takes a year. It is cited three hundred times, by people who cite nothing else of yours. You become, in the profession's shorthand, “the person who wrote the survey,” which is a rung and a cage."},
+ {t:"Decline. Write a paper instead.",fx:{R:5,wip:18},say:"A younger person writes the chapter, and for twenty years their name and not yours is the one that appears when someone types the topic into a search box."}]},
+
+{id:"N9",ti:"The Nap",b:[3,4],ex:{base:.7},once:1,
+ sc:"You have fallen asleep in a job talk, briefly, visibly, in the second row. The candidate saw. The candidate is very good. The vote is on Thursday.",
+ ch:[
+ {t:"Apologise to the candidate afterwards. Vote yes.",fx:{N:4,K:2,E:-3,flag:"APOLOGISED"},say:"She laughs, generously. She is hired. In year three she mentions it at a dinner, kindly, and everyone laughs, and you laugh, and you will hear the story told in four more cities."},
+ {t:"Say nothing. Vote yes.",fx:{K:1},say:"She is hired. She never mentions it. The not-mentioning is a small ongoing tax that both of you pay for nine years."},
+ {t:"Vote no. She saw.",fx:{E:3,K:-4,N:-4,flag:"VOTED_NO_ASLEEP"},say:"She goes to Calderon and becomes, within a decade, the reason people say Calderon's name. You have voted against a career because it witnessed a nap."}]},
+
+{id:"N10",ti:"The Chair",b:[4,4],ex:{base:.6,highMom:1.8,highR:1.2},ga:{R:60,N:45},once:1,tr:"nobel",
+ sc:"A named chair. The name belongs to a dead man who made his money in something the university no longer mentions. It comes with a stipend, a research budget, and a plaque, and it is the last promotion in a life that has no others.",
+ ch:[
+ {t:"Accept, and give the inaugural lecture.",fx:{mom:12,E:8,N:6,P:5,S:20,flag:"CHAIR"},say:"The lecture is good. The dead man's granddaughter is in the front row and thanks you afterwards for “honouring the family,” and you realise the plaque has two names on it and only one of them is yours."},
+ {t:"Accept, and skip the lecture.",fx:{mom:8,E:4,S:20,flag:"CHAIR"},say:"The stipend arrives. The plaque goes up. The dean is mildly hurt about the lecture, and the dead man's family, who had been told there would be one, do not renew the gift when it comes up in 2047."}]},
+
+{id:"S8",ti:"The Corner Offices",b:[3,4],ex:{base:1,office:1.5},ga:{office:1},once:1,
+ sc:"The building is being reorganised. The corner offices — there are four — are wanted by eleven people, all of whom have theories about seniority, all different, all documented. You hold the plan.",
+ ch:[
+ {t:"Allocate by seniority. Publish the rule.",fx:{K:6,N:-3,foe:{why:"the office allocation",poisons:"vote"}},say:"Seven people are unhappy in a way they can defend. One of them will not speak to you for four years, and is on the committee. A rule was applied; that is what rules are for."},
+ {t:"Allocate by who will make the most trouble.",fx:{K:8,N:3,E:-2,flag:"REALPOLITIK"},say:"Nobody complains. Everyone knows why. You have learned the actual job, and the actual job is not in any document."},
+ {t:"Draw lots in a public meeting.",fx:{K:2,N:5,B:-3},say:"The meeting is a delight. The losers cannot blame you and so blame fate, which does not sit on committees. A junior person gets a corner office and her productivity, for reasons nobody can explain, doubles."}]},
+
+{id:"S9",ti:"The Donor's Nephew",b:[3,4],ex:{base:1,office:1.5},ga:{office:2},once:1,
+ sc:"A trustee whose name is on the new building has a nephew applying to the PhD program. The nephew is fine. The nephew is not good. The Dean's office would like to know your “thinking.”",
+ ch:[
+ {t:"Admit him. It is one place.",fx:{K:6,N:5,S:2,E:-3,flag:"NEPHEW"},say:"He is admitted. He finishes in seven years and works in his uncle's foundation. The building is very fine. Four years later, at a dinner, the trustee remembers, and a chair gets funded that you will sit in."},
+ {t:"Reject him. The committee decides.",fx:{K:3,N:-6,B:4,flag:"NO_NEPHEW"},say:"He goes to Bowhead State. The trustee is “disappointed,” a word that in that office means eleven million dollars. The Dean does not forgive you, because the Dean is the one who had to make the phone call."}]},
+
+{id:"S10",ti:"The Cut",b:[3,4],ex:{base:1,office:1.5},ga:{office:2},
+ sc:"Six percent, across the board, by Friday. You can protect the department by cutting the postdoc program, or protect the postdocs by cutting the seminar budget, or cut everything a little and be hated a little by everyone.",
+ ch:[
+ {t:"Cut the postdocs.",fx:{K:5,N:-4,R:-3,foe:{why:"you cut the postdoc line they ran",poisons:"vote"}},say:"Four young people do not come. The seminar continues. The faculty are grateful in the way people are grateful when the cost lands on someone who cannot vote."},
+ {t:"Cut the seminar.",fx:{K:5,N:-6,E:2},say:"Nobody visits for a year. The faculty are furious in a way that involves emails. The postdocs, who did not know they were saved, do not thank you, because nobody tells them."},
+ {t:"Salami. Everything a little.",fx:{K:3,N:-2,B:5},say:"Everyone is a little worse off and everyone knows it was you. Nobody is much worse off. This is called leadership in the documents and cowardice in the corridor, and it is, on the evidence, what most people would do."}]},
+
+{id:"S11",ti:"The Occupation",b:[3,4],ex:{base:1.3,office:2},ga:{office:4},once:1,
+ sc:"Two hundred students have occupied the administration building over something the endowment has invested in. Their demands are long. Their sleeping bags are excellent. Your office is on the third floor of the building they have occupied.",
+ ch:[
+ {t:"Go down. Talk. No security.",roll:{stat:"K",pivot:65,
+   win:{fx:{K:8,P:8,N:4,mom:5,flag:"WENT_DOWN"},say:"Forty minutes on the floor of the lobby. You concede nothing and they leave on Tuesday. A photograph of you sitting on the floor does very well. The board does not like the photograph and does like the outcome."},
+   lose:{fx:{K:-4,P:6,N:-5,B:10},say:"They film it. You say one sentence that is accurate and sounds terrible. The sentence outlives the occupation, the semester, and most of your other sentences."}}},
+ {t:"Wait them out. Exams are in three weeks.",fx:{K:4,B:6,P:-3},say:"They leave for exams. The board approves. The students remember, and in twelve years three of them are on the alumni council, and they still remember."},
+ {t:"Call security.",fx:{K:-6,P:-8,N:-6,B:8,foe:{why:"you called security on the occupation",poisons:"search"}},say:"It is over in an hour and on the news for a month. The board thanks you privately and distances itself publicly. You have discovered the exact width of the gap between those two things."}]},
+
+{id:"G9",ti:"The Scan",b:[2,4],ex:{base:.5,highB:1.6},once:1,
+ sc:"The doctor uses the word “concerning” and then the word “probably.” There is a scan in three weeks. In the interval you have a referee report, a grant deadline, and a seminar to give at Pelham.",
+ ch:[
+ {t:"Cancel everything. Wait properly.",fx:{B:-12,R:-2,N:-2,E:-3,flag:"WAITED"},say:"Three weeks of not working. It is, it turns out, nothing. You return to the report and the grant and the seminar and find that all three were still there and that nobody had died of your absence, which is the most alarming thing the scan revealed."},
+ {t:"Work through it. Tell nobody.",fx:{B:10,R:2,E:2},say:"You give the seminar at Pelham the day before the scan. It goes well. It is nothing. You have learned that you can do this, and you will do it again, and one day it will not be nothing."}]},
+
+{id:"G10",ti:"The Reunion",b:[3,4],ex:{base:.6},once:1,
+ sc:"Twenty years since the PhD. Nine of the cohort are at the dinner. One is at Harwich. One is at Thromber. Two are in banks and are paying for the wine. One left for a think tank and looks, you notice, eleven years younger than the rest of you.",
+ ch:[
+ {t:"Ask the think tank one how it happened.",fx:{E:-4,B:-3,flag:"ASKED_HOW"},say:"She says: “I stopped waiting to be chosen.” She says it without malice. You think about it on the train home, and for some weeks after, and then the term starts."},
+ {t:"Talk to the Harwich one. Networking is networking.",fx:{N:5,E:2},say:"He is as pleased to see you as he would be to see anyone. You get a seminar invitation out of it, in April, which is something."},
+ {t:"Drink with the bankers.",fx:{B:-4,N:2,S:1},say:"They are generous, funny, and know exactly what your salary is. One of them says “you're the one who stayed,” and means it as a compliment, and you take it as one, mostly."}]},
+
+{id:"G11",ti:"The Coauthor Who Stopped",b:[2,4],ex:{base:.9},
+ sc:"The paper is eighty percent done and your coauthor has not replied in four months. His last email said “on it.” He is, you learn from a third party, going through a divorce, or a breakdown, or a sabbatical, depending on who you ask.",
+ ch:[
+ {t:"Finish it alone. Keep his name on.",fx:{R:4,wip:25,B:7,N:3,flag:"CARRIED"},say:"You write his sections. It appears with both names. He thanks you, years later, in a bar, at a length that suggests he knows exactly what it cost. That is the whole return on the investment, and it is, oddly, enough."},
+ {t:"Finish it alone. Take his name off.",fx:{R:5,wip:25,E:4,N:-4,foe:{why:"you removed their name from the paper",poisons:"referee"}},say:"He surfaces, eventually, and sees the working paper. The email he sends is short. You were within your rights. Rights are not the currency here."},
+ {t:"Wait.",fx:{B:2,R:-1},say:"Four months becomes eleven. The paper, when it appears, is behind two others that say roughly the same thing. Loyalty has a price, and the price is a citation count."}]}
 
 ];
 
@@ -669,9 +973,10 @@ function submitPaper(){
  const q=clamp(g.R*0.72+ri(-14,14)+(g.mods.bigpaper?18:0), 5, 100);
  let z=-1.9+3.0*q/100+0.9*g.N/100+1.1*prestige()+0.5*g.M/100;
  if(g.flags.CARTEL)z+=0.35;
+ z-=0.25*foesOf("referee");
  const r=Math.random(), tier = r<sig(z)-0.42 ? "A+" : r<sig(z)+0.06 ? "A" : r<sig(z)+0.52 ? "B" : "C";
  const lag = tier==="A+"? ri(5,9) : tier==="A"? ri(4,7) : ri(2,5);
- g.queue.push({ti:makeTitle(), tier, q, due:g.turn+lag, rounds:0});
+ g.queue.push({ti:makeTitle(), tier, jn:pick(JOURNALS[tier].n), q, due:g.turn+lag, rounds:0});
  line("info","✉ Submitted: “"+g.queue[g.queue.length-1].ti+"” — out for review.");
  if(g.mods.bigpaper) delete g.mods.bigpaper;
 }
@@ -681,11 +986,11 @@ function reviewPass(){
   if(s.due>g.turn) continue;
   if(s.rounds<1 && Math.random()<0.45){
    s.rounds++; s.due=g.turn+ri(2,4);
-   line("info","↻ R&R at "+pick(JOURNALS[s.tier].n)+": three referees, one of whom wants a different paper.");
+   line("info","↻ R&R at "+s.jn+": three referees, one of whom wants a different paper.");
    continue;
   }
   g.queue.splice(g.queue.indexOf(s),1);
-  const jn=pick(JOURNALS[s.tier].n);
+  const jn=s.jn||pick(JOURNALS[s.tier].n);
   g.papers.unshift({ti:s.ti,jn,tier:s.tier,q:s.q,c:0,pub:g.turn,yr:Math.floor(g.turn/2)+1});
   const pill=s.tier==="A+"?"gold":"good";
   line(pill,"★ Published in "+jn+": “"+s.ti+"”");
@@ -770,10 +1075,10 @@ function passivePass(){
 function foeName(){
  return pick(FIRST)+" "+pick(LAST);
 }
-function addFoe(){
+function addFoe(spec){
  if(g.enemies.length>=9) return;
- const gr=pick(GRUDGE);
- const f={who:foeName(),why:gr[0],poisons:gr[1]};
+ const gr=pick(GRUDGE), o=(spec&&typeof spec==="object")?spec:{};
+ const f={who:o.who||foeName(),why:o.why||gr[0],poisons:o.poisons||gr[1]};
  g.enemies.push(f);
  line("bad","⚔ "+f.who+" will remember that "+f.why+".");
 }
@@ -849,7 +1154,8 @@ function terms(){
   highR:g.R/100, highK:g.K/100, highP:g.P/100, highB:g.B/100,
   lowS:clamp((45-g.S)/45,0,1),
   tdebt:clamp(g.tdebt/10,0,1),
-  spec:g.flags.SPEC?1:0
+  spec:g.flags.SPEC?1:0,
+  office:g.office?1:0
  };
 }
 function gateOK(ga){
@@ -860,6 +1166,9 @@ function gateOK(ga){
  if(ga.P&&g.P<ga.P) return false;
  if(ga.E&&g.E<ga.E) return false;
  if(ga.flag&&!g.flags[ga.flag]) return false;
+ if(ga.office&&g.office<ga.office) return false;
+ if(ga.tenured&&!g.tenured) return false;
+ if(ga.since){ const [f,n]=ga.since; const t=g.flags[f]; if(!t) return false; if(g.turn-(t-1)<n) return false; }
  return true;
 }
 function drawEvent(){
@@ -900,7 +1209,7 @@ const QUIET=[
 function rollP(roll){
  const base = roll.stat==="R"?g.R : roll.stat==="K"?g.K : roll.stat==="N"?g.N :
               roll.stat==="P"?g.P : roll.stat==="E"?g.E : 50;
- const egoShift = 0.28*(g.E-50);
+ const egoShift = roll.stat==="E" ? 0 : 0.28*(g.E-50);
  return sig((base-(roll.pivot||50)+egoShift)/14);
 }
 function applyLoss(fx){
@@ -920,9 +1229,14 @@ function applyFx(fx){
  if(fx.S) g.S=Math.max(0,g.S+fx.S);
  if(fx.wip) g.wip+=fx.wip;
  if(fx.mom) g.M=clamp(g.M+fx.mom,0,100);
- if(fx.flag) g.flags[fx.flag]=1;
- if(fx.mod) g.mods[fx.mod]=1;
- if(fx.foe) addFoe();
+ if(fx.flag) g.flags[fx.flag]=g.turn+1;   /* stamped, so later events can ask how long ago */
+ if(fx.mod){
+  if(fx.mod==="resignOffice") g.office=0;
+  else if(fx.mod==="toCranmoor"){ g.postdocEnd=null; startClock("CRANMOOR",6); }
+  else g.mods[fx.mod]=1;
+ }
+ if(fx.tax){ g.taxes=g.taxes||[]; g.taxes.push(g.turn+fx.tax); }
+ if(fx.foe) addFoe(fx.foe);
  if(fx.ending) end(fx.ending);
 }
 
@@ -949,7 +1263,7 @@ function tenureVote(){
  let note="";
  if(named.length) note = named.map(f=>"<b>"+f.who+"</b> votes no — "+f.why+".").join("<br>");
  const letter = g.vow==="PRES"||g.K>g.R
-  ? "The letter says: <em>“a genuine institutional citizen. We will miss the polish in the published record, but he knows how to run a meeting, and a department is a great many meetings.”</em>"
+  ? "The letter says: <em>“a genuine institutional citizen. We will miss the polish in the published record, but this is someone who knows how to run a meeting, and a department is a great many meetings.”</em>"
   : "The letter says: <em>“the service record is thin and the collegiality has been described to us as situational. But one of these papers will still be read in thirty years, and we are not in the business of being wrong about that twice.”</em>";
 
  card({
@@ -994,13 +1308,14 @@ function denialCascade(){
    THE ENDGAME ROLLS
    ============================================================ */
 function nobelEligible(){
- return !g.nobelDead && g.rank>=4 && aplus()>=4 && g.R>=58 && age()>=52;
+ return !g.nobelDead && !g.won.NOBEL && g.rank>=4 && aplus()>=4 && g.R>=58 && age()>=52;
 }
 function octoberPass(){
  if(g.turn%2!==0) return false;            /* Fall only */
  if(!nobelEligible()) return false;
  const p = sig(-10.2 + 2.5*g.M/100 + 2.0*g.N/100 + 1.2*g.P/100 + 1.0*g.R/100
-              + 1.7*prestige() + (g.flags.CHAIR?0.8:0) + 0.9*clamp(g.cites/3000,0,1.2));
+              + 1.7*prestige() + (g.flags.CHAIR?0.8:0) + 0.9*clamp(g.cites/3000,0,1.2)
+              - 0.5*foesOf("committee"));
  if(Math.random()<p){ end("NOBEL"); return true; }
  if(Math.random()<p*4.5){
   g.shortlists++;
@@ -1023,7 +1338,7 @@ function presSearch(){
  const p = sig(-7.0 + 3.1*g.K/100 + 2.5*g.N/100 + 1.0*g.P/100 + 0.7*g.R/100
               + 2.2*prestige() + (sitting?1.3:0)
               - 3.4*Math.max(0,tp-prestige())*(sitting?0.5:1)
-              + (g.flags.CANDID?-0.2:0.2));
+              + (g.flags.CANDID?-0.2:0.2) - 0.6*foesOf("search"));
  const sc = sitting
   ? "You are the president of <em>"+uniName()+"</em>. You have done it for "+yrs+" year"+(yrs===1?"":"s")+" and you have been, by every measure the trustees use, good at it.<br><br>The search firm on the phone is <em>"+UNIS[g.target].n+"</em>\u2019s. They stress that the conversation is exploratory. Search firms stress this immediately before it stops being true."
   : "A search firm is involved. There are nineteen people on the committee, of whom four matter, and a confidentiality protocol that leaks within a fortnight. You are flown somewhere and asked, by a student representative, what your vision for the undergraduate experience is.<br><br>The post is the presidency of <em>"+UNIS[g.target].n+"</em>.";
@@ -1065,7 +1380,7 @@ const ENDTEXT={
  PRES:()=>["The office","The office is on a corner and has a portrait of a man who owned people. Your first month contains: a fundraising dinner, an occupation of the administration building, and a board member who asks why the endowment cannot simply be spent. You answer all three correctly and none of them satisfactorily."],
  BOTH:()=>["Both","You have the medal and you have the office. At the inauguration, the provost's introduction mentions the prize before your name. You notice that you minded, very slightly, and then you notice that you noticed."],
  NOBEL_MISS:()=>["The perpetual shortlist","You have the Clark, the BBVA, two honorary doctorates and a lecture series named after you. Every October a journalist calls on the Monday. "+g.shortlists+" times the phone did not ring on the Thursday, and the field's polite explanation — that the committee works in mysterious ways — has never once been offered to anyone who actually won."],
- PRES_MISS:()=>["President of somewhere","You are the president of "+UNIS[g.uni].n+". Enrollment is "+ri(9,18)+",000. The football program runs a deficit and is untouchable. You do the job well, and at the conference in June people introduce you, with complete sincerity and a half-second pause, as a university president."],
+ PRES_MISS:()=>["President of somewhere","You are the president of "+UNIS[g.uni].n+". "+UNIS[g.uni].blurb+" You do the job well, and at the conference in June people introduce you, with complete sincerity and a half-second pause, as a university president."],
  BOTH_HALF_N:()=>["The medal, not the office","You have the prize. The presidency went to a former dean of a medical school with a good manner and no publications, and the board described the appointment as a bold choice. At the alumni dinner you are seated at the head table, and the man in the chair you wanted introduces you, generously, at length."],
  BOTH_HALF_P:()=>["The office, not the medal","You have the office, the endowment, the protests and the board. Stockholm has never in its history called a sitting university president, and you knew that in "+(25+Math.floor((g.turn)/4))+", and you took the office anyway, and you would again."],
  TENURE_OUT:()=>["Out","The second letter is shorter than the first. There is a period during which you apply for things and a later period during which you do not. The field closes over the gap in about nine months, the way water does."],
@@ -1097,7 +1412,58 @@ const EPITHETS={
  TWOBODY:"got the second line",
  FUNDED:"was funded, once, properly",
  ADMIN_ESCAPE:"found the budget model, and it found them back",
- FEST:"could not speak, at the end of the dinner"
+ FEST:"could not speak, at the end of the dinner",
+ OWNED_ERROR:"wrote to the editor about Lemma 2",
+ SILENT_FIX:"fixed Lemma 2 in the proofs, quietly",
+ LEFT_ERROR:"left the lemma wrong in print",
+ CONCEDED:"conceded to the graduate student with time",
+ ACQUIESCED:"thanked the discussant for an excellent point",
+ REPLACED_SILENT:"flew home from Calderon and said nothing",
+ CRIED_FOUL_LATE:"claimed the paper, two years late",
+ LET_IT_GO:"let the paper be his",
+ STAR_COAUTHOR:"said yes to the email",
+ KEPT_IT:"kept it single-authored",
+ BULLETIN_BOARD:"sat on the board of the Bulletin",
+ ED_BOARD:"gave four years to a board",
+ COEDITOR:"co-edited the Review",
+ REJECTED_LAUREATE:"rejected a laureate",
+ WAVED_LAUREATE:"waved a laureate through",
+ CAUGHT_IT:"caught the glowing report",
+ LET_IT_THROUGH:"let the glowing report stand",
+ REPORTED_CASH:"reported the petty cash",
+ QUIET_CASH:"handled the petty cash quietly",
+ PEACEMAKER:"put them in a room, and it held",
+ PAID_OFF:"bought silence with a course release",
+ QUIET_BREACH:"fixed the breach without a process",
+ REPORTED_BREACH:"reported the breach, by the book",
+ HELD_BLAME:"held the blame",
+ MOVED_BLAME:"moved the blame on",
+ RESIGNED_CHAIR:"resigned the chair",
+ CORRECTED_GOD:"corrected a textbook",
+ GOD_GRATEFUL:"wrote to the god privately, and was answered",
+ GRACIOUS:"congratulated her, and meant it",
+ SHARED_JMP:"put the advisor's name on it",
+ SECOND_POSTDOC:"took the second postdoc",
+ FIRST_STUDENT:"took the first student, properly",
+ BRAVE_LETTER:"named the discussant as a letter writer",
+ TAUGHT_CORE:"taught the core course, properly",
+ THREAD:"posted the thread",
+ RECUSED:"recused",
+ FAIR_REF:"refereed the rival fairly, and fast",
+ SLOW_REF:"refereed the rival slowly",
+ SELF_STUDY:"wrote the self-study",
+ PROUD:"wrote four paragraphs to the student at Harwich",
+ HANDBOOK:"wrote the survey",
+ APOLOGISED:"apologised for the nap",
+ VOTED_NO_ASLEEP:"voted against a career that saw a nap",
+ CHAIR:"held a named chair",
+ REALPOLITIK:"allocated the corner offices by trouble",
+ NEPHEW:"admitted the nephew",
+ NO_NEPHEW:"did not admit the nephew",
+ WENT_DOWN:"sat on the lobby floor",
+ WAITED:"cancelled everything and waited for the scan",
+ ASKED_HOW:"asked how she stopped waiting to be chosen",
+ CARRIED:"carried the coauthor"
 };
 
 function end(kind){
@@ -1139,13 +1505,13 @@ function nobelInterlude(){
  g.P=clamp(g.P+26,0,100); g.S+=40; g.flags.CHAIR=1;
  card({cls:"gold",kicker:"OCTOBER",ti:"The call",
   sc:"It comes at 5:11 a.m. and the number is Swedish.<br><br>You vowed both. The medal is one of them. There is a presidency outstanding and, on the evidence of the last four decades, roughly "+Math.max(0,80-g.turn)+" terms in which to get it. You are "+age()+".",
-  ch:[{t:"Back to the committee work.",fn(){ return "The laureate returns to the space allocation subcommittee, where his presence is noted as a considerable coup."; }}]});
+  ch:[{t:"Back to the committee work.",fn(){ return "The laureate returns to the space allocation subcommittee, which records the presence of a laureate as a considerable coup."; }}]});
 }
 function presInterlude(){
  g.won.PRES=1; g.office=4; g.uni=g.target;
  g.K=clamp(g.K+20,0,100); g.N=clamp(g.N+18,0,100); g.S+=90; g.B=clamp(g.B+20,0,100);
  card({cls:"gold",kicker:"THE OFFICE",ti:"President",
-  sc:"They call on a Sunday.<br><br>You vowed both. The office is one of them. The other requires a phone call from Stockholm to a man who now spends eleven hours a day on the endowment, and Stockholm has historically shown very little interest in university presidents.",
+  sc:"They call on a Sunday.<br><br>You vowed both. The office is one of them. The other requires a phone call from Stockholm to someone who now spends eleven hours a day on the endowment, and Stockholm has historically shown very little interest in university presidents.",
   ch:[{t:"Take the office.",fn(){ return "The portrait in the corner office is of a man who owned people. There is a plaque explaining this, added in 2034, which is smaller than the portrait."; }}]});
 }
 function vowLabel(full){
@@ -1266,7 +1632,8 @@ function render(){
    </div></div>`;
  }).join("");
  const h=LEVERS.find(l=>g.alloc[l[0]]>0);
- $("hint").textContent = h? h[2] : "Six places to put a term. There are only "+budget()+" points, and there have only ever been.";
+ const base = h? h[2] : "Six places to put a term. There are only "+budget()+" points, and there have only ever been.";
+ $("hint").textContent = (taxed()? "The editorial desk takes "+(taxed()>1?taxed()+" points":"a point")+" this term. ":"")+base;
  $("go").disabled=awaiting||!!g.ended;
 }
 
@@ -1355,8 +1722,7 @@ function runTerm(){
   g.skip--; g.turn++;
   termBanner();
   g.Mshown=g.M;
-  line("bad","— A term you were not present for.");
-  if(g.clock!==null) g.clock--;
+  line("bad","— A term you were not present for."+(g.clock!==null?" The tenure clock is stopped.":""));
   if(g.turn>=80){ end("TIME"); return; }
   render(); return;
  }
@@ -1381,7 +1747,7 @@ function runTerm(){
   line("gold","▲ "+OFFICES[g.office]+". A larger office and a calendar that belongs to someone else.");
  }
  if(g.mods.office1 && g.office===0){ g.office=1; delete g.mods.office1; }
- if(g.mods.move){ delete g.mods.move; g.uni=pick(MID); line("info","→ You move to "+uniName()+"."); }
+ if(g.mods.move){ delete g.mods.move; g.uni="BELLWEATHER"; line("info","→ You move to "+uniName()+"."); }
  if(g.mods.teachfix){ delete g.mods.teachfix; g.tdebt=0; }
 
  g.alloc={write:0,net:0,pub:0,serv:0,teach:0,rest:0};
@@ -1415,7 +1781,9 @@ function runTerm(){
  const e=drawEvent();
  if(e){
   g.seen[e.id]=(g.seen[e.id]||0)+1;
-  card({kicker:"THE TERM",ti:e.ti,sc:e.sc,ch:e.ch});
+  const n=g.seen[e.id];
+  const sc=(e.alt&&n>1)? e.alt[Math.min(n-2,e.alt.length-1)] : e.sc;
+  card({kicker:"THE TERM",ti:e.ti,sc,ch:e.ch});
  } else {
   quietCard();
  }

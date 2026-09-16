@@ -58,7 +58,16 @@ still rank 3 or 4.
 - `flag:"NAME"` — sets a permanent flag; add it to `EPITHETS` to have it appear
   in the ending's *"The field remembers…"* line
 - `foe:1` — makes an enemy, with a generated name, grudge and what they poison
-- `mod:"name"` — a one-shot engine modifier
+- `foe:{why:"you rejected their paper", poisons:"committee"}` — a specific
+  enemy. `why` is what they remember; `poisons` is where it bites:
+  `"referee"` lowers the odds of a good journal on every submission,
+  `"vote"` and `"committee"` are named no-votes at tenure, `"committee"` also
+  hurts the October roll, `"search"` hurts the presidential search
+- `mod:"name"` — a one-shot engine modifier. Two do something immediately:
+  `"resignOffice"` gives up any administrative post; `"toCranmoor"` leaves a
+  postdoc for a tenure-track line at Cranmoor A&M with a six-year clock
+- `tax:8` — the choice costs one allocation point per term for that many terms
+  (editorial boards, co-editorships). Taxes stack; the budget never drops below 3
 - `ending:"EXIT"` — ends the career immediately
 
 **`roll`:** `stat` is one of `R` `K` `N` `P` `E`; `pivot` is the value at which
@@ -101,6 +110,7 @@ any time"; the others make an event find the player it belongs to.
 | `lowS` | salary is low |
 | `tdebt` | teaching has been neglected |
 | `spec` | the player once used the defensible specification |
+| `office` | holds any administrative post |
 
 A weight of `1` is a normal pull, `2` a strong one. Every draw also has a
 "quiet term" weight in the pot, so nothing is guaranteed.
@@ -110,6 +120,11 @@ A weight of `1` is a normal pull, `2` a strong one. Every draw also has a
 ## Gates (`ga`, and per-choice `gate`)
 
 `{R:45}` `{K:50}` `{N:40}` `{P:60}` `{E:70}` `{flag:"SPEC"}` — any combination.
+Also: `{office:1}` (at least department chair; `2` dean, `3` provost, `4`
+president), `{tenured:1}`, and `{since:["FLAG",6]}` — the flag was set at least
+six terms ago. `since` is how a decision comes back years later: the breach
+you handled quietly becomes the blackmail in `C6`; the postdoc who said nothing
+in `P9` gets `G13` three years on.
 On an event, an unmet gate means it can't fire. On a choice, the button is
 shown disabled with a reason, which is often better than hiding it: seeing what
 you can't do yet is part of the picture.
@@ -118,10 +133,17 @@ you can't do yet is part of the picture.
 
 ## Flags currently in play
 
-`RAN_SEMINAR` `ANTISOCIAL` `GENEROUS` `HONEST` `SPEC` `CORRECTED` `CARTEL`
-`OUTSIDE` `MENTOR` `THEPAPER` `EDITOR` `PHONED_IN` `AGENT` `VIRAL` `CHOSE_LIFE`
-`TRUTHFUL` `THURSDAYS` `GOODHIRE` `CANDID` `LOYAL` `TWOBODY` `FUNDED`
-`ADMIN_ESCAPE` `FEST` `BORROWED` `TENURED` `DENIED_ONCE` `POSTDOC`
+Every flag set by an event is listed in `EPITHETS` in the source, with the line
+it produces at the end. The ones other events currently gate on:
+
+| flag | set by | gates |
+|---|---|---|
+| `SPEC` | P6 the defensible specification | N6 the replication |
+| `LEFT_ERROR` | P7 leaving the lemma wrong | G12 the graduate student, 8+ terms later |
+| `REPLACED_SILENT` | P9 going home quietly | G13 the paper you weren't on, 6+ terms later |
+| `COEDITOR` | N7 co-editing the Review | E1 the laureate's paper, E2 the glowing report |
+| `QUIET_BREACH` | C5 fixing the breach yourself | C6 the envelope, 4+ terms later |
+| `FIRST_STUDENT` | A10 taking the first student | S7 the student at Harwich, 16+ terms later |
 
 New flags are free — set one with `flag:"WHATEVER"`, gate a later event on it
 with `ga:{flag:"WHATEVER"}`, and add a line to `EPITHETS` if it deserves to be
@@ -130,16 +152,18 @@ the system.
 
 ---
 
-## What exists (33 events)
+## What exists (74 events)
 
-| stage | have | thin on |
+Events *available* at each rank, counting the ones whose band spans it:
+
+| rank | available | still thin on |
 |---|---|---|
-| PhD (0) | 6 | the advisor relationship, cohort rivalry, the market itself |
-| postdoc (1) | 3 | almost everything — this stage is nearly empty |
-| assistant (2) | 7 | the clock's psychology, coauthors, the first PhD student |
-| associate/full (3–4) | 11 | the long middle, editorships, decline |
-| admin track | 5 | deans, budgets, trustees, protests, fundraising |
-| any stage | 6 | money, family, health, the world outside |
+| PhD (0) | 11 | the market itself, the cohort as a group, money |
+| postdoc (1) | 21 | the second market, visiting positions, being adjacent to power |
+| assistant (2) | 36 | the clock's last two years, the first rejection that matters |
+| associate/full (3–4) | 52–56 | decline, the long plateau, being overtaken |
+| chair / dean / provost | 8 | fundraising, the board, the provost's office specifically |
+| president | 1 | almost everything — the office is nearly empty |
 
 The engine is built for roughly 200. Nothing about adding them is structural —
 it is writing.
