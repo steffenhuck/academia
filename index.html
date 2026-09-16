@@ -128,7 +128,20 @@ header.mast .tag{
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){
   .card{animation:none} .needle{transition:none} .tile .track b{transition:none}
+  .termbar{animation:none} .clockchip.tick{animation:none}
 }
+.termbar{
+  display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  margin:6px 0 11px;padding:9px 2px 0;border-top:2.5px solid var(--gold);
+  animation:sweep .5s cubic-bezier(.2,.9,.3,1) both;
+}
+.termbar .tt{font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:21px;letter-spacing:-.01em}
+.termbar .ta{font-size:10.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);text-align:right}
+@keyframes sweep{from{opacity:0;transform:translateY(-7px)}to{opacity:1;transform:none}}
+.clockchip.tick{animation:tickflash .7s ease-out}
+@keyframes tickflash{0%{background:var(--gold);color:#1A1509;border-color:var(--gold)}100%{}}
+.card.quiet{border-color:#2E2B3A;background:var(--panel)}
+.card.quiet .scene{color:var(--dim);font-style:italic}
 .card.gold{border-color:var(--gold);background:linear-gradient(180deg,#2A2418,var(--panel))}
 .card.grim{border-color:var(--rose)}
 .kicker{
@@ -267,6 +280,7 @@ footer a:hover{color:var(--gold)}
 
 <div class="cv" id="cv"></div>
 
+<div id="termslot"></div>
 <div id="cardslot"></div>
 
 <div class="desk" id="desk" hidden>
@@ -397,7 +411,7 @@ function newGame(){
 }
 
 const age      = ()=>25+Math.floor(g.turn/2);
-const termName = ()=>(g.turn%2? "Spring":"Fall")+", year "+(Math.floor(g.turn/2)+1);
+const termName = ()=>(g.turn%2? "Spring term":"Fall term");
 const prestige = ()=>g.uni?UNIS[g.uni].p:0.5;
 const uniName  = ()=>g.uni?UNIS[g.uni].n:"—";
 const uniShort = ()=>g.uni?UNIS[g.uni].s:"—";
@@ -1134,6 +1148,19 @@ function line(cls,txt){
  $("log").appendChild(d);
 }
 
+function termBanner(){
+ $("termslot").innerHTML=`<div class="termbar"><span class="tt">${termName()}</span><span class="ta">age ${age()} \u00b7 ${title()}</span></div>`;
+ const ac=$("agechip");
+ if(ac){ ac.classList.remove("tick"); void ac.offsetWidth; ac.classList.add("tick"); }
+}
+function quietCard(){
+ const el=document.createElement("div");
+ el.className="card quiet";
+ el.innerHTML=`<div class="kicker"><span>A QUIET TERM</span><span>${termName()} \u00b7 age ${age()}</span></div>
+  <div class="scene">${pick(QUIET)}</div>`;
+ $("cardslot").innerHTML="";
+ $("cardslot").appendChild(el);
+}
 function tile(lbl,val,pct,color,alarm){
  return `<div class="tile${alarm?" alarm":""}">
   <div class="lbl">${lbl}</div>
@@ -1307,6 +1334,7 @@ function runTerm(){
 
  if(g.skip>0){
   g.skip--; g.turn++;
+  termBanner();
   g.Mshown=g.M;
   line("bad","— A term you were not present for.");
   if(g.clock!==null) g.clock--;
@@ -1315,6 +1343,7 @@ function runTerm(){
  }
 
  g.turn++;
+ termBanner();
  const oldM=g.M;
 
  applyLevers();
@@ -1369,7 +1398,7 @@ function runTerm(){
   g.seen[e.id]=(g.seen[e.id]||0)+1;
   card({kicker:"THE TERM",ti:e.ti,sc:e.sc,ch:e.ch});
  } else {
-  line("info","· "+pick(QUIET));
+  quietCard();
  }
  render();
 }
@@ -1389,6 +1418,7 @@ function timeUpKind(){
 function boot(){
  newGame();
  $("log").innerHTML="";
+ $("termslot").innerHTML="";
  render();
  card({
   cls:"gold", kicker:"THE VOW", ti:"What is it for?",
@@ -1403,8 +1433,8 @@ function boot(){
 function phdStart(){
  g.uni=pick(TOP.concat(MID)); g.rank=0; g.S=24;
  card({
-  cls:"gold", kicker:"THE PROGRAM", ti:"Year four",
-  sc:"Year four at <em>"+uniName()+"</em>. A stipend of $24k, a desk in a room with four other desks, and a dissertation in three chapters of which two exist.<br><br>Three years of this remain before the market. What you do with them will not appear on your CV, and will decide most of what follows.",
+  cls:"gold", kicker:"THE PROGRAM", ti:"Nearly done",
+  sc:"You are twenty-five, most of the way through a PhD at <em>"+uniName()+"</em>. A stipend of $24k, a desk in a room with four other desks, and a dissertation in three chapters of which two exist.<br><br>Three years of it remain before the market. What you do with them will not appear on your CV, and will decide most of what follows.",
   ch:[{t:"Get to work.",why:"six terms until the job market",
     fn(){ return "The room has a kettle and a whiteboard nobody erases. Somebody's job market paper is on it, from a year that has passed."; }}]
  });
