@@ -1444,8 +1444,8 @@ function boot(){
   sc:"You are twenty-five. You have a dissertation that is nearly finished, an advisor who has not read the third chapter, and forty years.<br><br>Everyone in this profession is doing it for something. Most of them will not say what. <em>Say what.</em>",
   ch:[
    {t:"The Nobel Prize.",why:"you want the call",fn(){ g.vow="NOBEL"; pendingNext=phdStart; return "Said out loud, at twenty-five, it sounds absurd. You will not say it out loud again for thirty years."; }},
-   {t:"A university presidency.",why:"you want the office",fn(){ g.vow="PRES"; pendingNext=targetStep; return "The honest version of the ambition, which almost nobody gives."; }},
-   {t:"Both.",why:"what else?",fn(){ g.vow="BOTH"; pendingNext=targetStep; return "Both. Note that the clock does not adjust for this, and neither does the body."; }}
+   {t:"The presidency of Harwich College.",why:UNIS.HARWICH.blurb,fn(){ g.vow="PRES"; g.target="HARWICH"; pendingNext=phdStart; return "The honest version of the ambition, which almost nobody gives out loud. Note that you have named a building and not a rank: other places will offer you their presidencies, and they will not count."; }},
+   {t:"Both.",why:"what else?",fn(){ g.vow="BOTH"; g.target="HARWICH"; pendingNext=phdStart; return "Both. Note that the clock does not adjust for this, and neither does the body."; }}
   ]
  });
 }
@@ -1456,14 +1456,6 @@ function phdStart(){
   sc:"You are twenty-five, most of the way through a PhD at <em>"+uniName()+"</em>. A stipend of $24k, a desk in a room with four other desks, and a dissertation in three chapters of which two exist.<br><br>Three years of it remain before the market. What you do with them will not appear on your CV, and will decide most of what follows.",
   ch:[{t:"Get to work.",why:"six terms until the job market",
     fn(){ return "The room has a kettle and a whiteboard nobody erases. Somebody's job market paper is on it, from a year that has passed."; }}]
- });
-}
-function targetStep(){
- card({
-  cls:"gold",kicker:"THE VOW",ti:"President of where?",
-  sc:"A presidency is not a rank, it is an address. Name the one you mean. You will be measured against this and nothing else.",
-  ch: TOP.map(k=>({t:UNIS[k].n, why:UNIS[k].blurb, fn(){ g.target=k; pendingNext=phdStart;
-    return "Noted. "+UNIS[k].n+" — "+UNIS[k].note+". Everything else will be a near miss."; }}))
  });
 }
 function placeStep(){
