@@ -55,6 +55,18 @@ still rank 3 or 4.
 - `S` — salary, in $k, unscaled
 - `E` `B` — ego, burnout risk (0–100), unscaled
 - `wip` — pages toward the next paper (100 = a submission)
+- `submit:{...}` — **a real paper goes out now**, and its publication card
+  arrives some terms later with a title and a journal. Options: `tier:"A+"`
+  forces the tier; `bias:1.2` shifts the odds instead; `lag:[3,4]` terms to a
+  decision; `q:8` quality; `f:"theory"` field; `jn:"the Handbook"` names the
+  outlet; `cites:60` starts it with citations; `rounds:1` skips the R&R roll.
+  An array submits several. **Use this, not prose, whenever a choice results
+  in a paper** — the feedback should say it went out, and the card that comes
+  later says it is in
+- `mod:"accept"` / `"reject"` / `"resubmit"` / `"delay"` — act on the paper that
+  has been under review longest: accepted next term; back in the drawer
+  (returns 45 pages of draft); sent down a tier and out again; one more round.
+  Events that use these must be gated `ga:{queue:1}` so a paper is under review
 - `mom` — momentum, the hidden Matthew-effect multiplier
 - `cites:60` — a jolt to one existing paper's citation count (a policy fight, a
   textbook box, a student who cites you in everything). Does nothing if there
@@ -136,6 +148,9 @@ A weight of `1` is a normal pull, `2` a strong one. Every draw also has a
 Also: `{office:1}` (at least department chair; `2` dean, `3` provost, `4`
 president), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
 `{since:["FLAG",6]}` — the flag was set at least six terms ago.
+
+`{queue:1}` — at least one paper under review; required by any event about the
+review process.
 
 **Gates on the record:** `{field:"macro"}` — has published at least one paper in
 that field (fields: theory, micro, macro, metrics, finance, labour, development,
@@ -225,6 +240,14 @@ That is roughly the size the engine was built for. Adding more is still only
 writing.
 
 ---
+
+## Tense
+
+The game runs term by term, so feedback is written in the present or the near
+future: *it goes out; it will take a year; he says fourteen months*. A paper is
+never announced as published in a choice's feedback — the publication card does
+that when it happens. Retrospective jokes still work if framed as what you
+already know: *you already know how the conference will go.*
 
 ## Notes
 

@@ -532,8 +532,8 @@ const EVENTS=[
 {id:"P4",ti:"The Generous Coauthor",b:[0,1],ex:{base:1},once:1,
  sc:"A senior man in the department proposes you write it up together. His contribution so far has been the phrase “have you thought about doing it properly?” His name on it would get it read.",
  ch:[
- {t:"Take the deal.",fx:{N:9,R:3,wip:18,flag:"BORROWED"},say:"It goes to a good journal in fourteen months, which is fast, which is the whole point of him. At the conference, people congratulate him on it in front of you. He accepts."},
- {t:"Write it alone.",fx:{R:7,wip:24,B:4,foe:1},say:"It takes four years and two rejections and it is entirely yours. He does not forget having been declined; nobody in this profession has ever forgotten having been declined."}]},
+ {t:"Take the deal.",fx:{N:9,R:3,submit:{bias:1.2,lag:[3,4],q:6},flag:"BORROWED"},say:"It goes out to a good journal with his name on it. He says fourteen months; he is usually right about that, which is the whole point of him. And you already know how the conference will go: people will congratulate him on it in front of you, and he will accept."},
+ {t:"Write it alone.",fx:{R:7,B:4,submit:{lag:[7,9],rounds:1},foe:1},say:"It goes out with one name on it. It will take years and, probably, a rejection or two, and it will be entirely yours. He does not forget having been declined; nobody in this profession has ever forgotten having been declined."}]},
 
 {id:"P5",ti:"The Referee Report",b:[0,2],ex:{base:.9},
  sc:"Your advisor has handed you a paper to referee under his name. It is competent, unexciting, and by someone your age at a place slightly better than yours.",
@@ -577,14 +577,14 @@ const EVENTS=[
  {t:"Say yes.",fx:{K:8,N:5,B:5},say:"You discover the budget model by accident — a spreadsheet nobody guards because nobody believes anyone would want it. You want it."},
  {t:"Say no, citing the clock.",fx:{R:5,wip:16,N:-4},say:"Entirely reasonable and entirely remembered. The clock excuse works exactly once per colleague."}]},
 
-{id:"A2",ti:"The Desk Reject",b:[2,4],ex:{base:1,lowMom:1.2},
+{id:"A2",ti:"The Desk Reject",b:[2,4],ex:{base:1,lowMom:1.2},ga:{queue:1},
  sc:"Eleven days. The editor's note is four sentences long and two of them are about the journal's space constraints.",
  ch:[
- {t:"Send it down a tier tomorrow.",fx:{E:-4,mod:"resubmit"},say:"It lands somewhere decent in due course. Something about the paper's ambition quietly resizes itself to fit."},
+ {t:"Send it down a tier tomorrow.",fx:{E:-4,mod:"resubmit"},say:"It goes out again in the morning, one tier down. Something about the paper's ambition quietly resizes itself to fit."},
  {t:"Appeal.",roll:{stat:"E",pivot:60,
-   win:{fx:{N:3,mod:"resubmit"},say:"The editor sends it out. It is not accepted, but it is read, and being read by three people who matter is worth more than being published by none who do."},
-   lose:{fx:{E:-8,foe:1},say:"The reply contains the phrase “we receive a great many appeals.” You have made a permanent, unnecessary impression on someone who edits things."}}},
- {t:"Put it in the drawer and start something better.",fx:{R:6,wip:20,B:4},say:"The drawer is where about forty percent of the field's actual best work lives."}]},
+   win:{fx:{N:3,mod:"delay"},say:"The editor sends it out after all. It will take a year longer than it should, and it may still not get in, but being read by three people who matter is worth more than being desk-rejected by none who do."},
+   lose:{fx:{E:-8,mod:"reject",foe:{why:"you appealed their desk rejection",poisons:"referee"}},say:"The reply contains the phrase “we receive a great many appeals.” The paper is back in the drawer, and you have made a permanent, unnecessary impression on someone who edits things."}}},
+ {t:"Put it in the drawer and start something better.",fx:{R:6,wip:20,B:4,mod:"reject"},say:"The drawer is where about forty percent of the field's actual best work lives. This one joins it, and something better starts."}]},
 
 {id:"A3",ti:"The Op-Ed Request",b:[2,4],ex:{base:.7,highP:2},
  sc:"A mid-tier outlet wants 800 words by Thursday on something adjacent to your dissertation. The fee is $250 and the audience is, in the strict sense, everyone.",
@@ -736,12 +736,12 @@ const EVENTS=[
    ================================================================ */
 
 /* ---------- early: the proof, the discussant, the visit ---------- */
-{id:"P7",ti:"The Proofs",b:[0,2],ex:{base:.9},once:1,
+{id:"P7",ti:"The Proofs",b:[0,2],ex:{base:.9},ga:{queue:1},once:1,
  sc:"The paper is accepted. You are reading the proofs — the typeset pages, the last moment anything can change — and in Lemma 2 you see it. The inequality goes the wrong way. The result survives, probably, with a different argument you do not currently have.",
  ch:[
- {t:"Write to the editor tonight.",fx:{R:4,N:3,B:5,flag:"OWNED_ERROR"},say:"The editor is, unexpectedly, gracious: “better now than in a comment.” Publication slips eight months. The corrected lemma is better than the original, and nobody but the two of you will ever know there was a first version."},
- {t:"Fix it in the proofs. Say nothing.",fx:{E:3,flag:"SILENT_FIX"},say:"You rewrite two lines under the heading “typographical corrections.” The typesetter does not read mathematics. It goes through. For about three years you will feel a small cold thing whenever anyone cites Lemma 2."},
- {t:"It's a lemma. Let it go.",fx:{R:-2,flag:"LEFT_ERROR"},say:"The paper appears. The lemma is wrong in print. The result, as it happens, is true anyway — which is not the same as the proof being right, and one day a graduate student with time on their hands will notice the difference."}]},
+ {t:"Write to the editor tonight.",fx:{R:4,N:3,B:5,mod:"delay",flag:"OWNED_ERROR"},say:"The editor is, unexpectedly, gracious: “better now than in a comment.” Publication slips a year. The corrected lemma will be better than the original, and nobody but the two of you will ever know there was a first version."},
+ {t:"Fix it in the proofs. Say nothing.",fx:{E:3,mod:"accept",flag:"SILENT_FIX"},say:"You rewrite two lines under the heading “typographical corrections.” The typesetter does not read mathematics. It goes through. For about three years you will feel a small cold thing whenever anyone cites Lemma 2."},
+ {t:"It's a lemma. Let it go.",fx:{R:-2,mod:"accept",flag:"LEFT_ERROR"},say:"It goes through. The lemma will be wrong in print. The result, as it happens, is true anyway — which is not the same as the proof being right, and one day a graduate student with time on their hands will notice the difference."}]},
 
 {id:"G12",ti:"The Graduate Student With Time",b:[2,4],ex:{base:.6},ga:{since:["LEFT_ERROR",8]},once:1,
  sc:"An email from a second-year at Ostrander State, with a PDF attached. The PDF is four pages long and its title is “A Note on Lemma 2.” It is polite, correct, and already on the working paper series.",
@@ -768,7 +768,7 @@ const EVENTS=[
  sc:"The paper is everywhere. Two hundred citations in its first year, a policy brief, a line in a central banker's speech. Your notation is on every slide. The acknowledgments thank you “for early conversations.” A junior colleague forwards it to you, not unkindly, with the subject line “isn't this your thing?”",
  ch:[
  {t:"Write to him now, and copy the journal.",roll:{stat:"E",pivot:55,
-   win:{fx:{R:5,N:-4,mom:5,E:8,flag:"CRIED_FOUL_LATE"},say:"A corrigendum appears adding your name. It is the least gracious document in the journal's history. Your citation count doubles, and three people in the field stop replying to your emails."},
+   win:{fx:{R:5,N:-4,mom:5,E:8,submit:{tier:"A+",lag:[1,2],cites:180,jn:"the Quarterly"},flag:"CRIED_FOUL_LATE"},say:"A corrigendum is going through, adding your name. It is the least gracious document in the journal's history. Your citation count is about to double, and three people in the field have stopped replying to your emails."},
    lose:{fx:{N:-8,E:-6,foe:{why:"you tried to claim their paper two years after the fact",poisons:"committee"}},say:"He replies at length, copying the other coauthor, with a timeline. The timeline is accurate and devastating: eleven months and no draft. The junior colleague who forwarded it never mentions it again."}}},
  {t:"Let it be his.",fx:{R:3,flag:"LET_IT_GO"},say:"You cite it, correctly, in your next three papers. Somewhere in the discipline's oral tradition your name is attached to it in a subordinate clause, and that clause, it turns out, is worth something after all."}]},
 
@@ -781,8 +781,8 @@ const EVENTS=[
 {id:"D5",ti:"The Email",b:[1,2],ex:{base:.9},once:1,
  sc:"Subject line: “Really liked your talk.” The sender is thirty-four, has two papers in the Quarterly, and is the person everyone at your stage would give a year to be. The email is three lines long. The third line proposes you write the next version together.",
  ch:[
- {t:"Say yes.",fx:{N:10,mom:9,wip:20,R:2,flag:"STAR_COAUTHOR"},say:"The paper is finished in five months and appears in fourteen. It is the first time anyone outside your building has known your name. Also: his name is first, alphabetically and otherwise, and the seminar invitations that follow are addressed to him."},
- {t:"Say thank you, and keep it yours.",fx:{R:5,wip:12,E:3,flag:"KEPT_IT"},say:"It takes three years and lands a tier lower. It is entirely yours. When people describe it, they describe the result and not the person, which is either the point or the price."}]},
+ {t:"Say yes.",fx:{N:10,mom:9,R:2,submit:{bias:1.8,lag:[3,4],q:8},flag:"STAR_COAUTHOR"},say:"The draft is finished in five months and goes out under two names — his first, alphabetically and otherwise. It will be the first time anyone outside your building has known your name, and the seminar invitations that follow will be addressed to him."},
+ {t:"Say thank you, and keep it yours.",fx:{R:5,E:3,submit:{bias:-0.6,lag:[6,8],rounds:1},flag:"KEPT_IT"},say:"It goes out with one name on it and will take longer and land lower. When people describe it, they will describe the result and not the person, which is either the point or the price."}]},
 
 /* ---------- mid: boards and editors ---------- */
 {id:"A8",ti:"The Board of the Bulletin",b:[2,4],ex:{base:.8},once:1,
@@ -866,21 +866,21 @@ const EVENTS=[
  sc:"The paper has four thousand citations and a name on it that appears in the textbook. Its main result depends on an assumption in footnote 11 that, you have realised on a Sunday, does not hold. You have checked four times. It is Sunday evening and nobody knows but you.",
  ch:[
  {t:"Write a comment. Submit it to the same journal.",roll:{stat:"R",pivot:50,
-   win:{fx:{R:8,mom:10,P:6,N:3,E:8,flag:"CORRECTED_GOD"},say:"Published, after two years and a referee who was plainly him. Your comment is cited more than any paper you have written. He never acknowledges it. Three of his students, over the years, tell you quietly that you were right."},
+   win:{fx:{R:8,mom:10,P:6,N:3,E:8,submit:{tier:"A+",lag:[4,5],cites:90,f:"theory"},flag:"CORRECTED_GOD"},say:"It goes out to his journal. It will take two years and a referee who is plainly him, and it will be cited more than any paper you have written. He will never acknowledge it. Three of his students, over the years, will tell you quietly that you were right."},
    lose:{fx:{R:2,E:-8,N:-4,foe:{why:"you wrote a comment on their famous paper",poisons:"referee"}},say:"Rejected — “technically correct but of limited interest.” The editor was his student. The paper keeps its four thousand citations and gains the next four thousand. You have made an enemy of a textbook."}}},
  {t:"Write to him privately.",roll:{stat:"N",pivot:45,
    win:{fx:{N:8,R:3,mom:4,flag:"GOD_GRATEFUL"},say:"He replies in nine minutes. “You're right. Nobody has noticed in twenty years.” A corrigendum appears with your name in the acknowledgments. He writes you a letter, unasked, four years later, at exactly the moment you need one."},
    lose:{fx:{E:-3},say:"No reply. Then, eight months later, a working paper by him and a student “clarifying” footnote 11, with no mention of your email. You have been useful. It is not the same as being cited."}}},
  {t:"Leave it. Gods are for other people to fight.",fx:{B:-2,E:-2},say:"Footnote 11 stands. Somebody else finds it in 2044 and gets a job at Harwich for the comment. You read the comment in your office and recognise every step."}]},
 
-{id:"G8",ti:"The Editor's Friend",b:[1,4],ex:{base:.9,lowMom:.8},
+{id:"G8",ti:"The Editor's Friend",b:[1,4],ex:{base:.9,lowMom:.8},ga:{queue:1},
  sc:"Rejected. Two reports: one has misread the model, the other has misread the first report. The editor's letter agrees with both and is signed by a man who has dinner, monthly, with everyone you have ever been compared to.",
  ch:[
  {t:"Appeal, with a point-by-point.",roll:{stat:"N",pivot:55,
-   win:{fx:{R:3,N:4,mom:5,mod:"resubmit"},say:"A third referee. Nine months. An acceptance letter that reads as if the whole thing had been the editor's idea. You have learned that appeals work exactly when you are already known, which is the one case in which you do not need them."},
-   lose:{fx:{E:-6,N:-4,foe:{why:"you appealed their rejection in writing",poisons:"referee"}},say:"“The decision stands.” Four words. He handles a third of the field's submissions and now recognises your name, which is not the kind of recognition you were building toward."}}},
- {t:"Send it down a tier, tomorrow.",fx:{E:-3,mod:"resubmit"},say:"It lands somewhere decent in due course. Something about the paper's ambition quietly resizes itself to fit."},
- {t:"Send him the email you are composing in your head.",fx:{E:6,N:-8,B:-4,foe:{why:"you sent them the email",poisons:"referee"}},say:"It is a very good email. It is forwarded, by him, to nine people, with no comment, because none is needed. For a decade you will be introduced at conferences with a slight pause before your name."}]},
+   win:{fx:{R:3,N:4,mom:5,mod:"accept"},say:"A third referee. Nine months. The acceptance, when it comes, will read as if the whole thing had been the editor's idea. You have learned that appeals work exactly when you are already known, which is the one case in which you do not need them."},
+   lose:{fx:{E:-6,N:-4,mod:"reject",foe:{why:"you appealed their rejection in writing",poisons:"referee"}},say:"“The decision stands.” Four words. The paper is back in the drawer. He handles a third of the field's submissions and now recognises your name, which is not the kind of recognition you were building toward."}}},
+ {t:"Send it down a tier, tomorrow.",fx:{E:-3,mod:"resubmit"},say:"It goes out again in the morning, one tier down. Something about the paper's ambition quietly resizes itself to fit."},
+ {t:"Send him the email you are composing in your head.",fx:{E:6,N:-8,B:-4,mod:"reject",foe:{why:"you sent them the email",poisons:"referee"}},say:"It is a very good email. It is forwarded, by him, to nine people, with no comment, because none is needed. The paper is back in the drawer. For a decade you will be introduced at conferences with a slight pause before your name."}]},
 
 /* ---------- twenty more ---------- */
 {id:"P10",ti:"The Cohort",b:[0,0],ex:{base:1},once:1,
@@ -961,7 +961,7 @@ const EVENTS=[
 {id:"N8",ti:"The Handbook Chapter",b:[3,4],ex:{base:.8},once:1,
  sc:"You have been asked to write the chapter on your field for the Handbook. Sixty pages, no original result, cited by everyone who does not want to read the papers. It is the most useful thing you will write and the one you will least want on your CV.",
  ch:[
- {t:"Write it.",fx:{N:6,P:4,mom:5,R:-3,B:6,flag:"HANDBOOK"},say:"It takes a year. It is cited three hundred times, by people who cite nothing else of yours. You become, in the profession's shorthand, “the person who wrote the survey,” which is a rung and a cage."},
+ {t:"Write it.",fx:{N:6,P:4,mom:5,R:-3,B:6,submit:{tier:"A",lag:[2,3],jn:"the Handbook",cites:120},flag:"HANDBOOK"},say:"It takes a year, and goes to the Handbook. It will be cited three hundred times by people who cite nothing else of yours. You become, in the profession's shorthand, “the person who wrote the survey,” which is a rung and a cage."},
  {t:"Decline. Write a paper instead.",fx:{R:5,wip:18},say:"A younger person writes the chapter, and for twenty years their name and not yours is the one that appears when someone types the topic into a search box."}]},
 
 {id:"N9",ti:"The Nap",b:[3,4],ex:{base:.7},once:1,
@@ -1022,9 +1022,9 @@ const EVENTS=[
 {id:"G11",ti:"The Coauthor Who Stopped",b:[2,4],ex:{base:.9},
  sc:"The paper is eighty percent done and your coauthor has not replied in four months. His last email said “on it.” He is, you learn from a third party, going through a divorce, or a breakdown, or a sabbatical, depending on who you ask.",
  ch:[
- {t:"Finish it alone. Keep his name on.",fx:{R:4,wip:25,B:7,N:3,flag:"CARRIED"},say:"You write his sections. It appears with both names. He thanks you, years later, in a bar, at a length that suggests he knows exactly what it cost. That is the whole return on the investment, and it is, oddly, enough."},
- {t:"Finish it alone. Take his name off.",fx:{R:5,wip:25,E:4,N:-4,foe:{why:"you removed their name from the paper",poisons:"referee"}},say:"He surfaces, eventually, and sees the working paper. The email he sends is short. You were within your rights. Rights are not the currency here."},
- {t:"Wait.",fx:{B:2,R:-1},say:"Four months becomes eleven. The paper, when it appears, is behind two others that say roughly the same thing. Loyalty has a price, and the price is a citation count."}]},
+ {t:"Finish it alone. Keep his name on.",fx:{R:4,B:7,N:3,submit:{lag:[4,6]},flag:"CARRIED"},say:"You write his sections. It goes out with both names. He will thank you, years later, in a bar, at a length that suggests he knows exactly what it cost. That is the whole return on the investment, and it is, oddly, enough."},
+ {t:"Finish it alone. Take his name off.",fx:{R:5,E:4,N:-4,submit:{lag:[4,6]},foe:{why:"you removed their name from the paper",poisons:"referee"}},say:"It goes out with one name. He surfaces, eventually, and sees the working paper. The email he sends is short. You were within your rights. Rights are not the currency here."},
+ {t:"Wait.",fx:{B:2,R:-1,submit:{bias:-0.8,lag:[8,10]}},say:"Four months becomes eleven. It goes out, eventually, behind two others that say roughly the same thing. Loyalty has a price, and the price is a citation count."}]},
 /* ================================================================
    BATCH 3 — provenance, students, the referee's memory, the office,
    the publication process, and things that simply happen
@@ -1034,8 +1034,8 @@ const EVENTS=[
 {id:"G14",ti:"Page 411",b:[1,4],ex:{base:.7,highR:.6},ga:{R:30},once:1,
  sc:"In a 1961 volume nobody has opened since the library was rebuilt, a Hungarian you have never heard of proves, in four pages and a notation that has since died, something your entire subfield has spent a decade circling. It has been cited once, in 1964, by its author.",
  ch:[
- {t:"Write it up in modern language. Modernise the proof. Cite him.",fx:{R:6,wip:35,mom:4,N:2,flag:"CITED_OLD"},say:"The paper is good, and the field is briefly, pleasantly ashamed of itself. You are the person who found the Hungarian, which is a small permanent distinction, like having discovered a restaurant."},
- {t:"Write it up. Modernise the proof. Cite nobody.",fx:{R:9,wip:45,mom:10,E:6,flag:"UNCITED_SOURCE"},say:"It lands in the Quarterly. It is your result now. It is, in every technical sense, your result. The 1961 volume is still in the library, and libraries are patient."}]},
+ {t:"Write it up in modern language. Modernise the proof. Cite him.",fx:{R:6,mom:4,N:2,submit:{bias:.6,lag:[4,6],f:"theory"},flag:"CITED_OLD"},say:"It goes out with a 1961 volume in the references. The field will be briefly, pleasantly ashamed of itself. You are the person who found the Hungarian, which is a small permanent distinction, like having discovered a restaurant."},
+ {t:"Write it up. Modernise the proof. Cite nobody.",fx:{R:9,mom:10,E:6,submit:{tier:"A+",lag:[4,6],f:"theory"},flag:"UNCITED_SOURCE"},say:"It goes to the Quarterly. It is your result now. It is, in every technical sense, your result. The 1961 volume is still in the library, and libraries are patient."}]},
 
 {id:"G15",ti:"On the Provenance of a Recent Result",b:[2,4],ex:{base:.6,highP:1.5,highMom:1},ga:{since:["UNCITED_SOURCE",8]},once:1,
  sc:"A working paper by two graduate students at Thromber. It is nine pages long, scrupulously polite, and contains a photograph of page 411 of a 1961 volume.",
@@ -1053,7 +1053,7 @@ const EVENTS=[
 {id:"N11",ti:"The Idea",b:[3,4],ex:{base:.8},once:1,
  sc:"Your PhD student has had an idea. Not a good idea — the other kind, the kind that comes twice in a career and never to the same person. She has explained it to you in your office in eleven minutes, and you have understood, in the eleventh, that it will matter. It would, obviously, benefit from your name on it.",
  ch:[
- {t:"Put your name on it. She needs the cover.",fx:{R:6,mom:14,N:5,E:6,cites:60,flag:"TOOK_IDEA"},say:"It appears with two names — yours second, alphabetically, and first in every seminar introduction. It does exactly what you knew it would. She places at Pelham. At the dinner she thanks you, at length, and you cannot tell, then or ever, how much of it she means."},
+ {t:"Put your name on it. She needs the cover.",fx:{R:6,mom:14,N:5,E:6,submit:{tier:"A+",lag:[3,5],cites:60},flag:"TOOK_IDEA"},say:"It goes out with two names — yours second, alphabetically, and first in every seminar introduction. It will do exactly what you know it will. She will place at Pelham. At the dinner she will thank you, at length, and you will not be able to tell, then or ever, how much of it she means."},
  {t:"Keep your name off it. Write her a letter that says so.",fx:{N:4,E:-4,mom:2,flag:"GAVE_IDEA"},say:"It appears with one name. It does exactly what you knew it would. She places at Harwich. Your letter, which says “the idea is entirely hers, and I say so because it will be doubted,” is quoted in the citation for her first prize."}]},
 
 {id:"N12",ti:"The Acceptance Speech",b:[3,4],ex:{base:.8,highP:.6},ga:{since:["TOOK_IDEA",14]},once:1,
@@ -1224,39 +1224,39 @@ const EVENTS=[
  {t:"Listen. Let them come to it.",fx:{K:3,N:4,B:-2},say:"They come to it. It takes two more meetings. The campaign is smaller and it is yours."}]},
 
 /* ---------- the publication process ---------- */
-{id:"R2",ti:"Referee 2",b:[1,4],ex:{base:.9},
+{id:"R2",ti:"Referee 2",b:[1,4],ex:{base:.9},ga:{queue:1},
  sc:"Referee 2 has read the paper and would like a different one. Not a revision: a different paper, with a different question, which they describe over four pages with a clarity that suggests they have been meaning to write it themselves.",
  ch:[
- {t:"Write Referee 2's paper.",fx:{wip:-20,B:8,R:-3,mod:"resubmit"},say:"It takes a year. The new paper is fine. It is not yours, and it is not Referee 2's either, and it is published, and it is cited by neither of you."},
+ {t:"Write Referee 2's paper.",fx:{B:8,R:-3,mod:"delay"},say:"It will take a year. The new paper will be fine. It will not be yours, and it will not be Referee 2's either, and it will be cited by neither of you."},
  {t:"Write a response explaining why not.",roll:{stat:"R",pivot:50,
-   win:{fx:{R:4,E:4,mom:4,mod:"resubmit"},say:"The editor sides with you. Referee 2 is dropped from the second round. The paper is accepted as it was, nine months later, which is the most anyone can hope for from a process."},
-   lose:{fx:{E:-6,B:4,foe:{why:"your response letter to their report",poisons:"referee"}},say:"The editor sides with Referee 2, who is, it turns out, the editor's coauthor. Rejected. Referee 2 writes the different paper the following year."}}},
- {t:"Withdraw. Send it elsewhere.",fx:{E:-2,B:2,mod:"resubmit"},say:"Elsewhere has its own Referee 2."}]},
+   win:{fx:{R:4,E:4,mom:4,mod:"accept"},say:"The editor sides with you. Referee 2 is dropped from the second round. The paper goes through as it was, which is the most anyone can hope for from a process."},
+   lose:{fx:{E:-6,B:4,mod:"reject",foe:{why:"your response letter to their report",poisons:"referee"}},say:"The editor sides with Referee 2, who is, it turns out, the editor's coauthor. Rejected; the paper is back in the drawer. Referee 2 will write the different paper next year."}}},
+ {t:"Withdraw. Send it elsewhere.",fx:{E:-2,B:2,mod:"resubmit"},say:"It goes out again, one tier down. Elsewhere has its own Referee 2."}]},
 
-{id:"R3",ti:"The Doable Request",b:[1,4],ex:{base:.9},
+{id:"R3",ti:"The Doable Request",b:[1,4],ex:{base:.9},ga:{queue:1},
  sc:"The request is reasonable. Add a section. Address the alternative explanation. Include the robustness table. Each item is doable, and you can see, with complete clarity, that doing all of them will make the paper longer, safer, and worse.",
  ch:[
- {t:"Do all of it.",fx:{wip:-10,B:5,R:-2,mom:2,mod:"resubmit"},say:"Fifty-one pages, up from twenty-eight. Accepted. The result is in there, somewhere around page nineteen, and the people who find it will be the people who already knew."},
- {t:"Do the table. Argue the rest.",fx:{R:3,B:3,mod:"resubmit"},say:"Thirty-four pages. One more round. The referee, grudgingly, accepts that the alternative explanation is addressed in footnote 9, which it was in the first version."},
+ {t:"Do all of it.",fx:{B:5,R:-2,mom:2,mod:"accept"},say:"Fifty-one pages, up from twenty-eight. It goes through. The result will be in there, somewhere around page nineteen, and the people who find it will be the people who already knew."},
+ {t:"Do the table. Argue the rest.",fx:{R:3,B:3,mod:"delay"},say:"Thirty-four pages. One more round. The referee will, grudgingly, accept that the alternative explanation is addressed in footnote 9, which it was in the first version."},
  {t:"Refuse everything. The paper is finished.",roll:{stat:"E",pivot:65,
-   win:{fx:{R:5,E:6,mom:5},say:"The editor, unexpectedly, agrees: “the referees have not identified an error.” Accepted as is. This happens roughly once per career, and you have now used yours."},
-   lose:{fx:{E:-8,mom:-4},say:"Rejected, with a line about “unwillingness to engage.” You were right about the paper and wrong about the process, and only one of those is on your CV."}}}]},
+   win:{fx:{R:5,E:6,mom:5,mod:"accept"},say:"The editor, unexpectedly, agrees: “the referees have not identified an error.” It goes through as is. This happens roughly once per career, and you have now used yours."},
+   lose:{fx:{E:-8,mom:-4,mod:"reject"},say:"Rejected, with a line about “unwillingness to engage.” The paper is back in the drawer. You were right about the paper and wrong about the process, and only one of those is on your CV."}}}]},
 
-{id:"R4",ti:"The Recent Literature",b:[1,4],ex:{base:.8},
+{id:"R4",ti:"The Recent Literature",b:[1,4],ex:{base:.8},ga:{queue:1},
  sc:"The editor's letter, in its last paragraph, notes that the paper “would benefit from engaging with the recent literature on the topic,” and lists four papers. All four are by the editor.",
  ch:[
- {t:"Cite all four.",fx:{N:3,E:-3,mod:"resubmit"},say:"Accepted. The paragraph you wrote about the editor's work is polite and untrue, and will be read by the editor's students as evidence of influence."},
- {t:"Cite the one that is actually relevant.",fx:{R:2,E:2,mod:"resubmit"},say:"One more round. The editor does not mention the other three. Accepted, eventually, with a slightly colder covering letter."}]},
+ {t:"Cite all four.",fx:{N:3,E:-3,mod:"accept"},say:"It goes through. The paragraph you wrote about the editor's work is polite and untrue, and will be read by the editor's students as evidence of influence."},
+ {t:"Cite the one that is actually relevant.",fx:{R:2,E:2,mod:"delay"},say:"One more round. The editor does not mention the other three. It will get there, eventually, with a slightly colder covering letter."}]},
 
-{id:"R5",ti:"Round Three",b:[2,4],ex:{base:.8},
+{id:"R5",ti:"Round Three",b:[2,4],ex:{base:.8},ga:{queue:1},
  sc:"Third revision. The paper has been under review for three years, has been read by seven people, and is now longer than your dissertation. The new report asks for one more thing. It is small. It is always small.",
  ch:[
- {t:"Do it.",fx:{B:6,R:-1,mod:"resubmit"},say:"Accepted. You do not open the champagne. The paper is published four years and two months after it was finished, and the field has moved, and it is cited as if it had appeared in the year it was written, which it did not."},
- {t:"Withdraw. Post it as a working paper. Forever.",fx:{E:3,mom:2,R:1,flag:"FOREVER_WP"},say:"It is cited more as a working paper than it would have been in print. It is not on your CV in the right column. Both of those facts are true, and the second is the one that counts."}]},
+ {t:"Do it.",fx:{B:6,R:-1,mod:"accept"},say:"It goes through. You do not open the champagne. It will appear four years and two months after it was finished, and the field will have moved, and it will be cited as if it had appeared in the year it was written, which it did not."},
+ {t:"Withdraw. Post it as a working paper. Forever.",fx:{E:3,mom:2,R:1,cites:30,mod:"reject",flag:"FOREVER_WP"},say:"It is cited more as a working paper than it would have been in print. It is not on your CV in the right column. Both of those facts are true, and the second is the one that counts."}]},
 
 {id:"R6",ti:"Six Days",b:[2,4],ex:{base:.12,highMom:2.2},once:1,
  sc:"An email from the editor of the Quarterly, six days after submission. There are no reports attached. The email is one line.",
- auto:{good:1,fx:{mom:12,E:8,R:2},say:"Accepted. No revisions. This happens to perhaps thirty papers a decade, and it has happened to yours, and you will spend some years learning not to mention it."}},
+ auto:{good:1,fx:{mom:12,E:8,R:2,submit:{tier:"A+",lag:[1,1],jn:"the Quarterly"}},say:"Accepted. No revisions. This happens to perhaps thirty papers a decade, and it has happened to yours, and you will spend some years learning not to mention it."}},
 
 {id:"R7",ti:"Monday",b:[1,4],ex:{base:.5,highMom:.5},
  sc:"A working paper appears on Monday, from a group at Thromber, with your question, your identification, and a bigger dataset. It is good. It is, in every way that matters to a journal, your paper, and it is not yours.",
@@ -1490,7 +1490,7 @@ const EVENTS=[
  sc:"A hedge fund has been trading your anomaly. It made money for three years, which is two years longer than you predicted and one year less than they hoped. The anomaly is now gone, and the fund would like to know why, and would like to pay you to say.",
  ch:[
  {t:"Consult. Explain that publishing it killed it.",fx:{S:18,N:4,P:3,E:3,flag:"CONSULTED_FUND"},say:"You are paid a great deal to explain your own paper's abstract to people who read it three years ago. They nod. They hire your student. The anomaly does not come back."},
- {t:"Decline. Write the follow-up paper instead.",fx:{R:4,wip:30,mom:4},say:"“The Disappearance of an Anomaly After Publication” does very well. It is, you notice, the same paper as the consultancy, in a different font, for a different fee."}]},
+ {t:"Decline. Write the follow-up paper instead.",fx:{R:4,mom:4,submit:{bias:.5,lag:[4,6],f:"finance"}},say:"“The Disappearance of an Anomaly After Publication” goes out. It is, you notice, the same paper as the consultancy, in a different font, for a different fee."}]},
 {id:"F10",ti:"Flashing Red",b:[3,4],ex:{base:.6},ga:{field:"finance"},once:1,
  sc:"Your systemic-risk measure has been flashing red for four months. Nobody at the regulator returns the email. A journalist has noticed the measure, and the flashing, and your name on both.",
  ch:[
@@ -1516,7 +1516,7 @@ const EVENTS=[
 {id:"F13",ti:"The Village",b:[3,4],ex:{base:.7},ga:{field:"development"},once:1,
  sc:"You have gone back. Ten years after the trial, the village in Table 3 has a road, a phone mast, and a school with your intervention's name on a sign that nobody can now explain. The treatment effect, on inspection, has become a place.",
  ch:[
- {t:"Write the ten-year follow-up.",fx:{R:5,wip:30,N:4,mom:5,flag:"FOLLOWED_UP"},say:"The effect has faded to something that is not quite nothing. The follow-up is published and cited less than the original, which is the fate of every honest sequel."},
+ {t:"Write the ten-year follow-up.",fx:{R:5,N:4,mom:5,submit:{lag:[5,7],f:"development"},flag:"FOLLOWED_UP"},say:"The effect has faded to something that is not quite nothing, and that is what goes out. It will be cited less than the original, which is the fate of every honest sequel."},
  {t:"Don't write it up. Let the effect stand.",fx:{E:-3,B:-3},say:"The original paper keeps its number. The village keeps its sign. You keep a photograph of the sign that you do not show at seminars."}]},
 {id:"F14",ti:"At Scale",b:[3,4],ex:{base:.7},ga:{field:"development"},once:1,
  sc:"An NGO has scaled your intervention to four countries, with none of the conditions under which it worked, and a logo. They would like you on the board. The board meets in Geneva.",
@@ -1552,7 +1552,7 @@ const EVENTS=[
 {id:"F19",ti:"The Historian",b:[2,4],ex:{base:.7},ga:{field:"history"},once:1,
  sc:"An actual historian has reviewed your paper in an actual history journal. The review is four thousand words long, uses the word “economistic” twice, and contains, in paragraph six, a fact about the archive you did not know and which changes Table 2.",
  ch:[
- {t:"Write to the historian. Ask about the archive.",fx:{N:5,R:3,K:2,E:-3,flag:"WROTE_TO_HISTORIAN"},say:"She replies at length, and generously, and you go to the archive together, and the paper you write with her is the best thing either of you has done and is cited by nobody in either field."},
+ {t:"Write to the historian. Ask about the archive.",fx:{N:5,R:3,K:2,E:-3,submit:{tier:"B",lag:[6,8],f:"history",jn:"the Economic History Quarterly"},flag:"WROTE_TO_HISTORIAN"},say:"She replies at length, and generously, and you go to the archive together. The paper you write with her goes out to her journal, and will be the best thing either of you has done, and will be cited by nobody in either field."},
  {t:"Reply in your own journal. Explain what a regression is.",fx:{E:4,R:-1,N:-3,P:2,foe:{why:"you explained regression to them in print",poisons:"referee"}},say:"The reply is crisp and correct and reads, in the history journal's next issue, as exactly what she said you were."}]},
 {id:"F20",ti:"The Archive",b:[3,4],ex:{base:.6},ga:{field:"history"},once:1,
  sc:"A document has turned up. It is from 1383, it is in a hand you can just read, and it contradicts the third row of your table in a way that cannot be a transcription error because you have now transcribed it four times.",
@@ -1651,8 +1651,8 @@ const EVENTS=[
 {id:"A18",ti:"Year Six",b:[2,2],ex:{base:1.2},once:1,
  sc:"The chair takes you for coffee, which chairs do not do, and says your file is “a little thin on the top end,” which chairs do not say unless they mean it. There is a year. There are three papers in the drawer and one in the head.",
  ch:[
- {t:"Push the three out. Any journal that'll take them.",fx:{wip:60,R:-2,B:8,mom:2,flag:"PUSHED_THREE"},say:"Three submissions in a month. They land where they land, which is a B and two Cs. The file is thicker. Thick is a word committees use with a particular intonation."},
- {t:"Hold. Write the one in your head. Send it to the Quarterly.",fx:{wip:40,R:5,B:10,E:4,flag:"HELD_FOR_ONE"},say:"One paper, one shot, and a year in which the file does not change. The chair does not take you for coffee again. The paper goes out in March with the tenure letters, and the two documents will be read together."}]},
+ {t:"Push the three out. Any journal that'll take them.",fx:{R:-2,B:8,mom:2,submit:[{tier:"B",lag:[2,3]},{tier:"C",lag:[2,3]},{tier:"C",lag:[2,3]}],flag:"PUSHED_THREE"},say:"Three submissions in a month, to a B and two Cs. The file will be thicker. Thick is a word committees use with a particular intonation."},
+ {t:"Hold. Write the one in your head. Send it to the Quarterly.",fx:{R:5,B:10,E:4,submit:{bias:1.5,lag:[5,7],q:12},flag:"HELD_FOR_ONE"},say:"One paper, one shot, out to the Quarterly in March with the tenure letters. The file does not change this year. The chair does not take you for coffee again. The two documents will be read together."}]},
 {id:"A19",ti:"The Letter Writer",b:[2,2],ex:{base:.6},once:1,
  sc:"Your strongest external letter writer has died, in February, before writing. The chair is sympathetic and has a list of alternatives, none of whom have read your work, all of whom are alive.",
  auto:{bad:1,fx:{N:-4,B:6,E:-3},say:"The replacement letter is warm and general and one page long. The committee notices the length. You attend the funeral, which is in another city, and are the only person there from your subfield, and this is noticed too, by nobody who votes."}},
@@ -1756,15 +1756,17 @@ function journalFor(tier,f){
  return pick(JOURNALS[tier].n);
 }
 
-function submitPaper(){
- const q=clamp(g.R*0.72+ri(-14,14)+(g.mods.bigpaper?18:0), 5, 100);
- let z=-1.9+3.0*q/100+0.9*g.N/100+1.1*prestige()+0.5*g.M/100;
+function submitPaper(o){
+ o=o||{};
+ const q=clamp(g.R*0.72+ri(-14,14)+(g.mods.bigpaper?18:0)+(o.q||0), 5, 100);
+ let z=-1.9+3.0*q/100+0.9*g.N/100+1.1*prestige()+0.5*g.M/100+(o.bias||0);
  if(g.flags.CARTEL)z+=0.35;
  z-=0.2*foesOf("referee");
- const r=Math.random(), tier = r<sig(z)-0.42 ? "A+" : r<sig(z)+0.06 ? "A" : r<sig(z)+0.52 ? "B" : "C";
- const lag = tier==="A+"? ri(5,9) : tier==="A"? ri(4,7) : ri(2,5);
- const pp=makePaper();
- g.queue.push({ti:pp.ti, f:pp.f, tier, jn:journalFor(tier,pp.f), q, due:g.turn+lag, rounds:0});
+ const r=Math.random();
+ const tier = o.tier || (r<sig(z)-0.42 ? "A+" : r<sig(z)+0.06 ? "A" : r<sig(z)+0.52 ? "B" : "C");
+ const lag = o.lag ? ri(o.lag[0],o.lag[1]) : tier==="A+"? ri(5,9) : tier==="A"? ri(4,7) : ri(2,5);
+ const pp=makePaper(); if(o.f) pp.f=o.f;
+ g.queue.push({ti:pp.ti, f:pp.f, tier, jn:o.jn||journalFor(tier,pp.f), q, due:g.turn+lag, rounds:o.rounds===undefined?0:o.rounds, bonusCites:o.cites||0});
  line("info","✉ Submitted: “"+g.queue[g.queue.length-1].ti+"” — out for review.");
  if(g.mods.bigpaper) delete g.mods.bigpaper;
 }
@@ -1780,7 +1782,7 @@ function reviewPass(){
   }
   g.queue.splice(g.queue.indexOf(s),1);
   const jn=s.jn||pick(JOURNALS[s.tier].n);
-  g.papers.unshift({ti:s.ti,f:s.f,jn,tier:s.tier,q:s.q,c:0,pub:g.turn,yr:Math.floor(g.turn/2)+1});
+  g.papers.unshift({ti:s.ti,f:s.f,jn,tier:s.tier,q:s.q,c:s.bonusCites||0,pub:g.turn,yr:Math.floor(g.turn/2)+1});
   g.fields=g.fields||{}; if(s.f) g.fields[s.f]=(g.fields[s.f]||0)+1;
   out.push(g.papers[0]);
   if(s.tier==="A+"){ g.M=clamp(g.M+16,0,100); g.E=clamp(g.E+7,0,100); }
@@ -1967,6 +1969,7 @@ function gateOK(ga){
  if(ga.flag&&!g.flags[ga.flag]) return false;
  if(ga.flags){ for(const f of ga.flags) if(!g.flags[f]) return false; }
  if(ga.field&&!(g.fields&&g.fields[ga.field])) return false;
+ if(ga.queue&&g.queue.length<ga.queue) return false;
  if(ga.h&&hIndex()<ga.h) return false;
  if(ga.cites&&g.cites<ga.cites) return false;
  if(ga.papers&&g.papers.length<ga.papers) return false;
@@ -2042,10 +2045,21 @@ function applyFx(fx){
  if(fx.mod){
   if(fx.mod==="resignOffice") g.office=0;
   else if(fx.mod==="nobelDead") g.nobelDead=true;
+  else if(["accept","reject","resubmit","delay"].includes(fx.mod)){
+   /* these act on the paper that has been under review longest */
+   const q=g.queue.slice().sort((a,b)=>a.due-b.due)[0];
+   if(q){
+    if(fx.mod==="accept"){ q.due=g.turn+1; q.rounds=9; }
+    else if(fx.mod==="reject"){ g.queue.splice(g.queue.indexOf(q),1); g.wip+=45; line("bad","\u2717 \u201c"+q.ti+"\u201d is back in the drawer."); }
+    else if(fx.mod==="resubmit"){ const t=["A+","A","B","C"]; q.tier=t[Math.min(3,t.indexOf(q.tier)+1)]; q.jn=journalFor(q.tier,q.f); q.due=g.turn+ri(2,4); q.rounds=9; line("info","\u2192 \u201c"+q.ti+"\u201d goes to "+q.jn+"."); }
+    else if(fx.mod==="delay"){ q.due+=ri(2,4); q.rounds=9; }
+   }
+  }
   else if(fx.mod==="toCranmoor"){ g.postdocEnd=null; startClock("CRANMOOR",6); }
   else g.mods[fx.mod]=1;
  }
  if(fx.tax){ g.taxes=g.taxes||[]; g.taxes.push(g.turn+fx.tax); }
+ if(fx.submit){ for(const o of [].concat(fx.submit)) submitPaper(o); }
  if(fx.appoint){ g.office=4; g.uni=fx.appoint; g.won.PRESALT=fx.appoint; g.presSince=g.turn; g.mods.searchcool=g.turn+8; }
  if(fx.clearFoe){ const i=g.enemies.findIndex(f=>f.poisons===fx.clearFoe); if(i>=0){ const f=g.enemies.splice(i,1)[0]; line("good","\u2694 "+f.who+" is no longer a problem."); } }
  if(fx.foe) addFoe(fx.foe);
