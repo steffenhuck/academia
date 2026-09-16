@@ -2725,7 +2725,7 @@ function card(o){
  if(!o.append) $("cardslot").innerHTML="";
  else if($("cardslot").children.length) el.dataset.scroll=1;
  $("cardslot").appendChild(el);
- if(el.dataset.scroll) el.scrollIntoView({behavior:"smooth",block:"start"});
+ if(el.dataset.scroll&&el.scrollIntoView) el.scrollIntoView({behavior:"smooth",block:"start"});
 
  el.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>{
   const c=o.ch[+b.dataset.c];
