@@ -72,6 +72,11 @@ still rank 3 or 4.
   postdoc for a tenure-track line at Cranmoor A&M with a six-year clock
 - `tax:8` — the choice costs one allocation point per term for that many terms
   (editorial boards, co-editorships). Taxes stack; the budget never drops below 3
+- `appoint:"PELHAM"` — makes the player president of that institution outside
+  the search: the exit-upward offer, the Harwich committee choosing you
+- `clearFoe:"search"` — removes one enemy of that kind (serving on the Harwich
+  search and making sure, on the merits)
+- `mod:"nobelDead"` — closes the Nobel for good; presidents are not called
 - `ending:"EXIT"` — ends the career immediately
 
 **`roll`:** `stat` is one of `R` `K` `N` `P` `E`, or `"coin"` for a pure 50/50
@@ -159,6 +164,11 @@ it produces at the end. The ones other events currently gate on:
 | `AFFAIR_JUNIOR` | G19 both adults | G20 through the proper channel — pulled by office and profile |
 | `ASKED_SELF_CITE` / `KILLED_RIVAL` | R1 it doesn't cite you | E3 / E4, once you co-edit and must sign |
 | `BET_STAR` / `BET_FUND` / `BET_GULF` | Q3 / Q5 / Q7 | Q4 / Q6 / Q8, eight terms later, on a coin |
+| `HR_ENABLING` | Q14 head of HR | Q15 enabled, six terms later |
+| `BET_GENIUS` → `GENIUS_LISTED` | Q16 the potential laureate | Q17 the call next door (coin), then Q18 the star's past |
+| `WARNED_HIM` | G24 the spreadsheet | G25 heads up |
+| `WATCHED` | G26 the laureate's hand | G27 the essay, eight terms later |
+| `PROTECTED_STAR` | C7 the most cited member | C8 what the chair knew |
 
 New flags are free — set one with `flag:"WHATEVER"`, gate a later event on it
 with `ga:{flag:"WHATEVER"}`, and add a line to `EPITHETS` if it deserves to be
@@ -173,7 +183,13 @@ When a paper comes out, the term's card *is* the publication — title, journal,
 tier, and a line that depends on the tier. It takes the slot an event would
 have taken. Nothing to write for this; it happens in the engine.
 
-## What exists (120 events)
+## Endings that events can now reach
+
+A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
+G21) gets **The exit upward** — the office, the salary, and a phone that does
+not ring for presidents. The vow is unmet, so the card closes on salary.
+
+## What exists (136 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
@@ -183,8 +199,8 @@ Events *available* at each rank, counting the ones whose band spans it:
 | postdoc (1) | 31 | the second market, being adjacent to power |
 | assistant (2) | 55 | the clock's last two years |
 | associate/full (3–4) | 95–99 | decline, the long plateau, being overtaken |
-| chair / dean / provost | 11 | fundraising, the provost's office specifically |
-| president | 9 | the board as an ongoing relationship, the second term |
+| chair / dean / provost | 12 | fundraising, the provost's office specifically |
+| president | 14 | the board as an ongoing relationship, the second term |
 
 The engine is built for roughly 200. Nothing about adding them is structural —
 it is writing.

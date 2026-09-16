@@ -1249,7 +1249,130 @@ const EVENTS=[
  sc:"One presentation slot in the main session. It is yours. A friend from graduate school, whose market year this is, has a paper that would benefit from it more.",
  ch:[
  {t:"Give her the slot.",fx:{N:7,R:-1,E:-2,flag:"GAVE_SLOT"},say:"She gives the talk. She gets the job at Ostrander, in part because of it. Fifteen years later she is chairing a search, and you are on the list, and she says, out loud, “I owe this one a slot.”"},
- {t:"Keep it.",fx:{R:3,mom:3,N:-2},say:"You give the talk. It is good. She presents in the parallel session to nine people and gets the job anyway, and does not owe you anything, which is a different kind of relationship."}]}
+ {t:"Keep it.",fx:{R:3,mom:3,N:-2},say:"You give the talk. It is good. She presents in the parallel session to nine people and gets the job anyway, and does not owe you anything, which is a different kind of relationship."}]},
+/* ================================================================
+   BATCH 4 — exits, Harwich, oysters, failures, HR, the genius,
+   what everyone saw, and Lund
+   ================================================================ */
+
+/* ---------- the exit upward ---------- */
+{id:"N14",ti:"Fait Accompli",b:[4,4],ex:{base:.5,lowMom:1.6,highK:.8},ga:{K:45,N:40},once:1,tr:"nobel",
+ sc:"Pelham College would like you to apply for its presidency. The word “apply” is doing no work in that sentence: the search firm has explained, over a lunch you did not pay for, that the committee has one name. The salary is a little over four times your current one. Your last paper was three years ago, and you know why.",
+ ch:[
+ {t:"Take it. The research was stalling anyway.",fx:{appoint:"PELHAM",S:210,K:10,N:8,P:6,B:12,mod:"nobelDead",flag:"EXIT_UPWARD"},say:"The inauguration is in October, which is the month the phone would have rung. It does not ring for presidents; everybody knows this, and you knew it when you said yes. The office has a fireplace. The salary is — you check, once, in the first week — real."},
+ {t:"Decline. You are a researcher.",fx:{R:5,mom:6,E:6,N:-3,wip:20,flag:"DECLINED_PRESIDENCY"},say:"You say no to four times your salary in order to remain a person whose papers are not being read. The search firm is baffled. Somewhere, a colleague hears about it and revises an opinion of you upward, which is the only currency you were bidding in."}]},
+
+/* ---------- the Harwich search, from outside ---------- */
+{id:"G21",ti:"The External Member",b:[4,4],ex:{base:.6,highK:1,highN:.8},ga:{K:40,N:45},once:1,
+ sc:"Harwich College is choosing its next president and would like you on the committee as an external member. Nineteen people, four of whom matter; you would be one of the four. The longlist is in the attachment. Two of the names on it are people who have, over the years, made a point of remembering you.",
+ ch:[
+ {t:"Serve. Make sure your enemies don't get it.",fx:{K:8,N:5,E:3,clearFoe:"search",flag:"BLOCKED_AT_HARWICH"},say:"You are scrupulously fair in every meeting and devastating in one of them, about one candidate, on the merits. The candidate is not appointed. Nobody in the room knows the history, and one person guesses, and says nothing, and is now someone who knows something about you."},
+ {t:"Serve honestly. Recuse where you should.",fx:{K:6,N:8,flag:"SERVED_HARWICH"},say:"You recuse from two discussions and say so out loud, which the chair notes with something like surprise. The appointment is a good one. For the rest of your life you are “someone who was on the Harwich search,” which turns out to open doors you had not thought were doors."},
+ {t:"Decline — and put your own name forward.",gate:{K:60},fn(){
+   const p=sig((g.K-82)/12 + 0.9*(g.N-60)/30 + (g.won.PRESALT?0.9:0) - 0.5*foesOf("search"));
+   if(Math.random()<p){
+    if(g.target){ g.won.PRES=1; g.office=4; g.uni="HARWICH"; g.S+=80; pendingNext=()=>end("PRES"); return "The committee, without you on it, chooses you. The search firm says this has never happened and that it will not be mentioning where the idea came from."; }
+    g.office=4; g.uni="HARWICH"; g.won.PRESALT="HARWICH"; g.presSince=g.turn; g.S+=80; g.nobelDead=true;
+    return "The committee, without you on it, chooses you. You are the president of Harwich College, which you did not vow, and the phone from Stockholm does not ring for presidents.";
+   }
+   g.N=clamp(g.N-12,0,100); g.E=clamp(g.E-10,0,100); g.B=clamp(g.B+8,0,100); addFoe({why:"you declined their committee to run against their candidate",poisons:"search"});
+   return "They appoint a sitting president from a larger system. Your withdrawal from the committee is remembered by everyone on it as the moment they understood you, and the understanding is not flattering.";
+ }}]},
+
+/* ---------- oysters ---------- */
+{id:"G22",ti:"Oysters",b:[3,4],ex:{base:.6,highN:.6},ga:{N:35},once:1,
+ sc:"You gave the dinner for the laureate. Oysters, in quantity, from a supplier a colleague recommended. By Tuesday morning, eleven people — the laureate, two deans, your most promising student and you — have the same story, and it is not a story about economics.",
+ ch:[
+ {t:"Email everyone. Apologise. Name the supplier.",fx:{N:2,E:-3,K:1},say:"The email is dignified and specific. The supplier is never used again by anyone in the city. The laureate replies, from a bed, with a single line: “worth it.” You will never know whether he meant the dinner."},
+ {t:"Blame the caterer, publicly, at the next seminar.",fx:{N:-3,E:2,P:-2},say:"The caterer was a colleague's cousin. This was known to everyone but you. The seminar remembers the speech more than the oysters."},
+ {t:"Send everyone a bottle and say nothing.",fx:{N:4,S:-2},say:"Eleven bottles. Nobody mentions Tuesday, ever, which in this profession is the highest form of forgiveness and the most expensive."}]},
+
+/* ---------- the CV of failures ---------- */
+{id:"G23",ti:"The Other CV",b:[3,4],ex:{base:.6,highP:.6},once:1,
+ sc:"A scholar at Bellweather who collects CVs of failures — rejections, lost jobs, the grants that were not funded — has invited you to submit one. They are published, with names. Several people you admire have done it. Several people you do not admire have done it better.",
+ ch:[
+ {t:"Decline.",fx:{},say:"You have a CV. It is the other kind. Nothing happens, which is the point of the other kind."},
+ {t:"File something dreadfully honest.",fx:{P:6,N:5,E:-6,flag:"HONEST_CV"},say:"You write: <em>“2031 — rejected by the Quarterly, the Review, the American and Metrica, in that order, for the same paper, which I still think is my best. 2036 — did not get the Harwich job; the person who did is now my dean. 2039 — told a graduate student her idea was derivative. It was not.”</em> It is read more than your last four papers, and by the graduate student."},
+ {t:"File something funny.",fx:{P:8,E:4,N:2,flag:"FUNNY_CV"},say:"You write: <em>“Failed to become an economist's economist; settled for being an economist. Applied for eleven grants; funded for one; spent it on a conference in a city I can no longer name. Have been described in a referee report as ‘competent,’ which I have had framed.”</em> It is quoted at a dinner in your honour, years later, by someone who thinks you will enjoy it, and you do, mostly."}]},
+
+/* ---------- HR ---------- */
+{id:"Q14",ti:"Head of HR",b:[3,4],ex:{base:1,office:1.5},ga:{office:4},once:1,
+ sc:"Your head of HR has resigned, for reasons everyone describes as personal and one person describes as the provost. The office is, for the first time in the university's history, yours to shape.",
+ ch:[
+ {t:"Turn HR into an enabling body. Say so in an all-staff email.",fx:{K:4,N:6,P:3,flag:"HR_ENABLING"},say:"The email is warm and uses the word “partner” four times. A consultant is hired. A poster is designed. For a year everyone is enabled."},
+ {t:"Hire the hardest compliance lawyer on the market.",fx:{K:7,N:-6,B:-3,flag:"HR_HARD"},say:"She arrives, reads every policy, and rewrites the ones that would lose in court, which is all of them. The faculty describe her as “chilling.” The university's legal bills fall by half, and nobody thanks anyone for money not spent."},
+ {t:"Let the provost sort it.",fx:{K:-2,B:-2},say:"The provost appoints his deputy's friend. It is fine. It is exactly as fine as it was before, and you have missed the one moment when it could have been something else."}]},
+
+{id:"Q15",ti:"Enabled",b:[3,4],ex:{base:1.2},ga:{since:["HR_ENABLING",6]},once:1,
+ sc:"Eighteen months of enabling. HR has approved every request. There are three lawsuits, a department with two chairs and no dean, and a leave policy that an auditor has described as “generous to the point of art.” The consultant has sent a second invoice.",
+ auto:{bad:1,fx:{K:-6,N:-3,B:6,S:-3},say:"You hire the compliance lawyer after all. She reads the poster on her first day and asks, politely, whether it can be taken down."}},
+
+/* ---------- the genius ---------- */
+{id:"Q16",ti:"The Potential Laureate",b:[3,4],ex:{base:1,office:1.5},ga:{office:3},once:1,
+ sc:"The economics department would like to hire X. Everyone who is asked describes X as a future Nobel winner, and several of them mean it. X will cost a chair, a centre, two junior lines, a spousal appointment, and a sum for “transition” that the dean of engineering has already heard about.",
+ ch:[
+ {t:"Go all out. Break the bank.",fx:{K:-4,N:8,P:6,mom:6,S:-4,flag:"BET_GENIUS"},say:"X arrives in September with an entourage and a view. The engineering dean does not attend the reception. The press release uses the word “transformational,” and for once it may be right, and for once that is the risk."},
+ {t:"Support it, knowing the money will kill it.",fx:{K:5,N:4,E:2},say:"You say yes in every meeting and the number says no in the last one. The department blames the number. X goes to Thromber. You are remembered as supportive, which is what you were, in the way that costs nothing."},
+ {t:"Decline. One person is not a strategy.",fx:{K:3,N:-7,E:-2},say:"The department does not forgive you. It is, in a decade, a good department that nobody outside it mentions, and you will not be able to say whether that is because of X or in spite of the money."}]},
+
+{id:"Q17",ti:"The Call, Next Door",b:[3,4],ex:{base:1.3},ga:{since:["BET_GENIUS",8]},once:1,
+ sc:"October. A phone rings in the building — not yours.",
+ ch:[
+ {t:"Go and find out.",roll:{stat:"coin",
+   win:{fx:{P:10,N:8,K:6,mom:10,S:6,flag:"GENIUS_PAID"},say:"X has won it. The press release you wrote four years ago is quoted back to you by three newspapers. The engineering dean sends a note that says only “fine.” The bank you broke is, it turns out, the kind that pays out."},
+   lose:{fx:{K:-3,P:-6,N:-4,B:6,flag:"GENIUS_LISTED"},say:"The phone was a journalist. A spreadsheet is circulating, with names, and X is on it four times, and the four are dated, and two of them are dated since September."}}}]},
+
+{id:"Q18",ti:"The Star's Past",b:[3,4],ex:{base:1.4},ga:{flag:"GENIUS_LISTED"},once:1,
+ sc:"The spreadsheet is now a newspaper. X has issued a statement through a lawyer. The department is divided in a way that will outlast everyone in it. The board would like to know, by Friday, what you are going to do about the person you paid a centre and two lines for.",
+ ch:[
+ {t:"Suspend X pending investigation.",fx:{K:6,P:-4,N:-6,B:8,flag:"SUSPENDED_STAR"},say:"The investigation takes a year and finds enough. X leaves for a think tank with the settlement and the view. The centre keeps the name for eighteen months, until someone notices, and then it does not."},
+ {t:"Stand by X. Due process.",fx:{K:-8,P:-16,N:-10,B:10,foe:{why:"you stood by X",poisons:"search"},flag:"STOOD_BY"},say:"You say “due process” eleven times in a week. The process, when it is due, finds against X, and the eleven times are quoted in the same article, and your name is in the headline and X's is in the second paragraph."},
+ {t:"Ask X to resign, quietly, with the money.",fx:{K:3,P:-8,N:-4,E:-4},say:"X resigns for “family reasons” with a payment nobody discloses, and reappears at Calderon in the spring. The spreadsheet's authors add a column. The column is headed “where they went,” and your university's name is in it."}]},
+
+/* ---------- what everyone saw ---------- */
+{id:"G24",ti:"The Spreadsheet",b:[3,4],ex:{base:.7},ga:{N:30},once:1,
+ sc:"A spreadsheet is circulating. It has names, and it has yours — not as a subject, as a witness. A colleague you hired, and defended at tenure, is on it three times. You have known him for fifteen years and have, you realise, never once been surprised by anything he did.",
+ ch:[
+ {t:"Go to HR yourself. Today.",fx:{K:4,N:-6,E:-3,foe:{why:"you went to HR about them",poisons:"vote"},flag:"WENT_TO_HR"},say:"The process starts. He is told, within the hour, who started it. The department splits along a line you did not know was there, and you are on the smaller side of it, and the smaller side is right."},
+ {t:"Talk to him first.",roll:{stat:"coin",
+   win:{fx:{N:2,K:-2,E:2},say:"He listens. He is ashamed, or performs it well enough that you cannot tell, and he stops, or is careful, and the spreadsheet does not gain a fourth entry. You will never know what you prevented, or whether you prevented anything."},
+   lose:{fx:{N:-2,E:-2,flag:"WARNED_HIM"},say:"He listens. He thanks you. He deletes things. When the investigation comes, it comes with an email, and the email is yours, and it says “heads up,” and those are the two words the report quotes."}}},
+ {t:"Say nothing. It's a spreadsheet.",fx:{E:-4,B:3,flag:"SAW_LIST"},say:"It is a spreadsheet, and then it is a newspaper, and then it is a hearing, and at the hearing someone asks who knew, and the answer includes a witness column, and the witness column includes you."}]},
+
+{id:"G25",ti:"Heads Up",b:[3,4],ex:{base:1.3},ga:{since:["WARNED_HIM",6]},once:1,
+ sc:"The investigation has your email. Two words.",
+ auto:{bad:1,fx:{K:-8,N:-10,P:-8,E:-6,B:6},say:"You are not the subject of the report. You are on page four, in a paragraph that begins “it is regrettable that,” and page four is the page that gets photographed."}},
+
+{id:"G26",ti:"The Laureate's Hand",b:[3,4],ex:{base:.7},ga:{N:35},once:1,
+ sc:"You are hosting. The laureate — charming, seventy-three, on your committee — puts his hand on the back of your graduate student, low, and leaves it there while he talks. She looks at you. Across a table, with eleven people watching, she looks at you.",
+ ch:[
+ {t:"Say something. Now. At the table.",fx:{N:-6,E:2,K:2,foe:{why:"you corrected them at your own dinner",poisons:"committee"},flag:"SPOKE_UP"},say:"You say his name, once, in a tone. He removes the hand and is gracious for the rest of the evening in a way that costs you a committee. The student says nothing at the time and, years later, at her own dinner, tells the story with your name in it."},
+ {t:"Take her aside afterwards. Apologise for him.",fx:{N:2,E:-3,flag:"APOLOGISED_FOR_HIM"},say:"You apologise for a thing you did not do, on behalf of a man who will not. She is gracious about it, which is worse. You have learned that “afterwards” is the word the profession runs on."},
+ {t:"Look away. He's seventy-three.",fx:{E:-5,B:3,flag:"WATCHED"},say:"You look at the wine. The dinner continues. She leaves early, and finishes her PhD, and does not stay in the field, and there is no single reason for that, and there is this."}]},
+
+{id:"G27",ti:"The Essay",b:[3,4],ex:{base:.8,highP:.8},ga:{since:["WATCHED",8]},once:1,
+ sc:"Your former student has written an essay. It is about a dinner. It does not name the laureate, who is dead. It does not name you. It describes the host, who “looked at the wine,” and the description is very good.",
+ auto:{bad:1,fx:{P:-8,N:-6,E:-8,B:4},say:"Everyone who was at the dinner reads it. Several of them forward it to you, with no comment, which is a comment."}},
+
+{id:"C7",ti:"The Most Cited Member",b:[3,4],ex:{base:1,office:1.4},ga:{office:1},once:1,
+ sc:"A formal complaint has been made against the department's most cited member: three students, one pattern, six years. He brings in a third of the department's grant income and two-thirds of its reputation. You are chair. The complaint is on your desk and so, an hour later, is he.",
+ ch:[
+ {t:"Start the process. Recuse yourself from it.",fx:{K:6,N:-8,B:6,foe:{why:"you started the process against them",poisons:"vote"},flag:"PROCESSED_STAR"},say:"The process runs for a year. He is found to have done what three students said he did. He leaves for Calderon with a chair and his grants, and the department is smaller and, in a way nobody will put on a slide, cleaner."},
+ {t:"Protect him. The department needs him.",fx:{K:-4,N:4,E:-3,flag:"PROTECTED_STAR"},say:"You have a quiet word. He is careful for a while. The grants continue. The three students are given, variously, a different supervisor, a reference, and a reason to leave academia, and each of them remembers exactly who was chair."},
+ {t:"Send it up. The dean's problem.",fx:{K:2,N:-2,B:-2},say:"The dean handles it, which means the dean's office handles it, which means it is handled in the way that office handles things. You have kept your hands clean by not using them."}]},
+
+{id:"C8",ti:"What the Chair Knew",b:[3,4],ex:{base:1.3,highP:1},ga:{since:["PROTECTED_STAR",6]},once:1,
+ sc:"It comes out. It always comes out; the only variable is the year. The report, when it is published, has a section on the department's leadership at the time, and a sentence that begins “the then-chair was informed.”",
+ auto:{bad:1,fx:{K:-10,N:-12,P:-10,E:-8,B:8,mod:"resignOffice"},say:"You are not the subject. You are the sentence. You resign whatever you currently hold, for reasons described as personal, and the description is accepted by everyone who has read the report."}},
+
+/* ---------- Lund ---------- */
+{id:"N15",ti:"Lund",b:[3,4],ex:{base:.7,highMom:1.2},ga:{R:50,N:40},once:1,tr:"nobel",
+ sc:"You have been invited to organise a workshop in Lund, on a theme of your choosing, with a budget that suggests someone in Sweden likes you. Lund is forty minutes from Copenhagen and, by a train you have already looked up, a little over four hours from Stockholm.",
+ ch:[
+ {t:"Pick the hottest theme in the field. It isn't yours.",fx:{N:9,mom:6,R:-2,P:3,flag:"LUND_HOT"},say:"Everybody comes. The workshop is superb and nobody at it is working on your problem. Two people from Stockholm sit at the back on the second day and take notes on the hottest theme in the field, which is not yours, and you organised it for them."},
+ {t:"Pick your theme.",roll:{stat:"R",pivot:62,
+   win:{fx:{mom:16,N:5,R:3,E:5,flag:"LUND_MINE"},say:"Fourteen people, all of whom matter, in a room with good coffee, talking about your problem for two days. Two people from Stockholm sit at the back on the second day. They do not take notes. They do not need to."},
+   lose:{fx:{E:-5,N:-3,mom:-3},say:"Eleven people, two of whom are your students. The two from Stockholm come on the first day and leave after lunch, and you watch the train timetable on your phone in a way you will not admit to."}}}]}
 
 ];
 
@@ -1526,10 +1649,13 @@ function applyFx(fx){
  if(fx.flag) g.flags[fx.flag]=g.turn+1;   /* stamped, so later events can ask how long ago */
  if(fx.mod){
   if(fx.mod==="resignOffice") g.office=0;
+  else if(fx.mod==="nobelDead") g.nobelDead=true;
   else if(fx.mod==="toCranmoor"){ g.postdocEnd=null; startClock("CRANMOOR",6); }
   else g.mods[fx.mod]=1;
  }
  if(fx.tax){ g.taxes=g.taxes||[]; g.taxes.push(g.turn+fx.tax); }
+ if(fx.appoint){ g.office=4; g.uni=fx.appoint; g.won.PRESALT=fx.appoint; g.presSince=g.turn; g.mods.searchcool=g.turn+8; }
+ if(fx.clearFoe){ const i=g.enemies.findIndex(f=>f.poisons===fx.clearFoe); if(i>=0){ const f=g.enemies.splice(i,1)[0]; line("good","\u2694 "+f.who+" is no longer a problem."); } }
  if(fx.foe) addFoe(fx.foe);
  if(fx.ending) end(fx.ending);
 }
@@ -1677,6 +1803,7 @@ const ENDTEXT={
  PRES_MISS:()=>["President of somewhere","You are the president of "+UNIS[g.uni].n+". "+UNIS[g.uni].blurb+" You do the job well, and at the conference in June people introduce you, with complete sincerity and a half-second pause, as a university president."],
  BOTH_HALF_N:()=>["The medal, not the office","You have the prize. The presidency went to a former dean of a medical school with a good manner and no publications, and the board described the appointment as a bold choice. At the alumni dinner you are seated at the head table, and the man in the chair you wanted introduces you, generously, at length."],
  BOTH_HALF_P:()=>["The office, not the medal","You have the office, the endowment, the protests and the board. Stockholm has never in its history called a sitting university president, and you knew that in "+(25+Math.floor((g.turn)/4))+", and you took the office anyway, and you would again."],
+ PRES_INSTEAD:()=>["The exit upward","You ran "+UNIS[g.uni].n+" for the rest of it, and ran it well. The phone from Stockholm rang, in the end, for a colleague; you sent a handwritten note, and meant it, and it took forty minutes to write. The salary was, everyone agreed, remarkable."],
  TENURE_OUT:()=>["Out","The second letter is shorter than the first. There is a period during which you apply for things and a later period during which you do not. The field closes over the gap in about nine months, the way water does."],
  BURNOUT:()=>["What it cost","You stopped, finally, and the stopping was not a decision. "+g.lostYears+" year"+(g.lostYears===1?"":"s")+" went to it. The department was generous in the way institutions are generous: completely, for a while, and then structurally not at all."],
  EXIT:()=>["The other building","The money is roughly four times and the problems are, on inspection, more tractable. At 5 p.m. on a Tuesday you notice you have not thought about a referee report in eleven weeks. On Sunday nights, occasionally, you read something in your old field and find you can no longer quite follow the notation."],
@@ -1794,7 +1921,30 @@ const EPITHETS={
  CAMPAIGN:"asked for a billion without flinching",
  FOREVER_WP:"left one as a working paper, forever",
  FRANKFURT:"spent a year by the river in Frankfurt",
- GAVE_SLOT:"gave up the slot"
+ GAVE_SLOT:"gave up the slot",
+ EXIT_UPWARD:"took Pelham, and the salary was real",
+ DECLINED_PRESIDENCY:"turned down four times the salary to stay unread",
+ BLOCKED_AT_HARWICH:"made sure, at Harwich, on the merits",
+ SERVED_HARWICH:"was on the Harwich search, and recused out loud",
+ HONEST_CV:"filed the honest CV",
+ FUNNY_CV:"had ‘competent’ framed",
+ HR_ENABLING:"made HR an enabling body",
+ HR_HARD:"hired the chilling one",
+ BET_GENIUS:"broke the bank for X",
+ GENIUS_PAID:"and X won it",
+ GENIUS_LISTED:"and X was on the spreadsheet",
+ SUSPENDED_STAR:"suspended X",
+ STOOD_BY:"said due process eleven times",
+ WENT_TO_HR:"went to HR, and was told on within the hour",
+ WARNED_HIM:"sent two words",
+ SAW_LIST:"saw the spreadsheet and said nothing",
+ SPOKE_UP:"said his name, once, in a tone",
+ APOLOGISED_FOR_HIM:"apologised for him",
+ WATCHED:"looked at the wine",
+ PROCESSED_STAR:"started the process against the most cited member",
+ PROTECTED_STAR:"had a quiet word with the most cited member",
+ LUND_HOT:"organised Lund for them",
+ LUND_MINE:"organised Lund, and they did not need notes"
 };
 
 function end(kind){
@@ -2159,6 +2309,7 @@ function runTerm(){
  render();
 }
 function timeUpKind(){
+ if(g.vow==="NOBEL"&&g.won.PRESALT) return "PRES_INSTEAD";
  if(g.vow==="BOTH"){
   if(g.won.NOBEL&&g.won.PRES) return "BOTH";
   if(g.won.NOBEL) return "BOTH_HALF_N";
