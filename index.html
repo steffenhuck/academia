@@ -1937,8 +1937,8 @@ function applyLevers(){
 }
 function passivePass(){
  /* burnout accrues */
- let load = 2.6 + g.rank*0.9 + g.office*1.7 + g.queue.length*0.8;
- if(g.vow==="BOTH") load*=1.35;
+ let load = 2.1 + g.rank*0.8 + g.office*1.5 + g.queue.length*0.6;
+ if(g.vow==="BOTH") load*=1.25;
  if(g.clock!==null) load+=1.6;
  g.B=clamp(g.B+load,0,100);
  /* momentum decays */
@@ -1955,7 +1955,7 @@ function passivePass(){
  /* enemies retire, eventually; so does everyone */
  for(const f of g.enemies.slice()){
   f.since=f.since||g.turn;
-  if(g.turn-f.since>=6 && Math.random()<0.028){
+  if(g.turn-f.since>=6 && Math.random()<0.05){
    g.enemies.splice(g.enemies.indexOf(f),1);
    line("info","\u2694 "+f.who+" has retired, or forgotten, or both.");
   }
@@ -2086,7 +2086,7 @@ function drawEvent(){
    else if((e.tr==="nobel"&&g.vow==="NOBEL")||(e.tr==="pres"&&g.vow==="PRES")) s+=0.85;
    else s-=1.1;
   }
-  if(e.once) s+=0.7;
+  if(e.once) s+=0.3;
 
   s-=1.4*Math.log(1+(g.seen[e.id]||0));
   pool.push([e,Math.exp(s)]);
