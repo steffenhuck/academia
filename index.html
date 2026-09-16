@@ -153,7 +153,8 @@ header.mast .tag{
 .choices button:active:not(:disabled){transform:scale(.99)}
 .choices button:disabled{opacity:.45;cursor:not-allowed}
 .choices button .why{
-  display:block;font-size:11.5px;font-weight:600;color:var(--dim);margin-top:3px;letter-spacing:.02em
+  display:block;font-size:12.5px;font-weight:500;color:var(--dim);
+  margin-top:5px;line-height:1.42;letter-spacing:.01em
 }
 .choices button.risky{border-color:#6B3A44}
 .choices button.risky:hover:not(:disabled){border-color:var(--rose)}
@@ -293,17 +294,28 @@ footer a:hover{color:var(--gold)}
 
 /* ---------- institutions ---------- */
 const UNIS={
- HARWICH  :{n:"Harwich",        p:1.00, note:"est. 1638 · older than the country"},
- THROMBER :{n:"Thromber",       p:0.97, note:"endowed 1889 on a bottle-stopper patent"},
- PELHAM   :{n:"Pelham",         p:0.94, note:"smaller, and insufferable about it"},
- CALDERON :{n:"Calderon",       p:0.91, note:"good weather, bad seminars"},
- CUTHBERTS:{n:"St Cuthbert's",  p:0.89, note:"genuinely medieval · sherry"},
- OSTRANDER:{n:"Ostrander State",p:0.62, note:"a serious department nobody mentions"},
- BELLWEATHER:{n:"Bellweather",  p:0.57, note:"two good macro people and a grudge"},
- FENWICK  :{n:"Fenwick",        p:0.53, note:"the chair has been acting for nine years"},
- BOWHEAD  :{n:"Bowhead State",  p:0.30, note:"enrollment 14,000 · parking ample"},
- VERONA   :{n:"Lake Verona Polytechnic",p:0.24,note:"formerly a teacher training college"},
- CRANMOOR :{n:"Cranmoor A&M",   p:0.27, note:"strong in agronomy"}
+ HARWICH  :{n:"Harwich College",               s:"Harwich",     p:1.00, note:"est. 1638",
+  blurb:"Founded 1638, older than the country, and never once described as up-and-coming."},
+ THROMBER :{n:"Thromber University",           s:"Thromber",    p:0.97, note:"endowed 1889",
+  blurb:"Endowed 1889 on a patent for a bottle stopper. The largest endowment in the world, and nobody has ever found this odd."},
+ PELHAM   :{n:"Pelham College",                s:"Pelham",      p:0.94, note:"smaller, and aware of it",
+  blurb:"Smaller than Harwich and insufferable about it. The faculty club has a dress code and enforces it."},
+ CALDERON :{n:"Calderon University",           s:"Calderon",    p:0.91, note:"good weather",
+  blurb:"Good weather, bad seminars, and three people who are going to win this thing before you do."},
+ CUTHBERTS:{n:"St Cuthbert\u2019s College",       s:"St Cuthbert\u2019s", p:0.89, note:"genuinely medieval",
+  blurb:"Genuinely medieval. There is sherry, and a statute from 1451 that nobody has got round to repealing."},
+ OSTRANDER:{n:"Ostrander State University",    s:"Ostrander",   p:0.62, note:"serious, unmentioned",
+  blurb:"A serious department that nobody outside it mentions and everybody inside it defends."},
+ BELLWEATHER:{n:"Bellweather University",      s:"Bellweather", p:0.57, note:"two good macro people",
+  blurb:"Two good macro people, one grudge of long standing, and a building named after a bank that failed."},
+ FENWICK  :{n:"Fenwick College",               s:"Fenwick",     p:0.53, note:"acting chair, nine years",
+  blurb:"The chair has been acting for nine years and has come to prefer it that way."},
+ BOWHEAD  :{n:"Bowhead State University",      s:"Bowhead",     p:0.30, note:"enrollment 14,000",
+  blurb:"Enrollment fourteen thousand, parking ample, and a football program that cannot be discussed."},
+ VERONA   :{n:"Lake Verona Polytechnic Institute", s:"Lake Verona", p:0.24, note:"formerly a teachers\u2019 college",
+  blurb:"Formerly a teacher training college \u2014 and formerly is doing a great deal of work in that sentence."},
+ CRANMOOR :{n:"Cranmoor A&M University",       s:"Cranmoor",    p:0.27, note:"strong in agronomy",
+  blurb:"Strong in agronomy. Genuinely, unironically strong in agronomy."}
 };
 const TOP=["HARWICH","THROMBER","PELHAM","CALDERON","CUTHBERTS"];
 const MID=["OSTRANDER","BELLWEATHER","FENWICK"];
@@ -388,6 +400,7 @@ const age      = ()=>25+Math.floor(g.turn/2);
 const termName = ()=>(g.turn%2? "Spring":"Fall")+", year "+(Math.floor(g.turn/2)+1);
 const prestige = ()=>g.uni?UNIS[g.uni].p:0.5;
 const uniName  = ()=>g.uni?UNIS[g.uni].n:"—";
+const uniShort = ()=>g.uni?UNIS[g.uni].s:"—";
 const budget   = ()=>5+(g.rank>=4?1:0)+(g.office>=2?1:0);
 const spent    = ()=>Object.values(g.alloc).reduce((a,b)=>a+b,0);
 const aplus    = ()=>g.papers.filter(p=>p.tier==="A+").length;
@@ -974,7 +987,7 @@ function presSearch(){
  const sitting=!!g.won.PRESALT;
  const yrs=Math.max(1,Math.floor((g.turn-(g.presSince||g.turn))/2));
  const tp=UNIS[g.target].p;
- const p = sig(-3.4 + 3.1*g.K/100 + 2.5*g.N/100 + 1.0*g.P/100 + 0.7*g.R/100
+ const p = sig(-7.0 + 3.1*g.K/100 + 2.5*g.N/100 + 1.0*g.P/100 + 0.7*g.R/100
               + 2.2*prestige() + (sitting?2.0:0)
               - 3.4*Math.max(0,tp-prestige())*(sitting?0.5:1)
               + (g.flags.CANDID?-0.2:0.2));
@@ -1076,7 +1089,7 @@ function end(kind){
  const thin=`<div class="final">
   <div class="finalbig">${salaryTxt()}<small>terminal salary</small></div>
   <div class="finalrow">
-   That is the number. The vow was <b>${vowLabel()}</b>, and it was not met, so this is the figure the ledger closes on.<br><br>
+   That is the number. The vow was <b>${vowLabel(true)}</b>, and it was not met, so this is the figure the ledger closes on.<br><br>
    <span style="color:var(--dimmer)">${title()}, ${uniName()} &middot; ${Math.round(g.cites).toLocaleString()} citations &middot; h-index ${hIndex()} &middot; ${g.papers.length} papers &middot; age ${age()}</span>
   </div></div>`;
 
@@ -1102,9 +1115,9 @@ function presInterlude(){
   sc:"They call on a Sunday.<br><br>You vowed both. The office is one of them. The other requires a phone call from Stockholm to a man who now spends eleven hours a day on the endowment, and Stockholm has historically shown very little interest in university presidents.",
   ch:[{t:"Take the office.",fn(){ return "The portrait in the corner office is of a man who owned people. There is a plaque explaining this, added in 2034, which is smaller than the portrait."; }}]});
 }
-function vowLabel(){
+function vowLabel(full){
  if(g.vow==="NOBEL") return "the Nobel";
- const t = g.target ? UNIS[g.target].n : "\u2026";
+ const t = g.target ? (full?UNIS[g.target].n:UNIS[g.target].s) : "\u2026";
  if(g.vow==="PRES") return "the presidency of "+t;
  return "the Nobel and the presidency of "+t;
 }
@@ -1150,7 +1163,7 @@ function needle(){
 
 function render(){
  /* masthead */
- $("vowchip").textContent = g.vow? vowLabel() : "no vow yet";
+ $("vowchip").textContent = g.vow? vowLabel(false) : "no vow yet";
  $("agechip").textContent = "age "+age()+" · "+termName();
  const tc=$("tenurechip");
  if(g.clock!==null){
@@ -1164,7 +1177,7 @@ function render(){
  $("ladder").innerHTML=RANKS.map((r,i)=>
   `<i class="${i<g.rank?"done":i===g.rank?"now":""}" title="${r}"></i>`).join("");
  $("rank").innerHTML="<b>"+title()+"</b>";
- $("place").textContent=g.uni? uniName()+" · "+UNIS[g.uni].note : "";
+ $("place").textContent=g.uni? uniShort()+" · "+UNIS[g.uni].note : "";
 
  /* board */
  $("board").innerHTML =
@@ -1349,7 +1362,7 @@ function runTerm(){
  }
  /* endgame rolls */
  if(octoberPass()){ render(); return; }
- if(presSearchReady() && !(g.mods.searchcool>g.turn) && Math.random()<0.34){ render(); presSearch(); return; }
+ if(presSearchReady() && !(g.mods.searchcool>g.turn) && Math.random()<0.40){ render(); presSearch(); return; }
 
  const e=drawEvent();
  if(e){
@@ -1400,7 +1413,7 @@ function targetStep(){
  card({
   cls:"gold",kicker:"THE VOW",ti:"President of where?",
   sc:"A presidency is not a rank, it is an address. Name the one you mean. You will be measured against this and nothing else.",
-  ch: TOP.map(k=>({t:UNIS[k].n, fn(){ g.target=k; pendingNext=phdStart;
+  ch: TOP.map(k=>({t:UNIS[k].n, why:UNIS[k].blurb, fn(){ g.target=k; pendingNext=phdStart;
     return "Noted. "+UNIS[k].n+" — "+UNIS[k].note+". Everything else will be a near miss."; }}))
  });
 }
@@ -1410,10 +1423,10 @@ function placeStep(){
   cls:"gold",kicker:"THE MARKET",ti:"Two offers",
   sc:"The market has produced exactly two things. A postdoc at <em>"+UNIS[post].n+"</em> — two years, no teaching, no security, and an address that does roughly a third of the work of a career. Or a tenure-track line at <em>"+UNIS[tt].n+"</em> — seven years on the clock, starting now.<br><br>Everyone will tell you there is an obvious answer. They will not agree about which.",
   ch:[
-   {t:"The postdoc at "+UNIS[post].n+".",why:"prestige compounds; the clock waits",fn(){
+   {t:"The postdoc at "+UNIS[post].n+".",why:UNIS[post].blurb+" — two years, and no clock.",fn(){
      g.uni=post; g.rank=1; g.S=58; g.flags.POSTDOC=1; g.postdocEnd=g.turn+4;
      return "Two years in a building where the coffee is bad and the corridor conversations are not. Nobody asks what you teach, because you do not."; }},
-   {t:"The tenure-track line at "+UNIS[tt].n+".",why:"seven years, starting now",fn(){
+   {t:"The tenure-track line at "+UNIS[tt].n+".",why:UNIS[tt].blurb+" — seven years, starting now.",fn(){
      startClock(tt,7);
      return "An office with your name on a card in a slot, which is how they indicate that the name is provisional. The clock starts this September."; }}
   ]
