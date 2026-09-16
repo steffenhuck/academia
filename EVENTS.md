@@ -29,7 +29,8 @@ gating, repeat-suppression, effects and display.
 | `once` | `1` if it should only ever happen once in a career |
 | `tr` | `"nobel"` or `"pres"` — weights it toward that vow, against the other |
 | `sc` | the scene |
-| `ch` | the choices, 1–4 of them |
+| `ch` | the choices, 1–4 of them — **or** `auto` instead, see below |
+| `auto` | `{fx, say, good:1}` or `{fx, say, bad:1}` — an event with no choice. The thing simply happens; the card shows the scene and the outcome together. Use for scoops, policy fights, asbestos, a former student's note |
 
 **Ranks:** `0` PhD student · `1` postdoc · `2` assistant professor · `3` associate
 · `4` full professor. Administrative office is tracked separately, so a dean is
@@ -55,6 +56,9 @@ still rank 3 or 4.
 - `E` `B` — ego, burnout risk (0–100), unscaled
 - `wip` — pages toward the next paper (100 = a submission)
 - `mom` — momentum, the hidden Matthew-effect multiplier
+- `cites:60` — a jolt to one existing paper's citation count (a policy fight, a
+  textbook box, a student who cites you in everything). Does nothing if there
+  are no papers yet
 - `flag:"NAME"` — sets a permanent flag; add it to `EPITHETS` to have it appear
   in the ending's *"The field remembers…"* line
 - `foe:1` — makes an enemy, with a generated name, grudge and what they poison
@@ -70,8 +74,11 @@ still rank 3 or 4.
   (editorial boards, co-editorships). Taxes stack; the budget never drops below 3
 - `ending:"EXIT"` — ends the career immediately
 
-**`roll`:** `stat` is one of `R` `K` `N` `P` `E`; `pivot` is the value at which
-it's a coin flip (default 50). Ego shifts the odds in your favour, scales the
+**`roll`:** `stat` is one of `R` `K` `N` `P` `E`, or `"coin"` for a pure 50/50
+that no stat can move — use it for the things that really are luck: whether the
+star stays, whether the fund was fraud, whether the brilliant student's draft
+was brilliant. Otherwise `pivot` is the value at which it's a coin flip
+(default 50). Ego shifts the odds in your favour, scales the
 damage when you lose, and can spawn an enemy on a miss — so a gamble is a
 different proposition for an arrogant player.
 
@@ -111,6 +118,7 @@ any time"; the others make an event find the player it belongs to.
 | `tdebt` | teaching has been neglected |
 | `spec` | the player once used the defensible specification |
 | `office` | holds any administrative post |
+| `highE` | ego is high — for the temptations ego makes likelier |
 
 A weight of `1` is a normal pull, `2` a strong one. Every draw also has a
 "quiet term" weight in the pot, so nothing is guaranteed.
@@ -121,8 +129,8 @@ A weight of `1` is a normal pull, `2` a strong one. Every draw also has a
 
 `{R:45}` `{K:50}` `{N:40}` `{P:60}` `{E:70}` `{flag:"SPEC"}` — any combination.
 Also: `{office:1}` (at least department chair; `2` dean, `3` provost, `4`
-president), `{tenured:1}`, and `{since:["FLAG",6]}` — the flag was set at least
-six terms ago. `since` is how a decision comes back years later: the breach
+president), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
+`{since:["FLAG",6]}` — the flag was set at least six terms ago. `since` is how a decision comes back years later: the breach
 you handled quietly becomes the blackmail in `C6`; the postdoc who said nothing
 in `P9` gets `G13` three years on.
 On an event, an unmet gate means it can't fire. On a choice, the button is
@@ -144,6 +152,13 @@ it produces at the end. The ones other events currently gate on:
 | `COEDITOR` | N7 co-editing the Review | E1 the laureate's paper, E2 the glowing report |
 | `QUIET_BREACH` | C5 fixing the breach yourself | C6 the envelope, 4+ terms later |
 | `FIRST_STUDENT` | A10 taking the first student | S7 the student at Harwich, 16+ terms later |
+| `UNCITED_SOURCE` / `CITED_OLD` | G14 page 411 | G15 the provenance paper, or G16 Budapest |
+| `TOOK_IDEA` / `GAVE_IDEA` | N11 the student's idea | N12 / N13 the acceptance speech, 14+ terms later |
+| `CHOSE_SMART` / `CHOSE_DILIGENT` | A15 one place | A16 variance / A17 the floor |
+| `LISBON` | G17 | G18 the second household |
+| `AFFAIR_JUNIOR` | G19 both adults | G20 through the proper channel — pulled by office and profile |
+| `ASKED_SELF_CITE` / `KILLED_RIVAL` | R1 it doesn't cite you | E3 / E4, once you co-edit and must sign |
+| `BET_STAR` / `BET_FUND` / `BET_GULF` | Q3 / Q5 / Q7 | Q4 / Q6 / Q8, eight terms later, on a coin |
 
 New flags are free — set one with `flag:"WHATEVER"`, gate a later event on it
 with `ga:{flag:"WHATEVER"}`, and add a line to `EPITHETS` if it deserves to be
@@ -152,18 +167,24 @@ the system.
 
 ---
 
-## What exists (74 events)
+## Publication is an event
+
+When a paper comes out, the term's card *is* the publication — title, journal,
+tier, and a line that depends on the tier. It takes the slot an event would
+have taken. Nothing to write for this; it happens in the engine.
+
+## What exists (120 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
 | rank | available | still thin on |
 |---|---|---|
-| PhD (0) | 11 | the market itself, the cohort as a group, money |
-| postdoc (1) | 21 | the second market, visiting positions, being adjacent to power |
-| assistant (2) | 36 | the clock's last two years, the first rejection that matters |
-| associate/full (3–4) | 52–56 | decline, the long plateau, being overtaken |
-| chair / dean / provost | 8 | fundraising, the board, the provost's office specifically |
-| president | 1 | almost everything — the office is nearly empty |
+| PhD (0) | 13 | the market itself, the cohort as a group, money |
+| postdoc (1) | 31 | the second market, being adjacent to power |
+| assistant (2) | 55 | the clock's last two years |
+| associate/full (3–4) | 95–99 | decline, the long plateau, being overtaken |
+| chair / dean / provost | 11 | fundraising, the provost's office specifically |
+| president | 9 | the board as an ongoing relationship, the second term |
 
 The engine is built for roughly 200. Nothing about adding them is structural —
 it is writing.
