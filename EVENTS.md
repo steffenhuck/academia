@@ -135,7 +135,14 @@ A weight of `1` is a normal pull, `2` a strong one. Every draw also has a
 `{R:45}` `{K:50}` `{N:40}` `{P:60}` `{E:70}` `{flag:"SPEC"}` — any combination.
 Also: `{office:1}` (at least department chair; `2` dean, `3` provost, `4`
 president), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
-`{since:["FLAG",6]}` — the flag was set at least six terms ago. `since` is how a decision comes back years later: the breach
+`{since:["FLAG",6]}` — the flag was set at least six terms ago.
+
+**Gates on the record:** `{field:"macro"}` — has published at least one paper in
+that field (fields: theory, micro, macro, metrics, finance, labour, development,
+political, behavioural, history); `{h:20}` — h-index; `{cites:2000}`;
+`{papers:3}`. This is how an event can be *about* what the player wrote: the
+central bank adopts the macro model, the historian reviews the history paper,
+the R package with the metrics estimator has a bug. `since` is how a decision comes back years later: the breach
 you handled quietly becomes the blackmail in `C6`; the postdoc who said nothing
 in `P9` gets `G13` three years on.
 On an event, an unmet gate means it can't fire. On a choice, the button is
@@ -165,6 +172,9 @@ it produces at the end. The ones other events currently gate on:
 | `ASKED_SELF_CITE` / `KILLED_RIVAL` | R1 it doesn't cite you | E3 / E4, once you co-edit and must sign |
 | `BET_STAR` / `BET_FUND` / `BET_GULF` | Q3 / Q5 / Q7 | Q4 / Q6 / Q8, eight terms later, on a coin |
 | `HR_ENABLING` | Q14 head of HR | Q15 enabled, six terms later |
+| `ADOPTED_MODEL` | F5 the central bank adopts it | F6 the recession |
+| `CARTEL` | A6 the citation circle | K9 the ring, when a journalist maps it |
+| `ASKED_SELF_CITE` | R1 | K10 the audit, as well as E3 the signature |
 | `BET_GENIUS` → `GENIUS_LISTED` | Q16 the potential laureate | Q17 the call next door (coin), then Q18 the star's past |
 | `WARNED_HIM` | G24 the spreadsheet | G25 heads up |
 | `WATCHED` | G26 the laureate's hand | G27 the essay, eight terms later |
@@ -176,6 +186,13 @@ remembered at the end. Long-fuse consequences are the cheapest good thing in
 the system.
 
 ---
+
+## Papers
+
+A career draws from a hundred handwritten titles, each with a field, without
+replacement; a procedural generator is the reserve. Journals: the top four by
+nickname, four generic A journals plus a field journal for each field, six B,
+five C. An A-tier paper lands in its field journal about 60% of the time.
 
 ## Publication is an event
 
@@ -189,21 +206,23 @@ A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
 G21) gets **The exit upward** — the office, the salary, and a phone that does
 not ring for presidents. The vow is unmet, so the card closes on salary.
 
-## What exists (136 events)
+## What exists (190 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
-| rank | available | still thin on |
-|---|---|---|
-| PhD (0) | 13 | the market itself, the cohort as a group, money |
-| postdoc (1) | 31 | the second market, being adjacent to power |
-| assistant (2) | 55 | the clock's last two years |
-| associate/full (3–4) | 95–99 | decline, the long plateau, being overtaken |
-| chair / dean / provost | 12 | fundraising, the provost's office specifically |
-| president | 14 | the board as an ongoing relationship, the second term |
+| rank | available |
+|---|---|
+| PhD (0) | 18 |
+| postdoc (1) | 36 |
+| assistant (2) | 71 |
+| associate / full (3–4) | ~155 |
+| chair / dean / provost / president (office-gated) | 28 |
+| about a field you published in | 19 — two per field |
+| about citations | 12 |
+| choice-free | 34 |
 
-The engine is built for roughly 200. Nothing about adding them is structural —
-it is writing.
+That is roughly the size the engine was built for. Adding more is still only
+writing.
 
 ---
 
