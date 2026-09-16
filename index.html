@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Discipline</title>
+<meta name="description" content="An academic career, 25 to 65. Declare your vow — the Nobel, a presidency, or both — and spend forty years finding out what the field actually counts.">
+<script data-goatcounter="https://steffenhuck.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14131A; --panel:#1E1D27; --panel2:#262430; --edge:#332F42;
+  --gold:#F0B429; --goldsoft:#7A5C17; --rose:#FF5A6B; --mint:#3ED9A4;
+  --sky:#7BA7FF; --plum:#B98BFF; --chalk:#F4F1E9; --dim:#9A94AC; --dimmer:#6B6579;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ink); color:var(--chalk);
+  font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.5;
+  background-image:radial-gradient(circle at 50% 0%, #201E2B 0%, var(--ink) 60%);
+  background-attachment:fixed;
+  min-height:100%;
+}
+.wrap{max-width:640px;margin:0 auto;padding-block:18px 120px;padding-left:16px;padding-right:16px}
+.disp{font-family:"Fraunces","Iowan Old Style",Georgia,serif}
+.mono{font-family:"Space Mono",ui-monospace,monospace}
+.num{font-variant-numeric:tabular-nums}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+/* ---------- masthead ---------- */
+header.mast{
+  border:2px solid var(--edge); border-radius:18px; background:var(--panel);
+  padding:16px 18px 14px; margin-bottom:14px; position:relative; overflow:hidden;
+}
+header.mast::after{
+  content:""; position:absolute; right:-40px; top:-60px; width:180px; height:180px;
+  border-radius:50%; background:radial-gradient(circle,rgba(240,180,41,.16),transparent 65%);
+}
+header.mast h1{
+  font-family:"Fraunces",Georgia,serif; font-weight:900; font-size:44px; line-height:.92;
+  margin:0; letter-spacing:-.02em; text-wrap:balance;
+}
+header.mast .tag{
+  font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--dim); margin-top:8px;
+}
+.vowbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.vowchip{
+  border:1.5px solid var(--goldsoft); background:rgba(240,180,41,.09); color:var(--gold);
+  border-radius:999px; padding:5px 12px; font-size:12px; font-weight:800;
+  letter-spacing:.06em; text-transform:uppercase;
+}
+.clockchip{
+  border:1.5px solid var(--edge); background:var(--panel2); color:var(--chalk);
+  border-radius:999px; padding:5px 12px; font-size:12px; font-weight:700;
+}
+.clockchip.hot{border-color:var(--rose);color:var(--rose)}
+
+/* ---------- the ladder ---------- */
+.ladder{display:flex;gap:4px;margin:0 0 6px}
+.ladder i{
+  flex:1; height:8px; border-radius:4px; background:#2A2835; border:1px solid #37344A;
+  transition:background .4s,height .3s;
+}
+.ladder i.done{background:var(--goldsoft);border-color:var(--goldsoft)}
+.ladder i.now{background:var(--gold);border-color:var(--gold);height:13px}
+.rankline{
+  font-size:11.5px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--dim); margin:0 0 14px; display:flex; justify-content:space-between; gap:10px;
+}
+.rankline b{color:var(--chalk)}
+
+/* ---------- stat board ---------- */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+@media(max-width:460px){.board{grid-template-columns:repeat(2,1fr)}}
+.tile{
+  background:var(--panel); border:1.5px solid var(--edge); border-radius:14px;
+  padding:9px 10px 10px; min-width:0;
+}
+.tile .lbl{
+  font-size:9.5px; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.tile .v{font-size:27px;font-weight:800;line-height:1.05;margin-top:2px;font-variant-numeric:tabular-nums}
+.tile .track{height:5px;border-radius:3px;background:#2C2937;margin-top:7px;overflow:hidden}
+.tile .track b{display:block;height:100%;border-radius:3px;transition:width .5s}
+.tile.alarm{border-color:var(--rose)}
+.tile.alarm .v{color:var(--rose)}
+.tile.gauge{display:flex;flex-direction:column;justify-content:space-between}
+.needlebox{display:flex;justify-content:center;margin-top:2px}
+.needlebox svg{width:100%;max-width:120px;height:46px}
+.needle{transition:transform 1.1s cubic-bezier(.4,1.5,.5,1);transform-origin:50px 40px}
+
+/* ---------- CV panel ---------- */
+.cv{
+  background:var(--panel); border:1.5px solid var(--edge); border-radius:16px;
+  padding:12px 14px 13px; margin-bottom:12px;
+}
+.cvhead{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.cvbig{font-size:40px;font-weight:800;line-height:.95;color:var(--gold);font-variant-numeric:tabular-nums}
+.cvbig small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.cvsub{font-size:13px;color:var(--dim);font-weight:600}
+.cvsub b{color:var(--chalk)}
+.papers{margin-top:10px;display:flex;flex-direction:column;gap:4px;max-height:132px;overflow-y:auto}
+.papers:empty{display:none}
+.prow{font-family:"Space Mono",monospace;font-size:11.5px;color:var(--dim);display:flex;gap:8px;align-items:baseline}
+.prow .ti{color:var(--chalk);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow .jn{font-style:italic}
+.prow .ct{color:var(--gold);font-weight:700;white-space:nowrap}
+.tierpill{
+  font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;letter-spacing:.06em;
+  border:1px solid currentColor;white-space:nowrap
+}
+.t-Aplus{color:var(--gold)} .t-A{color:var(--mint)} .t-B{color:var(--sky)} .t-C{color:var(--dimmer)}
+.wip{font-family:"Space Mono",monospace;font-size:11.5px;color:var(--dimmer);margin-top:8px}
+
+/* ---------- the card ---------- */
+.card{
+  background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:2px solid var(--edge); border-radius:18px; padding:16px 17px 17px; margin-bottom:12px;
+  animation:rise .45s cubic-bezier(.2,.9,.3,1) both;
+}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .card{animation:none} .needle{transition:none} .tile .track b{transition:none}
+}
+.card.gold{border-color:var(--gold);background:linear-gradient(180deg,#2A2418,var(--panel))}
+.card.grim{border-color:var(--rose)}
+.kicker{
+  font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  display:flex;justify-content:space-between;gap:10px;
+}
+.kicker span:last-child{color:var(--dimmer);letter-spacing:.1em}
+.card h2{
+  font-family:"Fraunces",Georgia,serif; font-weight:900; font-size:29px; line-height:1.03;
+  margin:7px 0 9px; letter-spacing:-.015em; text-wrap:balance;
+}
+.scene{font-size:15.5px;line-height:1.55;color:#DAD5E4}
+.scene em{color:var(--chalk)}
+.choices{display:flex;flex-direction:column;gap:8px;margin-top:13px}
+.choices button{
+  text-align:left; background:#23212E; color:var(--chalk);
+  border:1.5px solid #3D3950; border-radius:12px; padding:11px 13px;
+  font-size:15px; font-weight:700; line-height:1.35; cursor:pointer;
+  transition:border-color .15s,background .15s,transform .06s;
+}
+.choices button:hover:not(:disabled){border-color:var(--gold);background:#2A2534}
+.choices button:active:not(:disabled){transform:scale(.99)}
+.choices button:disabled{opacity:.45;cursor:not-allowed}
+.choices button .why{
+  display:block;font-size:11.5px;font-weight:600;color:var(--dim);margin-top:3px;letter-spacing:.02em
+}
+.choices button.risky{border-color:#6B3A44}
+.choices button.risky:hover:not(:disabled){border-color:var(--rose)}
+.outcome{
+  margin-top:12px;padding-top:11px;border-top:1px dashed #413D55;
+  font-size:14.5px;line-height:1.5;color:var(--mint);font-weight:600;
+}
+.outcome.bad{color:var(--rose)}
+.deltas{
+  margin-top:8px;font-family:"Space Mono",monospace;font-size:11.5px;color:var(--dim);
+  display:flex;flex-wrap:wrap;gap:4px 10px
+}
+.deltas .up{color:var(--mint)} .deltas .dn{color:var(--rose)}
+
+/* ---------- vote tally ---------- */
+.tally{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0 4px}
+.vote{
+  width:30px;height:38px;border-radius:5px;border:1.5px solid var(--edge);background:#23212E;
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;
+}
+.vote.yes{border-color:var(--mint);color:var(--mint)}
+.vote.no{border-color:var(--rose);color:var(--rose)}
+.votenote{font-size:12.5px;color:var(--dim);margin-top:6px;line-height:1.45}
+.votenote b{color:var(--rose)}
+
+/* ---------- the desk ---------- */
+.desk{
+  background:var(--panel); border:2px solid var(--edge); border-radius:18px;
+  padding:13px 14px 14px; margin-bottom:12px;
+}
+.deskhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.deskhead h3{
+  font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:19px;margin:0;letter-spacing:-.01em
+}
+.pts{font-size:12px;font-weight:700;color:var(--dim);letter-spacing:.04em}
+.pts b{color:var(--gold);font-size:15px}
+.levers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media(max-width:400px){.levers{grid-template-columns:repeat(2,1fr)}}
+.lever{background:#23212E;border:1.5px solid #342F45;border-radius:12px;padding:8px 7px 7px;text-align:center}
+.lever.lit{border-color:var(--gold);background:#2A2418}
+.lever .ln{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.lever.lit .ln{color:var(--gold)}
+.lever .dots{font-size:13px;letter-spacing:2px;color:var(--gold);height:19px;line-height:19px}
+.lever .dots.none{color:#403B52}
+.lever .pm{display:flex;gap:5px;justify-content:center}
+.lever .pm button{
+  width:30px;height:28px;border-radius:8px;border:1.5px solid #3D3950;background:#1B1A24;
+  color:var(--chalk);font-size:16px;font-weight:800;cursor:pointer;line-height:1;
+}
+.lever .pm button:disabled{opacity:.3;cursor:not-allowed}
+.hint{font-size:11.5px;color:var(--dimmer);margin-top:9px;line-height:1.45}
+.go{
+  width:100%;margin-top:11px;padding:14px;border-radius:13px;border:none;cursor:pointer;
+  background:var(--gold);color:#1A1509;font-size:16px;font-weight:800;letter-spacing:.06em;
+  text-transform:uppercase;transition:filter .15s;
+}
+.go:hover:not(:disabled){filter:brightness(1.08)}
+.go:disabled{background:#3A3648;color:var(--dimmer);cursor:not-allowed}
+
+/* ---------- log ---------- */
+#log{display:flex;flex-direction:column;gap:3px;margin-bottom:14px}
+.line{
+  font-family:"Space Mono",monospace;font-size:11.5px;line-height:1.5;color:var(--dim);
+  padding-left:11px;border-left:2px solid #322F42;
+}
+.line.good{color:var(--mint);border-color:var(--mint)}
+.line.bad{color:var(--rose);border-color:var(--rose)}
+.line.gold{color:var(--gold);border-color:var(--gold)}
+
+/* ---------- enemies ---------- */
+.foes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.foes:empty{display:none}
+.foe{
+  font-size:11px;font-weight:700;border:1.5px solid #5B3742;background:rgba(255,90,107,.08);
+  color:#FF8C99;border-radius:999px;padding:4px 10px;
+}
+
+/* ---------- ending ---------- */
+.final{margin-top:13px;padding:13px;border-radius:12px;background:#191823;border:1.5px solid var(--edge)}
+.finalbig{font-size:46px;font-weight:800;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.finalbig small{display:block;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:5px}
+.finalrow{font-family:"Space Mono",monospace;font-size:12px;color:var(--dim);margin-top:11px;line-height:1.7}
+.finalrow b{color:var(--chalk)}
+.remembers{font-size:13.5px;color:var(--dim);font-style:italic;margin-top:11px;line-height:1.5}
+
+/* ---------- footer ---------- */
+footer{text-align:center;padding:6px 0 4px}
+footer a{color:var(--dimmer);font-style:italic;font-size:14px;text-decoration:none}
+footer a:hover{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <h1>The Discipline</h1>
+  <div class="tag">an academic career &middot; 25 to 65</div>
+  <div class="vowbar">
+    <span class="vowchip" id="vowchip">no vow yet</span>
+    <span class="clockchip" id="agechip">age 25</span>
+    <span class="clockchip" id="tenurechip" hidden>tenure clock</span>
+  </div>
+</header>
+
+<div class="ladder" id="ladder"></div>
+<div class="rankline"><span id="rank">&mdash;</span><span id="place"></span></div>
+
+<div class="board" id="board"></div>
+<div class="foes" id="foes"></div>
+
+<div class="cv" id="cv"></div>
+
+<div id="cardslot"></div>
+
+<div class="desk" id="desk" hidden>
+  <div class="deskhead">
+    <h3>The term ahead</h3>
+    <div class="pts">points left <b id="left">5</b></div>
+  </div>
+  <div class="levers" id="levers"></div>
+  <div class="hint" id="hint"></div>
+  <button class="go" id="go">Run the term</button>
+</div>
+
+<div id="log"></div>
+
+<footer><a href="https://steffenhuck.github.io">steffen huck</a></footer>
+</div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   THE DISCIPLINE — v0 engine
+   80 turns = 2 terms x 40 years, age 25 to 65.
+   ============================================================ */
+
+/* ---------- institutions ---------- */
+const UNIS={
+ HARWICH  :{n:"Harwich",        p:1.00, note:"est. 1638 · older than the country"},
+ THROMBER :{n:"Thromber",       p:0.97, note:"endowed 1889 on a bottle-stopper patent"},
+ PELHAM   :{n:"Pelham",         p:0.94, note:"smaller, and insufferable about it"},
+ CALDERON :{n:"Calderon",       p:0.91, note:"good weather, bad seminars"},
+ CUTHBERTS:{n:"St Cuthbert's",  p:0.89, note:"genuinely medieval · sherry"},
+ OSTRANDER:{n:"Ostrander State",p:0.62, note:"a serious department nobody mentions"},
+ BELLWEATHER:{n:"Bellweather",  p:0.57, note:"two good macro people and a grudge"},
+ FENWICK  :{n:"Fenwick",        p:0.53, note:"the chair has been acting for nine years"},
+ BOWHEAD  :{n:"Bowhead State",  p:0.30, note:"enrollment 14,000 · parking ample"},
+ VERONA   :{n:"Lake Verona Polytechnic",p:0.24,note:"formerly a teacher training college"},
+ CRANMOOR :{n:"Cranmoor A&M",   p:0.27, note:"strong in agronomy"}
+};
+const TOP=["HARWICH","THROMBER","PELHAM","CALDERON","CUTHBERTS"];
+const MID=["OSTRANDER","BELLWEATHER","FENWICK"];
+const LOW=["BOWHEAD","VERONA","CRANMOOR"];
+
+/* ---------- journals ---------- */
+const JOURNALS={
+ "A+":{w:9.0, n:["the Quarterly","Metrica","the Review","the American"]},
+ "A" :{w:3.6, n:["the Journal of Economic Theory and Practice","the Economic Journal of the Midwest"]},
+ "B" :{w:1.4, n:["Regional Science and Public Choice","the Bulletin of Applied Economics"]},
+ "C" :{w:0.4, n:["the Journal of Applied Modelling","the International Journal of Economics and Business Research"]}
+};
+
+/* ---------- paper titles ---------- */
+const T1=["Cheap Talk with","Optimal Taxation under","Learning and Forgetting in","Strategic Delay in",
+ "Identification of","A Note on","Reputation and","Dynamic Inconsistency in","Robust Inference for",
+ "Information Design in","The Welfare Cost of","Herding in","Commitment and","Bounded Rationality in",
+ "Costly Signalling in","Matching under","Contagion in","Time Preference and","The Political Economy of"];
+const T2=["Costly Listening","Heterogeneous Regret","Thin Markets","Committee Voting","Peer Effects",
+ "Search Frictions","Sticky Prices","the Labour Share","Repeated Games","Public Goods Provision",
+ "Sovereign Default","Networks","Second-Price Auctions","Household Portfolios","the Phillips Curve",
+ "Intergenerational Mobility","Mechanism Design","Incomplete Contracts","Rational Inattention"];
+const T3=["","","","",": Evidence from Denmark",": Evidence from a Field Experiment",": A Structural Approach",
+ " Revisited",": Theory and Evidence",": A Reassessment",": Evidence from Administrative Data",
+ ": A Comment"];
+
+/* ---------- people (for enemies) ---------- */
+const FIRST=["Anneke","Gerhard","Priya","Tomas","Marguerite","Dov","Linnea","Rafael","Hyun-woo",
+ "Beatrix","Callum","Ingrid","Emeka","Sylvie","Bertram","Noor","Lars","Cecilia"];
+const LAST=["Vandermeer","Ostrowski","Balakrishnan","Feld","Auerbach","Nkemdirim","Halvorsen","Petrucci",
+ "Ashworth","Dubois","Reinholt","Sarkisian","Leung","Whitcombe","Maravall","Oyelaran"];
+const GRUDGE=[
+ ["you rewrote their section without asking","referee"],
+ ["your referee report used the word “unserious”","referee"],
+ ["you took the credit at the NBER meeting","committee"],
+ ["you did not cite them, twice","referee"],
+ ["you told a room they had confused correlation with a career","committee"],
+ ["you declined to write their tenure letter","vote"],
+ ["you were charming to their spouse and rude to them","vote"],
+ ["you called their identification strategy “brave” in public","search"],
+ ["you got the job they were shortlisted for","search"],
+ ["you laughed during their job talk","vote"]
+];
+
+/* ---------- levers ---------- */
+const LEVERS=[
+ ["write","Write",  "research strength, and pages toward the next paper"],
+ ["net","Network",  "coauthors, committees, the people who remember your name"],
+ ["pub","Publicize","op-eds, podcasts, the circuit"],
+ ["serv","Service", "institutional know-how — budgets, senates, retreats"],
+ ["teach","Teaching","preparation. Students notice. The system does not."],
+ ["rest","Rest",    "the only thing that lowers burnout"]
+];
+const RANKS=["PhD Student","Postdoc","Assistant Professor","Associate Professor","Professor"];
+const OFFICES=["","Department Chair","Dean","Provost","President"];
+
+const sig=x=>1/(1+Math.exp(-x));
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let g=null, awaiting=false, pendingNext=null;
+
+function newGame(){
+ g={
+  turn:0, rank:0, office:0, uni:null, vow:null, target:null,
+  R:14, K:8, N:10, P:4, S:0, E:35, B:8, M:12, Mshown:12,
+  papers:[], queue:[], wip:0, cites:0,
+  enemies:[], flags:{}, seen:{}, jit:{}, mods:{},
+  clock:null, clockLen:0, tenured:false, denials:0, postdocEnd:null,
+  tdebt:0, shortlists:0, lostYears:0, collapses:0,
+  alloc:{write:0,net:0,pub:0,serv:0,teach:0,rest:0},
+  skip:0, ended:null, nobelDead:false, presDead:false, won:{}
+ };
+ for(const e of EVENTS) g.jit[e.id]=Math.random()*1.1-0.55;
+}
+
+const age      = ()=>25+Math.floor(g.turn/2);
+const termName = ()=>(g.turn%2? "Spring":"Fall")+", year "+(Math.floor(g.turn/2)+1);
+const prestige = ()=>g.uni?UNIS[g.uni].p:0.5;
+const uniName  = ()=>g.uni?UNIS[g.uni].n:"—";
+const budget   = ()=>5+(g.rank>=4?1:0)+(g.office>=2?1:0);
+const spent    = ()=>Object.values(g.alloc).reduce((a,b)=>a+b,0);
+const aplus    = ()=>g.papers.filter(p=>p.tier==="A+").length;
+const title    = ()=>g.office? OFFICES[g.office] : (g.flags.CHAIR? "Distinguished Professor":RANKS[g.rank]);
+
+function hIndex(){
+ const c=g.papers.map(p=>Math.floor(p.c)).sort((a,b)=>b-a);
+ let h=0; for(let i=0;i<c.length;i++) if(c[i]>=i+1) h=i+1;
+ return h;
+}
+function salaryTxt(){ return "$"+Math.round(g.S)+"k"; }
+
+/* ============================================================
+   EVENTS
+   fx keys: R K N P S E B  (deltas) | wip | mom | flag | mod | foe
+   b:[rankLo,rankHi]  ex:{weights}  ga:{gates}  tr:"nobel"|"pres"
+   ============================================================ */
+const EVENTS=[
+
+/* ---------- THE PHD ---------- */
+{id:"P1",ti:"The Advisor",b:[0,0],ex:{base:1},
+ sc:"Your chapter has been with him for eleven weeks. Today he asks, warmly, how the chapter is coming along. There is no indication he is joking, because he is not.",
+ ch:[
+ {t:"Remind him he has it.",fx:{R:2},say:"He finds it under a stack of referee reports, reads the abstract in front of you, and says “yes, this is the obvious thing to do.” It took you seven months to find the obvious thing."},
+ {t:"Write a second chapter instead.",fx:{R:5,wip:22,B:5},say:"The first chapter is never mentioned again by either of you. It appears, four years later, in his survey article, correctly cited, in a footnote."}]},
+
+{id:"P2",ti:"The Question",b:[0,1],ex:{base:1},
+ sc:"Third row, Tuesday seminar. You have a real question — the identification leans on an assumption the speaker slid past in nineteen seconds. You also have, in the same instant, a much showier question you could ask instead.",
+ ch:[
+ {t:"Ask the real one, quietly.",fx:{R:4},say:"The speaker pauses, looks at the slide, and says “that's… a good point.” Nobody else in the room registers it. You are right, which is a private currency."},
+ {t:"Ask the showy one.",roll:{stat:"N",pivot:28,
+   win:{fx:{N:6,E:4},say:"Laughter in the right register. Two people ask your name afterwards. The identification problem remains, unmolested, forever."},
+   lose:{fx:{E:-4},say:"It lands in silence. The speaker answers it in four words. You spend the rest of the seminar composing an email you will not send."}}}]},
+
+{id:"P3",ti:"The Job Market Seminar",b:[0,1],ex:{base:1.3},once:1,
+ sc:"Somebody has to run the job market practice seminar: book the room, chase the candidates, bully the faculty into attending. It is nine hours a week and there is no line for it on any form.",
+ ch:[
+ {t:"Run it.",fx:{K:9,N:6,B:6,flag:"RAN_SEMINAR"},say:"You learn what a department is: a coalition of people who will not attend anything unless emailed three times. You also learn who decides things, which is not who you assumed."},
+ {t:"Decline. Finish the fourth paper.",fx:{R:8,wip:30,N:-3,flag:"ANTISOCIAL"},say:"The fourth paper is good. In the corridor, a phrase attaches itself to you — “not really a colleague” — and it will take about eleven years to fall off."}]},
+
+{id:"P4",ti:"The Generous Coauthor",b:[0,1],ex:{base:1},once:1,
+ sc:"A senior man in the department proposes you write it up together. His contribution so far has been the phrase “have you thought about doing it properly?” His name on it would get it read.",
+ ch:[
+ {t:"Take the deal.",fx:{N:9,R:3,wip:18,flag:"BORROWED"},say:"It goes to a good journal in fourteen months, which is fast, which is the whole point of him. At the conference, people congratulate him on it in front of you. He accepts."},
+ {t:"Write it alone.",fx:{R:7,wip:24,B:4,foe:1},say:"It takes four years and two rejections and it is entirely yours. He does not forget having been declined; nobody in this profession has ever forgotten having been declined."}]},
+
+{id:"P5",ti:"The Referee Report",b:[0,2],ex:{base:.9},
+ sc:"Your advisor has handed you a paper to referee under his name. It is competent, unexciting, and by someone your age at a place slightly better than yours.",
+ ch:[
+ {t:"Write it generously.",fx:{N:4,flag:"GENEROUS"},say:"You suggest two fixes and recommend a minor revision. Years later, at a conference bar, someone says “I think you refereed my first paper. It was the kindest report I ever got.” They are right, and they never stop being pleased about it."},
+ {t:"Be thorough.",fx:{R:3,E:6,foe:1},say:"Eleven pages. The phrase “the author appears unaware” occurs three times. It is all correct. The paper dies, and so, eventually, does the goodwill of someone who will sit on a panel in 2041."}]},
+
+{id:"P6",ti:"The Result That Won't Hold",b:[0,2],ex:{base:.8},once:1,
+ sc:"The coefficient is beautiful in the pilot sample and gone in the full one. There is a specification — defensible, arguably principled — in which it survives.",
+ ch:[
+ {t:"Report the null.",fx:{R:6,flag:"HONEST"},say:"Nobody publishes it. Nobody cites it. Eleven years from now a replication crisis will arrive and you will be one of about six people with nothing to be nervous about."},
+ {t:"Use the defensible specification.",fx:{wip:34,R:2,E:5,flag:"SPEC"},say:"It is defensible. You defend it, for decades, with a slight tightening around the eyes that you are not aware of and everyone else is."}]},
+
+/* ---------- THE MARKET / POSTDOC ---------- */
+{id:"D1",ti:"The Circuit",b:[1,2],ex:{base:1},
+ sc:"Four conferences this term. Your paper is on none of the programs; you would be going to be seen going.",
+ ch:[
+ {t:"Go to all four.",fx:{N:10,P:3,B:9,S:-1},say:"You give the paper eleven times to rooms of decreasing size and increasing importance. By the fourth, three people can describe your result without looking at the slide. That is what a field is."},
+ {t:"Go to one. Write.",fx:{R:6,wip:26,N:2,B:3},say:"The paper gets better. Nobody watches it get better."},
+ {t:"Stay home entirely.",fx:{R:8,wip:34,N:-5,B:-3},say:"Enormously productive. In March someone asks a colleague whether you left the field."}]},
+
+{id:"D2",ti:"The Two-Body Problem",b:[1,3],ex:{base:.8},once:1,
+ sc:"The offer is real and the city is wrong. There is another person involved whose career is also real, and the department's answer to this has historically been a long, sympathetic silence.",
+ ch:[
+ {t:"Push hard for the second position.",roll:{stat:"N",pivot:45,
+   win:{fx:{N:5,S:6,flag:"TWOBODY"},say:"The dean finds money that did not exist until the moment it was needed, which is the only way money is ever found in a university."},
+   lose:{fx:{B:12,E:-6},say:"“We'd love to, but the line isn't there.” The line is never there. You commute for six years and count it as a solved problem because the alternative is counting it as an unsolved one."}}},
+ {t:"Take it anyway and commute.",fx:{B:14,S:4},say:"Sunday nights become a genre of their own."},
+ {t:"Turn it down for the worse place with the right city.",fx:{S:-4,B:-6,flag:"CHOSE_LIFE"},say:"A defensible decision that the profession will price, accurately and permanently, at about fifteen percent of your career."}]},
+
+{id:"D3",ti:"The Working Paper",b:[1,3],ex:{base:.9},
+ sc:"It's finished enough. You can post it now and start the clock on people reading it, or sit on it for a term and make it right.",
+ ch:[
+ {t:"Post it.",fx:{wip:40,P:3,N:3,mom:6},say:"Seventy downloads in a week, which feels like weather. Three of them matter."},
+ {t:"Hold it back and polish.",fx:{R:5,wip:18,B:3},say:"It is genuinely better. In the interval, a group at Calderon posts something adjacent and gets the phrase."}]},
+
+/* ---------- ASSISTANT PROFESSOR ---------- */
+{id:"A1",ti:"The Committee Invitation",b:[2,3],ex:{base:1.1},
+ sc:"The chair would like you on the undergraduate curriculum review. It meets fortnightly. It has met fortnightly since 2009 and has never produced a document.",
+ ch:[
+ {t:"Say yes.",fx:{K:8,N:5,B:5},say:"You discover the budget model by accident — a spreadsheet nobody guards because nobody believes anyone would want it. You want it."},
+ {t:"Say no, citing the clock.",fx:{R:5,wip:16,N:-4},say:"Entirely reasonable and entirely remembered. The clock excuse works exactly once per colleague."}]},
+
+{id:"A2",ti:"The Desk Reject",b:[2,4],ex:{base:1,lowMom:1.2},
+ sc:"Eleven days. The editor's note is four sentences long and two of them are about the journal's space constraints.",
+ ch:[
+ {t:"Send it down a tier tomorrow.",fx:{E:-4,mod:"resubmit"},say:"It lands somewhere decent in due course. Something about the paper's ambition quietly resizes itself to fit."},
+ {t:"Appeal.",roll:{stat:"E",pivot:60,
+   win:{fx:{N:3,mod:"resubmit"},say:"The editor sends it out. It is not accepted, but it is read, and being read by three people who matter is worth more than being published by none who do."},
+   lose:{fx:{E:-8,foe:1},say:"The reply contains the phrase “we receive a great many appeals.” You have made a permanent, unnecessary impression on someone who edits things."}}},
+ {t:"Put it in the drawer and start something better.",fx:{R:6,wip:20,B:4},say:"The drawer is where about forty percent of the field's actual best work lives."}]},
+
+{id:"A3",ti:"The Op-Ed Request",b:[2,4],ex:{base:.7,highP:2},
+ sc:"A mid-tier outlet wants 800 words by Thursday on something adjacent to your dissertation. The fee is $250 and the audience is, in the strict sense, everyone.",
+ ch:[
+ {t:"Write it properly.",fx:{P:9,N:4,R:-2,B:5},say:"It is careful, hedged, and correct. It gets 40,000 readers and one email from a senior colleague reading, in its entirety: “Saw your piece. Interesting to see you branching out.”"},
+ {t:"Phone it in.",fx:{P:7,E:4,flag:"PHONED_IN"},say:"Ninety minutes, three confident claims, one of them beyond your evidence. It does very well. It will be quoted back at you, by someone who dislikes you, at a moment you cannot choose."},
+ {t:"Decline.",say:"Nothing happens. Nothing whatsoever. The integrity is real and mechanically invisible, which is the most accurate thing this game does."}]},
+
+{id:"A4",ti:"Evaluations",b:[2,4],ex:{base:.6,tdebt:2.6},
+ sc:"Your teaching scores have arrived. The mean is 2.1. The free-text comments have been forwarded to the chair by a parent, which is a sentence nobody in this building has heard before.",
+ ch:[
+ {t:"Take the workshop. Fix it.",fx:{K:4,B:5,mod:"teachfix"},say:"You learn, at forty, that you had been lecturing at the whiteboard rather than the room. It costs a term. It is not on any form."},
+ {t:"Point out that your research record is excellent.",fx:{N:-6,E:5,foe:1},say:"The chair agrees with you, on the record, and privately reclassifies you as a problem to be managed rather than a colleague to be promoted."}]},
+
+{id:"A5",ti:"The Counteroffer",b:[2,4],ex:{base:.7,highR:1.4},ga:{R:45},
+ sc:"Bellweather has made an offer. Your chair asks, in the corridor, whether it's “something you're taking seriously,” which is the sound of a man doing arithmetic.",
+ ch:[
+ {t:"Negotiate hard.",roll:{stat:"N",pivot:48,
+   win:{fx:{S:14,N:3,E:6},say:"They match it and add a course release. You have discovered the central fact of academic compensation: it is not paid for work, it is paid for the credible threat of leaving."},
+   lose:{fx:{S:3,foe:1},say:"“We can't match that.” A pause. “But we've found you a parking space in the structure.” You take the parking space. Everyone learns the number you settled for."}}},
+ {t:"Take Bellweather.",fx:{S:11,N:-2,mod:"move"},say:"A real raise and a worse address. The address is the part that compounds."},
+ {t:"Tell them you're not going anywhere.",fx:{N:4,S:-2,flag:"LOYAL"},say:"Loyalty is the one asset in this profession with no market price and no buyer."}]},
+
+{id:"A6",ti:"The Citation Circle",b:[2,4],ex:{base:.8},tr:"nobel",
+ sc:"Four people work on your thing. Over dinner it becomes clear, without anyone saying it, that the four of you could simply agree to cite each other exhaustively for the next fifteen years.",
+ ch:[
+ {t:"Join the circle.",fx:{N:7,mom:9,E:4,flag:"CARTEL"},say:"Nobody signs anything. Nobody needs to. Your citation count begins to behave like a stock in a bull market, which is to say it begins to measure something other than the thing."},
+ {t:"Stay out.",fx:{R:4,flag:"OUTSIDE"},say:"You cite what you use. Over fifteen years the difference between your count and theirs will grow to roughly a factor of three, and the difference in the papers will grow to roughly nothing."}]},
+
+{id:"A7",ti:"The Junior Colleague",b:[2,4],ex:{base:.8},
+ sc:"She is two years in, visibly drowning, and her question after the seminar was better than the paper. She asks if you'd read a draft.",
+ ch:[
+ {t:"Read it properly. Twice.",fx:{B:4,N:3,flag:"MENTOR"},say:"Six pages of comments and an hour in your office. She places at Ostrander, then at Pelham, and in 2049 she is on a committee you have not thought about since Tuesday."},
+ {t:"“Send it over” and skim it.",fx:{R:2},say:"You return three sentences of encouragement. She takes it well, files you accurately, and tells the next cohort where to go and where not to."},
+ {t:"Tell her the clock doesn't care about drafts.",fx:{R:4,E:4,foe:1},say:"It is honest advice. It is also the only thing anyone says to her that year, and she remembers the room, the phrasing, and the date."}]},
+
+/* ---------- SENIOR: ADMINISTRATION ---------- */
+{id:"S1",ti:"The Strategic Plan",b:[3,4],ex:{base:1},tr:"pres",
+ sc:"The dean has commissioned a strategic plan. It has five pillars. The word “excellence” appears in four of them and the fifth is about excellence.",
+ ch:[
+ {t:"Write the section on research excellence.",fx:{K:9,N:5,B:4},say:"You discover that whoever writes the document decides which departments exist in five years. Nobody else has noticed this. You do not point it out."},
+ {t:"Attend and say nothing.",fx:{K:2,B:2},say:"Four hours. A branded notebook. Lunch was good."},
+ {t:"Say out loud that it is meaningless.",fx:{E:7,N:-6,foe:1},say:"It is meaningless, and you are entirely right, and the room agrees with you privately for years, and the dean who wrote it is provost by 2038."}]},
+
+{id:"S2",ti:"The Retreat",b:[3,4],ex:{base:.9},tr:"pres",
+ sc:"Two days at a hotel with a lake. There is a facilitator. There is a flip chart. At 4 p.m. on day one, real decisions begin to be made by whoever is still in the room.",
+ ch:[
+ {t:"Stay in the room.",fx:{K:11,N:6,B:7},say:"By Saturday evening there are six of you, a bottle, and the actual allocation of nine faculty lines. This is the university. Everything else is the website."},
+ {t:"Leave after dinner.",fx:{R:4,B:-3},say:"You get four hours of writing in a hotel room. In the morning the line allocation is presented as having been obvious."}]},
+
+{id:"S3",ti:"The Chair's Office",b:[3,4],ex:{base:.9,highK:1.6},ga:{K:40},tr:"pres",once:1,
+ sc:"They want you to chair the department. Three years. A course release, a small stipend, and the collected grievances of twenty-eight adults with lifetime job security.",
+ ch:[
+ {t:"Take it.",fx:{K:14,N:8,S:5,B:10,mod:"office1"},say:"You learn the budget model, the hiring pipeline, and which four people actually decide things. Your research output falls off a cliff, which everyone notices and nobody mentions."},
+ {t:"Decline — you have a paper.",fx:{R:7,wip:22,N:-5},say:"The paper is good. Someone else learns the budget model."}]},
+
+{id:"S4",ti:"The Hiring Meeting",b:[3,4],ex:{base:1},
+ sc:"Two candidates. One is plainly better and would be visibly, permanently better than three people in the room. The other is fine and would be grateful.",
+ ch:[
+ {t:"Fight for the better one.",fx:{K:5,R:3,N:-3,flag:"GOODHIRE"},say:"You win by one vote after two hours. She arrives, is excellent, and within a decade is the reason anyone outside the building says the department's name."},
+ {t:"Let the room have the grateful one.",fx:{N:6,K:3},say:"Unanimous, quick, and everyone goes to lunch pleased with themselves. The department is imperceptibly worse every year forever, at a rate nobody can attribute to anything."}]},
+
+{id:"S5",ti:"The Board Dinner",b:[3,4],ex:{base:.7,highK:1.4},ga:{K:50},tr:"pres",
+ sc:"A trustee has been seated next to you. He made his money in logistics software and he would like to know, sincerely, what economics has learned in the last thirty years.",
+ ch:[
+ {t:"Tell him honestly.",fx:{K:4,N:3,flag:"CANDID"},say:"You say: a great deal about measurement, much less about prediction than people assume. He listens, genuinely. He does not give the university any money, and he does remember you."},
+ {t:"Tell him what he wants to hear.",fx:{N:8,K:5,E:4,S:2},say:"Incentives, data, evidence-based policy, a phrase about human capital. He is delighted. Eighteen months later there is a building with a name on it, and you are on the committee that chose the name."}]},
+
+/* ---------- SENIOR: RESEARCH / PRIZE ---------- */
+{id:"N1",ti:"The Paper",b:[3,4],ex:{base:.8,highR:2},ga:{R:62},tr:"nobel",once:1,
+ sc:"It has been in your head for two years: the one that would reframe the thing rather than extend it. It is a four-year bet and it fails completely or it doesn't.",
+ ch:[
+ {t:"Clear the desk. Take the bet.",fx:{B:16,R:5,mod:"bigpaper",flag:"THEPAPER"},say:"You cancel two revisions and a keynote. For four years you publish almost nothing and people begin to use the past tense about you at dinner."},
+ {t:"Not this decade.",fx:{wip:30,R:3},say:"You write three good extensions instead. They are cited well. You think about the other thing on aeroplanes."}]},
+
+{id:"N2",ti:"The Editor's Letter",b:[3,4],ex:{base:.8,highMom:2},ga:{N:50},
+ sc:"They want you on the board of one of the four. It is unpaid, it is enormous, and saying the word out loud at dinner parties does something to a room.",
+ ch:[
+ {t:"Accept.",fx:{N:11,mom:10,E:7,B:8,flag:"EDITOR"},say:"You now decide, in part, what the field is. You will handle 140 papers a year and read perhaps forty of them properly, and the other hundred will be decided by people you chose."},
+ {t:"Decline — the time.",fx:{R:6,wip:24},say:"They ask someone else, who is delighted, and who will now be deciding what the field is."}]},
+
+{id:"N3",ti:"The Nomination",b:[3,4],ex:{base:.7,highMom:2.2},ga:{N:45},tr:"nobel",
+ sc:"A prize — not the prize, but a real one — has a nomination window. Someone would have to write the letter. Nobody has offered.",
+ ch:[
+ {t:"Ask a friend to nominate you.",roll:{stat:"E",pivot:52,
+   win:{fx:{mom:16,P:5,E:6,flag:"ASKED"},say:"He writes it gladly and well. You are shortlisted, which is itself a fact that gets reported, and facts that get reported generate further facts."},
+   lose:{fx:{N:-4,E:-6},say:"A long pause on the phone. “Of course — I'd assumed someone already had.” Nobody had, and now two people know you asked."}}},
+ {t:"Wait to be nominated.",fx:{R:3},say:"The window closes. It is won by someone whose friend was less embarrassed than yours."}]},
+
+{id:"N4",ti:"The Festschrift",b:[4,4],ex:{base:.5,highMom:1.6},once:1,
+ sc:"Your students are organising a conference in your honour. There will be a volume. There will be a dinner at which people say true things about you in the past tense while you sit there.",
+ ch:[
+ {t:"Be moved by it.",fx:{N:6,E:5,mom:6,flag:"FEST"},say:"Eleven of them came. Two flew from Seoul. The volume is uneven and the dinner is not, and you find yourself unable to speak for a moment at the end, which everyone politely ignores."},
+ {t:"Suggest it's premature.",fx:{E:8,mom:-4},say:"It goes ahead anyway, a year later, slightly smaller."}]},
+
+{id:"N5",ti:"The Podcast",b:[3,4],ex:{base:.7,highP:1.8},
+ sc:"Three hours, no edit, an audience of 900,000 and a host who has read one of your papers and the Wikipedia page for game theory.",
+ ch:[
+ {t:"Do it.",fx:{P:14,N:5,mom:8,R:-3,B:5},say:"You are lucid for two hours and tired for the third, and it is the third that gets clipped. For eleven years strangers will quote a sentence at you that you would like to revise."},
+ {t:"Decline politely.",fx:{R:3},say:"A colleague does it instead and is, within two years, the economist the country has heard of."}]},
+
+{id:"N6",ti:"The Replication",b:[3,4],ex:{base:.6,spec:2.4},ga:{flag:"SPEC"},once:1,
+ sc:"A team of graduate students, entirely without malice, have re-run everything in your 2031 paper. They have written to you first, which is a courtesy, and they have found what you already knew was there.",
+ ch:[
+ {t:"Post a correction yourself, immediately.",fx:{R:-4,N:5,E:-8,flag:"CORRECTED"},say:"It costs you the paper and, briefly, a great deal of standing. Fifteen years later it is the single thing about you that junior people mention approvingly, and they mention it often."},
+ {t:"Write a robustness appendix defending it.",fx:{E:6,R:-2,foe:1,flag:"DEFENDED"},say:"It is forty pages and it is sufficiently technical that the dispute dies of exhaustion rather than resolution. The paper survives. So does the thing behind your eyes."}]},
+
+/* ---------- GENERAL / LIFE ---------- */
+{id:"G1",ti:"The Grant",b:[1,4],ex:{base:.9},
+ sc:"A major council grant. The application is 60 pages, the success rate is 11%, and the budget justification alone will take a fortnight.",
+ ch:[
+ {t:"Write it.",roll:{stat:"K",pivot:38,
+   win:{fx:{R:6,K:7,N:5,S:3,mom:6,flag:"FUNDED"},say:"Funded. Two postdocs, four years, and a line on the letterhead. Half the value is the money and half is that the committee has now read your name approvingly, which is a different asset entirely."},
+   lose:{fx:{B:8,E:-5},say:"Rejected, with three referee comments totalling ninety words, one of which misspells your surname. The fortnight is gone and unrecoverable."}}},
+ {t:"Skip it and write the paper.",fx:{R:6,wip:26},say:"A defensible allocation that the dean will mention, in aggregate, in a slide about departmental grant income."}]},
+
+{id:"G2",ti:"The Reading Group",b:[0,3],ex:{base:.7},
+ sc:"Six people, Thursday evenings, no credit, no minutes, arguing about a literature none of you work in.",
+ ch:[
+ {t:"Go every week.",fx:{R:5,N:5,B:3,flag:"THURSDAYS"},say:"It is the only room in the building where anyone changes their mind about anything. Two of your best three papers come out of it, and neither will ever cite it."},
+ {t:"Stop going in November.",fx:{B:-4},say:"Thursday evenings return to you. You use them, mostly, to be tired earlier."}]},
+
+{id:"G3",ti:"The Private Sector",b:[2,4],ex:{base:.5,lowS:2},once:1,
+ sc:"A hedge fund would like a conversation. Then a bank. Then, more seriously, a tech company with a research division and an actual interest in your methods. The number they say out loud is roughly four times the number on your payslip.",
+ ch:[
+ {t:"Listen, and stay.",fx:{E:6,S:2,flag:"TEMPTED"},say:"You use it, correctly, as a negotiating fact. You also now know the number, permanently, and it sits next to every committee meeting for the rest of your life."},
+ {t:"Take the consultancy, keep the job.",fx:{S:12,R:-3,N:3,B:6},say:"Two days a month and a great deal of money. The papers slow. Nobody says anything, because most of them are doing it too."},
+ {t:"Leave academia.",fx:{ending:"EXIT"},say:""}]},
+
+{id:"G4",ti:"The Sabbatical",b:[2,4],ex:{base:.8,highB:2.4},
+ sc:"A term. The form asks for a research plan. You have not slept properly since the tenure clock started and the honest research plan is “lie down.”",
+ ch:[
+ {t:"Actually rest.",fx:{B:-30,R:2,E:-3},say:"You read things that are not in your field. In week nine an idea arrives, unbidden, while you are doing something else, which is the only way ideas have ever arrived."},
+ {t:"Use it to write three papers.",fx:{R:9,wip:44,B:4},say:"Three papers. You return exactly as tired as you left, having spent the one instrument the institution gives you for not being tired."}]},
+
+{id:"G5",ti:"The Dinner",b:[1,4],ex:{base:.6},
+ sc:"Your partner asks, not unkindly and not for the first time, whether there is a year in which this gets easier.",
+ ch:[
+ {t:"“After tenure.”",fx:{B:4,E:2},say:"You believe it when you say it. So, for about another three years, do they."},
+ {t:"Say the true thing: no.",fx:{B:-8,N:-2,flag:"TRUTHFUL"},say:"A long silence, and then something that is not quite relief but is adjacent to it. You take Saturdays after that, most weeks, and your output falls by a margin the profession can measure and you cannot feel."}]},
+
+{id:"G6",ti:"The Obituary",b:[3,4],ex:{base:.5},once:1,
+ sc:"Your advisor has died. The department asks you to write the appreciation for the newsletter. You have not spoken to him in nine years, for a reason you would struggle to state out loud.",
+ ch:[
+ {t:"Write it warmly.",fx:{N:4,E:-3,flag:"OBIT"},say:"Eight hundred words, all of them true, none of them complete. His widow writes to thank you. You put the letter in the drawer with the chapter he never read."},
+ {t:"Let someone else do it.",fx:{},say:"Someone does. It is fine. It mentions you, in a list."}]}
+
+];
+
+/* ============================================================
+   PAPERS
+   ============================================================ */
+function makeTitle(){ return pick(T1)+" "+pick(T2)+pick(T3); }
+
+function submitPaper(){
+ const q=clamp(g.R*0.72+ri(-14,14)+(g.mods.bigpaper?18:0), 5, 100);
+ let z=-1.9+3.0*q/100+0.9*g.N/100+1.1*prestige()+0.5*g.M/100;
+ if(g.flags.CARTEL)z+=0.35;
+ const r=Math.random(), tier = r<sig(z)-0.42 ? "A+" : r<sig(z)+0.06 ? "A" : r<sig(z)+0.52 ? "B" : "C";
+ const lag = tier==="A+"? ri(5,9) : tier==="A"? ri(4,7) : ri(2,5);
+ g.queue.push({ti:makeTitle(), tier, q, due:g.turn+lag, rounds:0});
+ line("info","✉ Submitted: “"+g.queue[g.queue.length-1].ti+"” — out for review.");
+ if(g.mods.bigpaper) delete g.mods.bigpaper;
+}
+
+function reviewPass(){
+ for(const s of g.queue.slice()){
+  if(s.due>g.turn) continue;
+  if(s.rounds<1 && Math.random()<0.45){
+   s.rounds++; s.due=g.turn+ri(2,4);
+   line("info","↻ R&R at "+pick(JOURNALS[s.tier].n)+": three referees, one of whom wants a different paper.");
+   continue;
+  }
+  g.queue.splice(g.queue.indexOf(s),1);
+  const jn=pick(JOURNALS[s.tier].n);
+  g.papers.unshift({ti:s.ti,jn,tier:s.tier,q:s.q,c:0,pub:g.turn,yr:Math.floor(g.turn/2)+1});
+  const pill=s.tier==="A+"?"gold":"good";
+  line(pill,"★ Published in "+jn+": “"+s.ti+"”");
+  if(s.tier==="A+"){ g.M=clamp(g.M+16,0,100); g.E=clamp(g.E+7,0,100); }
+  else if(s.tier==="A"){ g.M=clamp(g.M+6,0,100); g.E=clamp(g.E+3,0,100); }
+  else if(s.tier==="C"){ g.E=clamp(g.E-2,0,100); }
+ }
+}
+
+function citationPass(){
+ const matthew = 0.42 + g.N/260 + g.P/320 + g.M/210 + prestige()*0.46 + (g.flags.CARTEL?0.18:0) + (g.flags.EDITOR?0.10:0);
+ let gained=0;
+ for(const p of g.papers){
+  const a=g.turn-p.pub;
+  const decay = a<2 ? 0.55 : a<20 ? 1 : Math.max(0.22, 1-(a-20)*0.045);
+  const inc = JOURNALS[p.tier].w * (0.32+0.68*p.q/100) * matthew * decay * (0.65+Math.random()*0.7);
+  p.c+=inc; gained+=inc;
+ }
+ g.cites=g.papers.reduce((a,p)=>a+p.c,0);
+ if(gained>=6) line("info","↗ Citations +"+Math.round(gained)+" this term.");
+}
+
+/* ============================================================
+   TURN RESOLUTION
+   ============================================================ */
+function applyLevers(){
+ const a=g.alloc;
+ if(a.write){
+  const gain=a.write*(3.1+2.2*(1-g.R/120))*(g.office?0.55:1);
+  g.R=clamp(g.R+gain,0,100);
+  g.wip+=a.write*(9+g.R/9);
+  line("good","✎ Write: research strength +"+gain.toFixed(1)+(g.office?" (the office takes its cut)":""));
+ }
+ if(a.net){ g.N=clamp(g.N+a.net*3.4,0,100); line("good","☎ Network: +"+(a.net*3.4).toFixed(0)); }
+ if(a.pub){
+  g.P=clamp(g.P+a.pub*4.2,0,100); g.N=clamp(g.N+a.pub*1.3,0,100);
+  line("good","◉ Publicize: public profile +"+(a.pub*4.2).toFixed(0)+", network +"+(a.pub*1.3).toFixed(1));
+ }
+ if(a.serv){ g.K=clamp(g.K+a.serv*3.6,0,100); line("good","⚑ Service: know-how +"+(a.serv*3.6).toFixed(0)); }
+ if(a.teach){
+  g.tdebt=Math.max(0,g.tdebt-a.teach*2);
+  g.K=clamp(g.K+a.teach*0.4,0,100);
+  line("info","▤ Teaching: prepared. Know-how +"+(a.teach*0.4).toFixed(1)+". Nothing else moves.");
+ } else { g.tdebt+=g.rank>=1?1:0.5; }
+ if(a.rest){ g.B=clamp(g.B-a.rest*9,0,100); line("info","☾ Rest: burnout risk −"+(a.rest*9)); }
+ if(g.wip>=100){ g.wip-=100; submitPaper(); }
+}
+
+function passivePass(){
+ /* burnout accrues */
+ let load = 2.6 + g.rank*0.9 + g.office*1.7 + g.queue.length*0.8;
+ if(g.vow==="BOTH") load*=1.35;
+ if(g.clock!==null) load+=1.6;
+ g.B=clamp(g.B+load,0,100);
+ /* momentum decays */
+ g.M=clamp(g.M*0.955,0,100);
+ /* ego drifts down without feeding */
+ g.E=clamp(g.E-0.4,0,100);
+ /* profile fades */
+ if(g.P>12) g.P=clamp(g.P-g.P*0.028,0,100);
+ /* public profile taxes research */
+ if(g.P>70){ g.R=clamp(g.R-0.8,0,100); if(Math.random()<0.28) line("bad","⬇ A colleague, to another colleague: “hasn't published in years, but does love a microphone.”"); }
+ /* salary creep */
+ g.S+=0.35+prestige()*0.5+g.office*0.6;
+}
+
+function foeName(){
+ return pick(FIRST)+" "+pick(LAST);
+}
+function addFoe(){
+ if(g.enemies.length>=9) return;
+ const gr=pick(GRUDGE);
+ const f={who:foeName(),why:gr[0],poisons:gr[1]};
+ g.enemies.push(f);
+ line("bad","⚔ "+f.who+" will remember that "+f.why+".");
+}
+
+/* ---------- burnout collapse ---------- */
+function collapse(){
+ g.collapses++;
+ if(g.collapses>=3){ end("BURNOUT"); return; }
+ const years = g.rank<=1?1:g.rank<=2?2:3;
+ g.skip=years*2; g.lostYears+=years;
+ card({
+  cls:"grim", kicker:"COLLAPSE", ti:"The wall",
+  sc:"It does not announce itself. You sit down to write a referee report you have already extended twice, and you simply do not do it, that day or the next or for a long time after. A doctor uses a word. The department covers your teaching with a visible, generous, unbearable patience.<br><br><em>"+years+" year"+(years>1?"s":"")+" go.</em>",
+  ch:[
+   {t:"Say nothing. Come back quietly.",fn(){
+     g.R=clamp(g.R*0.62,0,100); g.K=clamp(g.K*0.62,0,100);
+     g.N=clamp(g.N*0.64,0,100); g.P=clamp(g.P*0.58,0,100);
+     g.B=14; g.M=clamp(g.M*0.5,0,100);
+     if(Math.random()<0.55) addFoe();
+     return "You come back. The field has moved about eleven degrees and nobody thinks to tell you which way. Somebody covered your classes for a year and has decided, without ever saying so, that you owe them.";
+   }},
+   {t:"Go public. Write about it.",fn(){
+     g.R=clamp(g.R*0.62,0,100); g.K=clamp(g.K*0.62,0,100);
+     const viral=Math.random()<0.12;
+     if(viral){
+      g.N=clamp(g.N+34,0,100); g.P=clamp(g.P+42,0,100);
+      g.M=clamp(g.M+26,0,100); g.E=clamp(g.E+9,0,100); g.B=14;
+      g.flags.VIRAL=1; g.mods.opedwindow=g.turn+3;
+      return "Four hundred thousand people read it in nine days. It is shared by a sitting central banker. None of this has anything to do with how many people were reading you before, which is the part nobody who studies this ever quite accepts.";
+     }
+     const off=0.30+0.70*(g.P/100);
+     g.N=clamp(g.N*(0.64+0.34*off),0,100);
+     g.P=clamp(g.P*(0.58+0.46*off)+6*off,0,100);
+     g.E=clamp(g.E+6,0,100); g.B=14; g.M=clamp(g.M*0.6,0,100);
+     return g.P>45
+       ? "The essay does what essays by known people do: it circulates, it is quoted, and it converts a private catastrophe into a public asset at roughly the exchange rate you were hoping for."
+       : "You write it honestly and it is read by about nine hundred people, most of whom already knew. Turning a collapse into content requires an audience, and audiences are the thing you did not have.";
+   }}
+  ]
+ });
+}
+
+/* ---------- op-ed follow-up (viral only) ---------- */
+const OPED={
+ kicker:"THE CIRCUIT", ti:"Eight hundred words on leadership",
+ sc:"A mid-tier outlet has been in touch. They would like 800 words on “what burnout taught you about leadership.” They use the phrase “your story” four times in a short email.",
+ ch:[
+  {t:"Write it earnestly.",fn(){
+    g.P=clamp(g.P+12,0,100); g.N=clamp(g.N+7,0,100); g.B=clamp(g.B+8,0,100);
+    if(g.E>65){ g.E=clamp(g.E+4,0,100); return "It is sincere and it is good and, at your level of visibility, sincerity reads as positioning. Two people you respect say nothing about it, pointedly."; }
+    return "It is sincere and it is good. Three strangers write to say it helped, and one of them is a graduate student who does not drop out that year.";
+  }},
+  {t:"Phone it in.",fn(){
+    g.P=clamp(g.P+9,0,100); g.E=clamp(g.E+5,0,100); g.flags.PHONED_IN=1;
+    return "Ninety minutes. Three aphorisms. It performs better than the earnest version would have, and one sentence in it will be read aloud, by someone who dislikes you, in a room where it matters.";
+  }},
+  {t:"Decline.",fn(){ return "Nothing happens, mechanically or otherwise. You go back to work slightly earlier than you otherwise would have."; }},
+  {t:"Let the agent handle it.",gate:{E:70,P:60},fn(){
+    g.P=clamp(g.P+18,0,100); g.N=clamp(g.N+11,0,100); g.E=clamp(g.E+8,0,100);
+    g.flags.AGENT=1; g.M=clamp(g.M+12,0,100);
+    return "There is, it emerges, an agent. There is a rate. There is a person whose job is to decline things on your behalf, which is a form of status you did not know was purchasable. You are now in a different industry that shares a building with the old one.";
+  }}
+ ]
+};
+
+/* ============================================================
+   EVENT SELECTION
+   ============================================================ */
+function terms(){
+ return {
+  base:1,
+  lowMom:1-g.M/100, highMom:g.M/100,
+  highR:g.R/100, highK:g.K/100, highP:g.P/100, highB:g.B/100,
+  lowS:clamp((45-g.S)/45,0,1),
+  tdebt:clamp(g.tdebt/10,0,1),
+  spec:g.flags.SPEC?1:0
+ };
+}
+function gateOK(ga){
+ if(!ga) return true;
+ if(ga.R&&g.R<ga.R) return false;
+ if(ga.K&&g.K<ga.K) return false;
+ if(ga.N&&g.N<ga.N) return false;
+ if(ga.P&&g.P<ga.P) return false;
+ if(ga.E&&g.E<ga.E) return false;
+ if(ga.flag&&!g.flags[ga.flag]) return false;
+ return true;
+}
+function drawEvent(){
+ const t=terms(), pool=[];
+ for(const e of EVENTS){
+  if(g.rank<e.b[0]||g.rank>e.b[1]) continue;
+  if(e.once&&g.seen[e.id]) continue;
+  if(!gateOK(e.ga)) continue;
+  let s=g.jit[e.id]||0;
+  for(const k in e.ex) s+=e.ex[k]*(t[k]||0);
+  if(e.tr){
+   if(g.vow==="BOTH") s+=0.25;
+   else if((e.tr==="nobel"&&g.vow==="NOBEL")||(e.tr==="pres"&&g.vow==="PRES")) s+=0.85;
+   else s-=1.1;
+  }
+  if(e.once) s+=1.2;
+  s-=1.4*Math.log(1+(g.seen[e.id]||0));
+  pool.push([e,Math.exp(s)]);
+ }
+ const quiet=Math.E*0.9, total=quiet+pool.reduce((a,p)=>a+p[1],0);
+ let r=Math.random()*total;
+ if(r<quiet) return null;
+ r-=quiet;
+ for(const[e,w] of pool){ r-=w; if(r<=0) return e; }
+ return null;
+}
+const QUIET=[
+ "A term passes. Two papers are submitted somewhere in the building; neither is yours.",
+ "Nothing happens, at length. The literature grows by four hundred papers.",
+ "A quiet term. Somebody retires and the line is not replaced.",
+ "Fourteen weeks. A curriculum committee meets six times and produces a schedule.",
+ "The term turns. Your inbox achieves, briefly, a state of grace, and then does not."
+];
+
+/* ============================================================
+   ROLLS  (Ego = mean shift + tail risk)
+   ============================================================ */
+function rollP(roll){
+ const base = roll.stat==="R"?g.R : roll.stat==="K"?g.K : roll.stat==="N"?g.N :
+              roll.stat==="P"?g.P : roll.stat==="E"?g.E : 50;
+ const egoShift = 0.28*(g.E-50);
+ return sig((base-(roll.pivot||50)+egoShift)/14);
+}
+function applyLoss(fx){
+ const mult=1+g.E/120;
+ const out={};
+ for(const k in fx) out[k]=(typeof fx[k]==="number"&&fx[k]<0)? fx[k]*mult : fx[k];
+ applyFx(out);
+ if(Math.random()<g.E/200) addFoe();
+}
+function applyFx(fx){
+ if(!fx) return;
+ for(const k of ["R","K","N","P","E","B"]) if(fx[k]) g[k]=clamp(g[k]+fx[k],0,100);
+ if(fx.S) g.S=Math.max(0,g.S+fx.S);
+ if(fx.wip) g.wip+=fx.wip;
+ if(fx.mom) g.M=clamp(g.M+fx.mom,0,100);
+ if(fx.flag) g.flags[fx.flag]=1;
+ if(fx.mod) g.mods[fx.mod]=1;
+ if(fx.foe) addFoe();
+ if(fx.ending) end(fx.ending);
+}
+
+/* ============================================================
+   TENURE
+   ============================================================ */
+function startClock(uni,years){
+ g.uni=uni; g.rank=2; g.clockLen=years; g.clock=years*2;
+ g.S=Math.max(g.S, 62+Math.round(prestige()*46));
+}
+function tenureVote(){
+ const seats=12, votes=[]; let named=[];
+ const foes=g.enemies.filter(f=>f.poisons==="vote"||f.poisons==="committee").slice(0,3);
+ const teachPen = g.tdebt>14 ? -0.7 : g.tdebt>8 ? -0.35 : 0;
+ const base = -1.15 + 2.7*g.R/100 + 1.0*g.K/100 + 1.0*g.N/100
+            + 0.9*clamp(g.cites/420,0,1.4) + 1.1*clamp(aplus()/3,0,1.3)
+            + (g.P>72?-0.45:0) + teachPen;
+ for(let i=0;i<seats;i++){
+  if(i<foes.length){ votes.push(false); named.push(foes[i]); continue; }
+  votes.push(Math.random()<sig(base));
+ }
+ const yes=votes.filter(Boolean).length;
+ const pass = yes>=7;
+ let note="";
+ if(named.length) note = named.map(f=>"<b>"+f.who+"</b> votes no — "+f.why+".").join("<br>");
+ const letter = g.vow==="PRES"||g.K>g.R
+  ? "The letter says: <em>“a genuine institutional citizen. We will miss the polish in the published record, but he knows how to run a meeting, and a department is a great many meetings.”</em>"
+  : "The letter says: <em>“the service record is thin and the collegiality has been described to us as situational. But one of these papers will still be read in thirty years, and we are not in the business of being wrong about that twice.”</em>";
+
+ card({
+  cls: pass?"gold":"grim", kicker:"THE VOTE", ti: pass?"Tenure":"Denied",
+  sc:"Twelve of them, in a room you are not in, for two hours and ten minutes."
+    +'<div class="tally">'+votes.map(v=>'<div class="vote '+(v?"yes":"no")+'">'+(v?"✓":"✗")+'</div>').join("")+'</div>'
+    +'<div class="votenote">'+yes+" for, "+(seats-yes)+" against."+(note?"<br>"+note:"")+"</div><br>"+letter,
+  ch:[{t: pass?"Take the letter home.":"Ask what the timeline is.", fn(){
+    if(pass){
+     g.tenured=true; g.clock=null; g.rank=3; g.S+=18; g.E=clamp(g.E+10,0,100);
+     g.flags.TENURED=1;
+     return "You are here until you decide not to be. It is the single largest change in your life and it feels, on the day, like a slightly quieter Tuesday.";
+    }
+    g.denials++; g.clock=null;
+    return denialCascade();
+  }}]
+ });
+}
+function denialCascade(){
+ if(g.denials===1){
+  const dest=pick(LOW.concat(MID.slice(2)));
+  const yrs=4;
+  g.nobelDead=true;
+  g.uni=dest; g.rank=2; g.clockLen=yrs; g.clock=yrs*2;
+  g.N=clamp(g.N-12,0,100); g.E=clamp(g.E-14,0,100); g.B=clamp(g.B+16,0,100);
+  g.S=Math.max(30, g.S*0.78);
+  g.flags.DENIED_ONCE=1;
+  return "You have a year to clear the office. Then "+UNIS[dest].n+" calls — they have a line, they need someone with your record, and the clock there is "
+   +yrs+" years, not seven, because they have been burned before. The Nobel is now, in the technical sense, unavailable. Nobody says this out loud. Everybody understands it.";
+ }
+ /* second denial */
+ g.presDead=false;
+ if(g.K>=42){
+  g.rank=3; g.tenured=true; g.office=1; g.uni=pick(MID);
+  g.S=Math.max(g.S, 96); g.flags.ADMIN_ESCAPE=1; g.nobelDead=true;
+  return "The second vote goes the same way as the first. Then something unexpected: "+UNIS[g.uni].n+" needs an associate dean who understands a budget model, and you have understood a budget model since you were thirty-one. The title is real. The office has a window. Nobody will ever ask you about your papers again, and after about eighteen months you notice that this is a relief.";
+ }
+ end("TENURE_OUT"); return "";
+}
+
+/* ============================================================
+   THE ENDGAME ROLLS
+   ============================================================ */
+function nobelEligible(){
+ return !g.nobelDead && g.rank>=4 && aplus()>=3 && g.R>=60 && age()>=52;
+}
+function octoberPass(){
+ if(g.turn%2!==0) return false;            /* Fall only */
+ if(!nobelEligible()) return false;
+ const p = sig(-8.8 + 2.5*g.M/100 + 2.0*g.N/100 + 1.2*g.P/100 + 1.0*g.R/100
+              + 1.7*prestige() + (g.flags.CHAIR?0.8:0) + 0.9*clamp(g.cites/3000,0,1.2));
+ if(Math.random()<p){ end("NOBEL"); return true; }
+ if(Math.random()<p*4.5){
+  g.shortlists++;
+  card({cls:"gold",kicker:"OCTOBER",ti:"The list",
+   sc:"A journalist calls on the Monday to ask whether you'll be at home next week. That is how you learn you are on the list. On the Thursday the phone rings at 5:40 a.m. and it is your sister, about something else entirely.",
+   ch:[{t:"Go to the seminar as normal.",fn(){ g.M=clamp(g.M+9,0,100); g.E=clamp(g.E+5,0,100);
+     return "You give the seminar. Everybody in the room knows, and everybody is scrupulously normal, which is worse. Shortlist number "+g.shortlists+".";}}]});
+  return true;
+ }
+ return false;
+}
+
+function presSearchReady(){
+ return !g.presDead && !g.won.PRES && !!g.target && g.office>=2 && g.K>=58;
+}
+function presSearch(){
+ const tp=UNIS[g.target].p;
+ const p = sig(-3.4 + 3.1*g.K/100 + 2.5*g.N/100 + 1.0*g.P/100 + 0.7*g.R/100
+              + 2.2*prestige() - 3.4*Math.max(0,tp-prestige()) + (g.flags.CANDID?-0.2:0.2));
+ card({cls:"gold",kicker:"THE SEARCH",ti:"The committee of nineteen",
+  sc:"A search firm is involved. There are nineteen people on the committee, of whom four matter, and a confidentiality protocol that leaks within a fortnight. You are flown somewhere and asked, by a student representative, what your vision for the undergraduate experience is.<br><br>The post is the presidency of <em>"+UNIS[g.target].n+"</em>.",
+  ch:[{t:"Give them the vision.",fn(){
+    if(Math.random()<p){ g.won.PRES=1; g.office=4; g.uni=g.target; pendingNext=()=>end("PRES"); return "They call on a Sunday."; }
+    /* near miss */
+    if(Math.random()<0.62){
+     const alt=pick(LOW.concat(["FENWICK"]));
+     g.won.PRESALT=alt; g.office=4; g.uni=alt; g.S+=70;
+     pendingNext=()=>end("PRES_MISS");
+     return "They appoint an internal candidate. Eleven weeks later, a different search firm calls.";
+    }
+    g.N=clamp(g.N-6,0,100); g.E=clamp(g.E-12,0,100); g.B=clamp(g.B+12,0,100);
+    g.mods.searchcool=g.turn+8;
+    return "The announcement names someone from a medical school. You read it on your phone in a corridor, and then you go and chair the meeting you were going to chair anyway.";
+  }}]});
+ return true;
+}
+
+/* ============================================================
+   ENDINGS
+   ============================================================ */
+function vowMet(){
+ if(g.vow==="NOBEL") return !!g.won.NOBEL;
+ if(g.vow==="PRES")  return !!g.won.PRES;
+ return !!(g.won.NOBEL&&g.won.PRES);
+}
+const ENDTEXT={
+ NOBEL:()=>["The call","It comes at 5:11 a.m. and the number is Swedish and your first thought, which you will never admit to anyone, is about a colleague who will be watching the announcement in forty minutes. You say something into the phone. Later you cannot recall what."],
+ PRES:()=>["The office","The office is on a corner and has a portrait of a man who owned people. Your first month contains: a fundraising dinner, an occupation of the administration building, and a board member who asks why the endowment cannot simply be spent. You answer all three correctly and none of them satisfactorily."],
+ BOTH:()=>["Both","You have the medal and you have the office. At the inauguration, the provost's introduction mentions the prize before your name. You notice that you minded, very slightly, and then you notice that you noticed."],
+ NOBEL_MISS:()=>["The perpetual shortlist","You have the Clark, the BBVA, two honorary doctorates and a lecture series named after you. Every October a journalist calls on the Monday. "+g.shortlists+" times the phone did not ring on the Thursday, and the field's polite explanation — that the committee works in mysterious ways — has never once been offered to anyone who actually won."],
+ PRES_MISS:()=>["President of somewhere","You are the president of "+UNIS[g.uni].n+". Enrollment is "+ri(9,18)+",000. The football program runs a deficit and is untouchable. You do the job well, and at the conference in June people introduce you, with complete sincerity and a half-second pause, as a university president."],
+ TENURE_OUT:()=>["Out","The second letter is shorter than the first. There is a period during which you apply for things and a later period during which you do not. The field closes over the gap in about nine months, the way water does."],
+ BURNOUT:()=>["What it cost","You stopped, finally, and the stopping was not a decision. "+g.lostYears+" year"+(g.lostYears===1?"":"s")+" went to it. The department was generous in the way institutions are generous: completely, for a while, and then structurally not at all."],
+ EXIT:()=>["The other building","The money is roughly four times and the problems are, on inspection, more tractable. At 5 p.m. on a Tuesday you notice you have not thought about a referee report in eleven weeks. On Sunday nights, occasionally, you read something in your old field and find you can no longer quite follow the notation."],
+ TIME:()=>["Emeritus","They give you an office on the fourth floor with a window facing the car park, and a mug. The seminar still invites you. You still go. About once a term someone young asks you a question that indicates they have actually read the 2041 paper, and it is worth the entire afternoon."]
+};
+const EPITHETS={
+ RAN_SEMINAR:"ran the job market seminar, for nothing",
+ ANTISOCIAL:"was not, in the end, really a colleague",
+ GENEROUS:"wrote the kindest report someone ever got",
+ HONEST:"reported the null",
+ SPEC:"had a specification, and stood by it",
+ CORRECTED:"corrected it themselves, in public",
+ CARTEL:"cited the circle, and was cited by it",
+ OUTSIDE:"stayed out of the circle",
+ MENTOR:"read the draft twice",
+ THEPAPER:"took the four-year bet",
+ EDITOR:"decided, in part, what the field was",
+ PHONED_IN:"phoned one in, and it was quoted back",
+ AGENT:"had, at the end, an agent",
+ VIRAL:"went briefly and enormously viral",
+ CHOSE_LIFE:"chose the city",
+ TRUTHFUL:"said no, when asked if it got easier",
+ THURSDAYS:"went every Thursday",
+ GOODHIRE:"won the hire by one vote",
+ CANDID:"told a trustee the truth",
+ LOYAL:"never used an outside offer",
+ TWOBODY:"got the second line",
+ FUNDED:"was funded, once, properly",
+ ADMIN_ESCAPE:"found the budget model, and it found them back",
+ FEST:"could not speak, at the end of the dinner"
+};
+
+function end(kind){
+ if(g.ended) return;
+ g.ended=kind;
+ if(kind==="NOBEL"){ g.won.NOBEL=1; if(g.vow==="BOTH"&&!g.won.PRES){ nobelInterlude(); return; } }
+ if(kind==="PRES"&&g.vow==="BOTH"&&!g.won.NOBEL){ g.ended=null; presInterlude(); return; }
+ const key = (g.vow==="BOTH"&&g.won.NOBEL&&g.won.PRES)?"BOTH":kind;
+ const [t,body]=ENDTEXT[key]();
+ const met=vowMet();
+ const traits=Object.keys(EPITHETS).filter(f=>g.flags[f]).map(f=>EPITHETS[f]);
+
+ const full=`<div class="final">
+  <div class="finalbig">${Math.round(g.cites).toLocaleString()}<small>citations</small></div>
+  <div class="finalrow">
+   <b>${title()}</b>, ${uniName()}<br>
+   h-index <b>${hIndex()}</b> &middot; ${g.papers.length} papers &middot; ${aplus()} in the top four<br>
+   terminal salary <b>${salaryTxt()}</b> &middot; age ${age()}<br>
+   ${g.lostYears?`years lost to collapse <b>${g.lostYears}</b> &middot; `:""}enemies made <b>${g.enemies.length}</b>
+  </div></div>`;
+
+ const thin=`<div class="final">
+  <div class="finalbig">${salaryTxt()}<small>terminal salary</small></div>
+  <div class="finalrow">
+   That is the number. The vow was <b>${vowLabel()}</b>, and it was not met, so this is the figure the ledger closes on.<br><br>
+   <span style="color:var(--dimmer)">${title()}, ${uniName()} &middot; ${Math.round(g.cites).toLocaleString()} citations &middot; h-index ${hIndex()} &middot; ${g.papers.length} papers &middot; age ${age()}</span>
+  </div></div>`;
+
+ card({
+  cls: met?"gold":"grim", kicker:"THE END", ti:t,
+  sc: body + (met?full:thin) + (traits.length?`<div class="remembers">The field remembers: ${traits.join(" · ")}.</div>`:""),
+  ch:[{t:"Begin again.",fn(){ setTimeout(boot,60); return ""; }}]
+ });
+ render();
+}
+function nobelInterlude(){
+ g.ended=null;
+ g.M=clamp(g.M+40,0,100); g.E=clamp(g.E+18,0,100); g.N=clamp(g.N+16,0,100);
+ g.P=clamp(g.P+26,0,100); g.S+=40; g.flags.CHAIR=1;
+ card({cls:"gold",kicker:"OCTOBER",ti:"The call",
+  sc:"It comes at 5:11 a.m. and the number is Swedish.<br><br>You vowed both. The medal is one of them. There is a presidency outstanding and, on the evidence of the last four decades, roughly "+Math.max(0,80-g.turn)+" terms in which to get it. You are "+age()+".",
+  ch:[{t:"Back to the committee work.",fn(){ return "The laureate returns to the space allocation subcommittee, where his presence is noted as a considerable coup."; }}]});
+}
+function presInterlude(){
+ g.won.PRES=1; g.office=4; g.uni=g.target;
+ g.K=clamp(g.K+20,0,100); g.N=clamp(g.N+18,0,100); g.S+=90; g.B=clamp(g.B+20,0,100);
+ card({cls:"gold",kicker:"THE OFFICE",ti:"President",
+  sc:"They call on a Sunday.<br><br>You vowed both. The office is one of them. The other requires a phone call from Stockholm to a man who now spends eleven hours a day on the endowment, and Stockholm has historically shown very little interest in university presidents.",
+  ch:[{t:"Take the office.",fn(){ return "The portrait in the corner office is of a man who owned people. There is a plaque explaining this, added in 2034, which is smaller than the portrait."; }}]});
+}
+function vowLabel(){
+ if(g.vow==="NOBEL") return "the Nobel";
+ const t = g.target ? UNIS[g.target].n : "\u2026";
+ if(g.vow==="PRES") return "the presidency of "+t;
+ return "the Nobel and the presidency of "+t;
+}
+
+/* ============================================================
+   UI
+   ============================================================ */
+const $=id=>document.getElementById(id);
+
+function line(cls,txt){
+ const d=document.createElement("div");
+ d.className="line "+(cls==="info"?"":cls);
+ d.textContent=txt;
+ $("log").appendChild(d);
+}
+
+function tile(lbl,val,pct,color,alarm){
+ return `<div class="tile${alarm?" alarm":""}">
+  <div class="lbl">${lbl}</div>
+  <div class="v">${val}</div>
+  <div class="track"><b style="width:${clamp(pct,0,100)}%;background:${color}"></b></div>
+ </div>`;
+}
+function needle(){
+ const v=g.Mshown;
+ const ang=-90+180*(v/100);
+ const zone = v<33?"cold": v<67?"warm":"hot";
+ const col = v<33?"var(--sky)": v<67?"var(--chalk)":"var(--gold)";
+ return `<div class="tile gauge">
+  <div class="lbl">Momentum</div>
+  <div class="needlebox"><svg viewBox="0 0 100 46" role="img" aria-label="Momentum: running ${zone}">
+   <path d="M8 40 A42 42 0 0 1 92 40" fill="none" stroke="#2C2937" stroke-width="7" stroke-linecap="round"/>
+   <path d="M8 40 A42 42 0 0 1 36 4.5" fill="none" stroke="var(--sky)" stroke-width="7" stroke-linecap="round" opacity=".5"/>
+   <path d="M64 4.5 A42 42 0 0 1 92 40" fill="none" stroke="var(--gold)" stroke-width="7" stroke-linecap="round" opacity=".5"/>
+   <g class="needle" style="transform:rotate(${ang}deg)">
+    <line x1="50" y1="40" x2="50" y2="12" stroke="${col}" stroke-width="3" stroke-linecap="round"/>
+   </g>
+   <circle cx="50" cy="40" r="4" fill="${col}"/>
+  </svg></div>
+  <div class="lbl" style="text-align:center;color:${col}">running ${zone}</div>
+ </div>`;
+}
+
+function render(){
+ /* masthead */
+ $("vowchip").textContent = g.vow? vowLabel() : "no vow yet";
+ $("agechip").textContent = "age "+age()+" · "+termName();
+ const tc=$("tenurechip");
+ if(g.clock!==null){
+  tc.hidden=false;
+  const yrsLeft=Math.ceil(g.clock/2);
+  tc.textContent="tenure clock — year "+(g.clockLen-yrsLeft+1)+" of "+g.clockLen;
+  tc.className="clockchip"+(yrsLeft<=2?" hot":"");
+ } else tc.hidden=true;
+
+ /* ladder */
+ $("ladder").innerHTML=RANKS.map((r,i)=>
+  `<i class="${i<g.rank?"done":i===g.rank?"now":""}" title="${r}"></i>`).join("");
+ $("rank").innerHTML="<b>"+title()+"</b>";
+ $("place").textContent=g.uni? uniName()+" · "+UNIS[g.uni].note : "";
+
+ /* board */
+ $("board").innerHTML =
+  tile("Research",   g.R.toFixed(0), g.R, "var(--gold)")+
+  tile("Know-how",   g.K.toFixed(0), g.K, "var(--mint)")+
+  tile("Network",    g.N.toFixed(0), g.N, "var(--sky)")+
+  tile("Profile",    g.P.toFixed(0), g.P, "var(--plum)")+
+  tile("Salary",     salaryTxt(),    clamp(g.S/3,0,100), "var(--mint)")+
+  tile("Ego",        g.E.toFixed(0), g.E, "var(--plum)")+
+  tile("Burnout",    g.B.toFixed(0), g.B, g.B>70?"var(--rose)":"var(--gold)", g.B>70)+
+  needle();
+
+ /* enemies */
+ $("foes").innerHTML=g.enemies.map(f=>
+  `<span class="foe" title="${f.why}">${f.who} · ${f.poisons}</span>`).join("");
+
+ /* cv */
+ const q=g.queue.length;
+ $("cv").innerHTML=`
+  <div class="cvhead">
+   <div class="cvbig">${Math.round(g.cites).toLocaleString()}<small>citations</small></div>
+   <div class="cvsub">h-index <b>${hIndex()}</b><br>${g.papers.length} published &middot; <b>${aplus()}</b> in the top four</div>
+  </div>
+  <div class="papers">${g.papers.slice(0,6).map(p=>
+   `<div class="prow"><span class="tierpill t-${p.tier==="A+"?"Aplus":p.tier}">${p.tier}</span>
+    <span class="ti">${p.ti}</span><span class="jn">${p.jn}</span><span class="ct">${Math.round(p.c)}</span></div>`).join("")}</div>
+  <div class="wip">${q? q+" under review &middot; ":""}next paper ${Math.min(99,Math.round(g.wip))}% written</div>`;
+
+ /* desk */
+ $("desk").hidden = awaiting || !!g.ended || !g.vow;
+ $("left").textContent = budget()-spent();
+ $("levers").innerHTML=LEVERS.map(([k,n])=>{
+  const v=g.alloc[k];
+  return `<div class="lever${v?" lit":""}">
+   <div class="ln">${n}</div>
+   <div class="dots${v?"":" none"}">${v?"●".repeat(v):"·"}</div>
+   <div class="pm">
+    <button data-l="${k}" data-d="-1" ${v<=0?"disabled":""} aria-label="less ${n}">−</button>
+    <button data-l="${k}" data-d="1" ${budget()-spent()<=0?"disabled":""} aria-label="more ${n}">+</button>
+   </div></div>`;
+ }).join("");
+ const h=LEVERS.find(l=>g.alloc[l[0]]>0);
+ $("hint").textContent = h? h[2] : "Six places to put a term. There are only "+budget()+" points, and there have only ever been.";
+ $("go").disabled=awaiting||!!g.ended;
+}
+
+/* ---------- the card ---------- */
+function card(o){
+ awaiting=true;
+ const el=document.createElement("div");
+ el.className="card "+(o.cls||"");
+ el.innerHTML=`
+  <div class="kicker"><span>${o.kicker||"THE TERM"}</span><span>${termName()} · age ${age()}</span></div>
+  <h2>${o.ti}</h2>
+  <div class="scene">${o.sc}</div>
+  <div class="choices">${o.ch.map((c,i)=>{
+    const ok=gateOK(c.gate);
+    const sub = ok ? (c.why||"") : lockWhy(c.gate);
+    return `<button data-c="${i}"${ok?"":" disabled"}${c.roll?' class="risky"':""}>${c.t}${
+      sub?`<span class="why">${sub}</span>`:""}</button>`;
+  }).join("")}</div>
+  <div class="outcome" hidden></div>`;
+ $("cardslot").innerHTML="";
+ $("cardslot").appendChild(el);
+
+ el.querySelectorAll("button[data-c]").forEach(b=>b.onclick=()=>{
+  const c=o.ch[+b.dataset.c];
+  el.querySelectorAll("button").forEach(x=>x.disabled=true);
+  b.style.borderColor="var(--gold)";
+  const snap={R:g.R,K:g.K,N:g.N,P:g.P,S:g.S,E:g.E,B:g.B};
+  let msg=c.say||"", bad=false;
+
+  if(c.fn){ msg=c.fn()||msg; }
+  else if(c.roll){
+   const p=rollP(c.roll);
+   if(Math.random()<p){ applyFx(c.roll.win.fx); msg=c.roll.win.say; }
+   else { applyLoss(c.roll.lose.fx); msg=c.roll.lose.say; bad=true; }
+  } else applyFx(c.fx);
+
+  const out=el.querySelector(".outcome");
+  if(msg){
+   out.hidden=false;
+   out.className="outcome"+(bad?" bad":"");
+   out.innerHTML=msg+deltaStrip(snap);
+  }
+  if(pendingNext){
+   const go=pendingNext; pendingNext=null;
+   out.hidden=false;
+   const nb=document.createElement("button");
+   nb.className="go"; nb.textContent=o.nextLabel||"Continue";
+   nb.onclick=()=>{ awaiting=false; go(); };
+   out.appendChild(nb);
+  } else {
+   awaiting=false;
+  }
+  render();
+ });
+ render();
+}
+function deltaStrip(s){
+ const nm={R:"research",K:"know-how",N:"network",P:"profile",E:"ego",B:"burnout"};
+ const parts=[];
+ for(const k in nm){
+  const d=g[k]-s[k];
+  if(Math.abs(d)>=1) parts.push(`<span class="${d>0?(k==="B"?"dn":"up"):(k==="B"?"up":"dn")}">${nm[k]} ${d>0?"+":"−"}${Math.abs(d).toFixed(0)}</span>`);
+ }
+ const ds=g.S-s.S;
+ if(Math.abs(ds)>=1) parts.push(`<span class="${ds>0?"up":"dn"}">salary ${ds>0?"+":"−"}$${Math.abs(ds).toFixed(0)}k</span>`);
+ return parts.length?`<div class="deltas">${parts.join("")}</div>`:"";
+}
+function lockWhy(ga){
+ if(!ga) return "";
+ if(ga.E&&ga.P) return "needs a certain amount of ego, and an audience";
+ if(ga.K) return "needs institutional know-how "+ga.K+"+";
+ if(ga.N) return "needs a network you don't have yet";
+ if(ga.R) return "needs a research record you don't have yet";
+ return "not yet";
+}
+
+/* ============================================================
+   THE TURN
+   ============================================================ */
+function runTerm(){
+ if(awaiting||g.ended) return;
+ $("log").innerHTML="";
+ $("cardslot").innerHTML="";
+
+ if(g.skip>0){
+  g.skip--; g.turn++;
+  g.Mshown=g.M;
+  line("bad","— A term you were not present for.");
+  if(g.clock!==null) g.clock--;
+  if(g.turn>=80){ end("TIME"); return; }
+  render(); return;
+ }
+
+ g.turn++;
+ const oldM=g.M;
+
+ applyLevers();
+ passivePass();
+ reviewPass();
+ citationPass();
+
+ /* promotion: assistant -> associate is the vote; associate -> full is a threshold */
+ if(g.rank===3 && g.tenured && g.R+g.K>=110 && Math.random()<0.3){
+  g.rank=4; g.S+=22; g.E=clamp(g.E+6,0,100);
+  line("gold","▲ Promoted to Professor. The letter takes four months and the raise takes eighteen.");
+ }
+ /* administrative ladder */
+ if(g.office>=1 && g.office<3 && g.K>=45+g.office*14 && Math.random()<0.22){
+  g.office++; g.S+=26; g.B=clamp(g.B+8,0,100);
+  line("gold","▲ "+OFFICES[g.office]+". A larger office and a calendar that belongs to someone else.");
+ }
+ if(g.mods.office1 && g.office===0){ g.office=1; delete g.mods.office1; }
+ if(g.mods.move){ delete g.mods.move; g.uni=pick(MID); line("info","→ You move to "+uniName()+"."); }
+ if(g.mods.teachfix){ delete g.mods.teachfix; g.tdebt=0; }
+
+ g.alloc={write:0,net:0,pub:0,serv:0,teach:0,rest:0};
+ g.Mshown=oldM;   /* the needle lags one beat */
+
+ /* stage transitions */
+ if(g.rank===1 && g.postdocEnd && g.turn>=g.postdocEnd){
+  const dest = g.R>=42 ? pick(TOP.concat(MID)) : pick(MID.concat(LOW));
+  startClock(dest, UNIS[dest].p>=0.8?7:6);
+  line("gold","▲ Assistant Professor at "+uniName()+". The clock starts: "+g.clockLen+" years.");
+ }
+
+ /* hard stops */
+ if(g.B>=100){ render(); collapse(); return; }
+ if(g.turn>=80){ render(); end(vowMet()?(g.vow==="NOBEL"?"NOBEL":"PRES"):(g.won.NOBEL||g.won.PRES?"PRES_MISS":nearMissKind())); return; }
+ if(g.clock!==null){
+  g.clock--;
+  if(g.clock<=0){ render(); tenureVote(); return; }
+ }
+
+ if(g.rank===0 && g.turn>=6){ render(); placeStep(); return; }
+
+ /* op-ed window after a viral collapse */
+ if(g.mods.opedwindow && g.turn>=g.mods.opedwindow){
+  delete g.mods.opedwindow; render(); card(OPED); return;
+ }
+ /* endgame rolls */
+ if(octoberPass()){ render(); return; }
+ if(presSearchReady() && !(g.mods.searchcool>g.turn) && Math.random()<0.34){ render(); presSearch(); return; }
+
+ const e=drawEvent();
+ if(e){
+  g.seen[e.id]=(g.seen[e.id]||0)+1;
+  card({kicker:"THE TERM",ti:e.ti,sc:e.sc,ch:e.ch});
+ } else {
+  line("info","· "+pick(QUIET));
+ }
+ render();
+}
+function nearMissKind(){
+ if(g.vow==="PRES"||g.vow==="BOTH") return g.won.PRESALT?"PRES_MISS":(g.shortlists?"NOBEL_MISS":"TIME");
+ return g.shortlists?"NOBEL_MISS":"TIME";
+}
+
+/* ============================================================
+   OPENING
+   ============================================================ */
+function boot(){
+ newGame();
+ $("log").innerHTML="";
+ render();
+ card({
+  cls:"gold", kicker:"THE VOW", ti:"What is it for?",
+  sc:"You are twenty-five. You have a dissertation that is nearly finished, an advisor who has not read the third chapter, and forty years.<br><br>Everyone in this profession is doing it for something. Most of them will not say what. <em>Say what.</em>",
+  ch:[
+   {t:"The Nobel Prize.",why:"you want the call",fn(){ g.vow="NOBEL"; pendingNext=phdStart; return "Said out loud, at twenty-five, it sounds absurd. You will not say it out loud again for thirty years."; }},
+   {t:"A university presidency.",why:"you want the office",fn(){ g.vow="PRES"; pendingNext=targetStep; return "The honest version of the ambition, which almost nobody gives."; }},
+   {t:"Both.",why:"harder than either — and neither ends the game alone",fn(){ g.vow="BOTH"; pendingNext=targetStep; return "Both. Note that the clock does not adjust for this, and neither does the body."; }}
+  ]
+ });
+}
+function phdStart(){
+ g.uni=pick(TOP.concat(MID)); g.rank=0; g.S=24;
+ card({
+  cls:"gold", kicker:"THE PROGRAM", ti:"Year four",
+  sc:"Year four at <em>"+uniName()+"</em>. A stipend of $24k, a desk in a room with four other desks, and a dissertation in three chapters of which two exist.<br><br>Three years of this remain before the market. What you do with them will not appear on your CV, and will decide most of what follows.",
+  ch:[{t:"Get to work.",why:"six terms until the job market",
+    fn(){ return "The room has a kettle and a whiteboard nobody erases. Somebody's job market paper is on it, from a year that has passed."; }}]
+ });
+}
+function targetStep(){
+ card({
+  cls:"gold",kicker:"THE VOW",ti:"President of where?",
+  sc:"A presidency is not a rank, it is an address. Name the one you mean. You will be measured against this and nothing else.",
+  ch: TOP.map(k=>({t:UNIS[k].n, fn(){ g.target=k; pendingNext=phdStart;
+    return "Noted. "+UNIS[k].n+" — "+UNIS[k].note+". Everything else will be a near miss."; }}))
+ });
+}
+function placeStep(){
+ const post=pick(TOP), tt=pick(MID);
+ card({
+  cls:"gold",kicker:"THE MARKET",ti:"Two offers",
+  sc:"The market has produced exactly two things. A postdoc at <em>"+UNIS[post].n+"</em> — two years, no teaching, no security, and an address that does roughly a third of the work of a career. Or a tenure-track line at <em>"+UNIS[tt].n+"</em> — seven years on the clock, starting now.<br><br>Everyone will tell you there is an obvious answer. They will not agree about which.",
+  ch:[
+   {t:"The postdoc at "+UNIS[post].n+".",why:"prestige compounds; the clock waits",fn(){
+     g.uni=post; g.rank=1; g.S=58; g.flags.POSTDOC=1; g.postdocEnd=g.turn+4;
+     return "Two years in a building where the coffee is bad and the corridor conversations are not. Nobody asks what you teach, because you do not."; }},
+   {t:"The tenure-track line at "+UNIS[tt].n+".",why:"seven years, starting now",fn(){
+     startClock(tt,7);
+     return "An office with your name on a card in a slot, which is how they indicate that the name is provisional. The clock starts this September."; }}
+  ]
+ });
+}
+
+/* wiring */
+$("levers").addEventListener("click",ev=>{
+ const b=ev.target.closest("button"); if(!b) return;
+ const k=b.dataset.l, d=+b.dataset.d;
+ if(d>0&&spent()>=budget()) return;
+ g.alloc[k]=Math.max(0,g.alloc[k]+d);
+ render();
+});
+$("go").onclick=runTerm;
+
+
+boot();
+</script>
+</body>
+</html>
