@@ -145,6 +145,8 @@ header.mast .tag{
 @keyframes tickflash{0%{background:var(--gold);color:#1A1509;border-color:var(--gold)}100%{}}
 .card.quiet{border-color:#2E2B3A;background:var(--panel)}
 .card.quiet .scene{color:var(--dim);font-style:italic}
+.card.october{border-color:#5A4A1E}
+.card.october .kicker span:first-child{color:var(--gold)}
 .card.gold{border-color:var(--gold);background:linear-gradient(180deg,#2A2418,var(--panel))}
 .card.grim{border-color:var(--rose)}
 .kicker{
@@ -385,7 +387,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.04.04";
+const VERSION="0.04.05";
 
 /* ============================================================
    THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
@@ -425,8 +427,8 @@ const LOW=["BOWHEAD","VERONA","CRANMOOR"];
 const JOURNALS={
  "A+":{w:9.0, n:["the Quarterly","Metrica","the Review","the American"]},
  "A" :{w:3.6, n:["the Journal of Economic Theory and Practice","the Economic Journal of the Midwest","the Scandinavian Journal of Economic Thought","the Journal of the Association"]},
- "B" :{w:1.4, n:["Regional Science and Public Choice","the Bulletin of Applied Economics","Economics Letters to the Editor","the Southern Economic Review of the North","Applied Economics, Applied","the Journal of Economic Perspectives on Perspectives"]},
- "C" :{w:0.4, n:["the Journal of Applied Modelling","the International Journal of Economics and Business Research","the Global Journal of Economics, Finance and Management Studies","Advances in Economic Sciences and Innovation","the Open Economics Review (Open Access)"]}
+ "B" :{w:1.4, n:["the Review of Economic Reviews","the Canadian Review of Null Results","Regional Science and Public Choice","the Bulletin of Applied Economics","Economics Letters to the Editor","the Southern Economic Review of the North","Applied Economics, Applied","the Journal of Economic Perspectives on Perspectives"]},
+ "C" :{w:0.4, n:["the Journal of Economical Results","the Theoretical Journal of Economic Insights","the Hourly Review of Economics","the Journal of Applied Modelling","the International Journal of Economics and Business Research","the Global Journal of Economics, Finance and Management Studies","Advances in Economic Sciences and Innovation","the Open Economics Review (Open Access)"]}
 };
 const FIELDS=["theory","micro","macro","metrics","finance","labour","development","political","behavioural","history"];
 const FIELD_JOURNALS={
@@ -438,6 +440,8 @@ const FIELD_JOURNALS={
 };
 /* a hundred papers, drawn without replacement; the generator below is the reserve */
 const TITLES=[
+ ["War Economies During Peace: A Meta-Study","political"],["Happiness in War: The Russian Case","behavioural"],
+ ["Lands Without Borders: A Game-Theoretic Analysis Without Equilibrium","theory"],["Court Not Cournot: A Qualitative Study of Professional Decline","micro"],
  ["Cheap Talk with Costly Listening","theory"],["Renegotiation-Proof Contracts under Mutual Contempt","theory"],
  ["A Folk Theorem for Departments","theory"],["Commitment Devices for the Uncommitted","theory"],
  ["Bayesian Persuasion with a Persuadable Sender","theory"],["Existence of Equilibrium when Nobody Wants One","theory"],
@@ -575,6 +579,10 @@ const BIOS={
  shouter:{role:"the named chair",bio:"Professor Rupert Coldstream has a named chair, no recent papers, and a teaching load of nine hours a year, about which he shouts. He was, in 2011, genuinely important. He is aware of the year. He would like you to be aware of it too."},
  senior:{role:"the senior colleague",bio:"Professor Ambrose Kettlewell has a window, a name that gets things read, and a reputation for having thought about doing it properly. He has coauthored with every junior person in the department in turn, and every one of them, later, tells the same story about the conference."}
 };
+/* things one is sent to judge */
+const MS_TITLES=["Towards a Theory of Towards","The Elasticity of Elasticity","Rational Expectations of Rational Expectations: A Survey","A Note on a Note","Does Money Matter? Evidence from People Who Have It","On the Optimality of the Status Quo, by the Status Quo","Heterogeneous Agents with Homogeneous Conclusions","A Structural Model of the Reduced Form","The Long Run in the Short Run: Evidence from Tuesday","Nudging the Nudgers: A Field Experiment on Field Experimenters","Some Remarks on Some Remarks","Machine Learning for the Identification of Machine Learning"];
+const GRANT_TITLES=["A Randomised Controlled Trial of Randomised Controlled Trials","Big Data for Small Questions: A Five-Year Programme","Towards an Agent-Based Model of the Agent-Based Modelling Community","The Economics of Economics: Measuring What We Measure","Resilience, Sustainability and Inclusion: Three Words and a Budget","Frontier Methods for the Frontier: A Frontier"];
+function pickOnce(list,key){ g[key]=g[key]||{}; const avail=list.map((x,i)=>i).filter(i=>!g[key][i]); const i=avail.length?pick(avail):ri(0,list.length-1); g[key][i]=1; return list[i]; }
 /* {paper} names the paper in the drawer — the one the next submission sends.
    {qpaper} and {qjournal} name the paper under review longest — the one the
    process mods (accept, reject, resubmit, delay, publish) act on.
@@ -588,6 +596,9 @@ function fill(str,html){
   .replace(/\{qjournal\}/g,()=>{ const q=oldestQ(); return q?q.jn:"the journal"; })
   .replace(/\{better\}/g,()=>{ g.betterPick=g.betterPick||betterCollege(); return g.betterPick?UNIS[g.betterPick].n:"a better college"; })
   .replace(/\{best\}/g,()=>{ const p=g.papers.slice().sort((a,b)=>b.q-a.q)[0]; return p?p.ti:"your best paper"; })
+  .replace(/\{ms\}/g,()=>(g.msPick=g.msPick||pickOnce(MS_TITLES,"msSeen")))
+  .replace(/\{grant\}/g,()=>(g.grantPick=g.grantPick||pickOnce(GRANT_TITLES,"grantSeen")))
+  .replace(/\{journalC\}/g,()=>(g.jcPick=g.jcPick||pick(JOURNALS.C.n.concat(JOURNALS.B.n.slice(0,2)))))
   .replace(/\{worst\}/g,()=>{ const p=g.papers.slice().sort((a,b)=>a.q-b.q)[0]; return p?p.ti:"your early work"; })
   .replace(/\{(\w+)\}/g,(m,k)=>{
    if(CAST[k]===undefined) return m;
@@ -2089,6 +2100,32 @@ const EVENTS=[
    lose:{fx:{run:-2,P:6,N:-6,E:-6,B:5},say:"The headline is section 5. The board reads the headline. Three donors read the headline. The journalist sends a note saying she is sorry about the headline, which was not hers, and you believe her, which does not help."}}},
  {t:"Decline. The college has a communications office.",fx:{run:0,K:2,P:-2},say:"The communications office issues a profile of the college. It is read by the communications office."}]}
 
+,
+
+/* ---------- batch 8: manuscripts, boards, panels ---------- */
+{id:"MS1",ti:"The Manuscript",b:[1,4],ex:{base:.8},max:3,
+ sc:"{journalC} would like you to referee “{ms}”. The deadline is three weeks. The paper is twenty-eight pages and the appendix is sixty, and the cover letter describes the contribution as “threefold.”",
+ alt:["Another one. {journalC}, again, and this time the paper is “{ms}”, which the editor describes, in the invitation, as “potentially of interest.” It is not clear to whom.",
+      "{journalC} has sent “{ms}” and a form. The form asks you to rate the paper's “originality, rigour, and fit” on a scale of one to five, and to declare any conflicts, and to do so within ten days, and thanks you in advance, which is the only thanks there will be."],
+ ch:[
+ {t:"Recommend rejection, kindly.",fx:{R:1,K:1,E:1},say:"Two pages. You find the real problem and say it gently, and suggest a different journal, and the authors will never know that the gentleness cost you an evening."},
+ {t:"Recommend acceptance. It is, after all, {journalC}.",fx:{N:2,E:-1,B:-1},say:"Half a page. It is published. It is cited, once, by the authors, in their next one, which you will also be sent."},
+ {t:"Decline. You have your own papers.",fx:{B:-2,N:-1},say:"You decline in one line. The editor, who has a list, moves you down it, which is where you wanted to be."}]},
+
+{id:"MS2",ti:"The Board",b:[2,4],ex:{base:.7},once:1,
+ sc:"An invitation to join the editorial board of {journalC}. There is no work, the editor writes, beyond “occasional guidance,” and there is a line on the CV, and there is a list of the current board, which is long and includes two people you respect and one you have never heard of who is, apparently, the editor.",
+ ch:[
+ {t:"Accept. A line is a line.",fx:{K:2,N:2,P:-2,flag:"ON_A_BOARD"},say:"The line is added. Occasional guidance turns out to mean eleven manuscripts a year, each of which arrives with the phrase “threefold.” A colleague at Pelham, reading your web page, says “oh” in a particular tone."},
+ {t:"Decline, politely.",fx:{E:1},say:"You decline. The invitation comes again in two years, from a different editor, with the same list, minus the two people you respected."},
+ {t:"Decline, and say why, in writing.",fx:{E:4,N:-3,foe:{why:"what you wrote about their journal, in writing",poisons:"referee"}},say:"Three paragraphs. They are accurate. The editor, who is on the programme committee of a conference you would like to attend, reads them twice."}]},
+
+{id:"GR1",ti:"The Panel",b:[3,4],ex:{base:.8},once:1,
+ sc:"You are on the panel. The application in front of you is “{grant}”: five years, four postdocs, a budget with a line for “dissemination” larger than your salary. The applicant is someone you know. The applicant is someone everybody knows.",
+ ch:[
+ {t:"Fund it. Everyone else will.",fx:{K:2,N:3},say:"It is funded. The dissemination is a website and a launch event with wine. In year four the postdocs publish something good, which was not in the application, and the final report describes it as the plan."},
+ {t:"Score it a two, and write why.",fx:{K:3,E:3,N:-2,foe:{why:"the two you gave their programme grant, and the paragraph",poisons:"committee"}},say:"It is funded anyway; the other scores were fives. Your paragraph is in the file. The applicant sees the file, eventually, as applicants do, and does the arithmetic on the handwriting."},
+ {t:"Declare a conflict. You have none.",fx:{B:-2,K:1},say:"You leave the room for the discussion, which takes four minutes. You are, for the rest of the panel's life, the person who was scrupulous about that one, and it is not entirely a compliment."}]}
+
 ];
 
 /* ============================================================
@@ -2679,6 +2716,8 @@ const ENDTEXT={
  TIME:()=>["Emeritus","They give you an office on the fourth floor with a window facing the car park, and a mug. The seminar still invites you. You still go. About once a term someone young asks you a question that indicates they have actually read the 2041 paper, and it is worth the entire afternoon."]
 };
 const EPITHETS={
+ TWIST:"worked out the twist, in the winter",
+ ON_A_BOARD:"was on the board of a journal nobody had heard of",
  CLIMBED:"ran one college well enough to be given another",
  MEDAL:"has a medal named after a person",
  GENIUS:"was called, in introductions, a genius",
@@ -3015,6 +3054,49 @@ const LIFE=[
  {t:"The Name",s:"In a seminar you were not at, somebody referred to a result by your name. Your name, as an adjective. The person who tells you this thinks it is funny. It is not funny. It is the best thing that has ever happened.",fx:{E:6},ga:{papers:3}},
  {t:"The Ambulance",s:"An ambulance in the street at two in the morning, for a house three doors down. Everyone is fine, it turns out. You stand at the window in the dark for some time anyway, and the standing is, you think, some kind of a prayer, and you are not sure to whom."}
 ];
+/* October: the year's laureates, for players who want the call. On some
+   falls, on top of everything, once each; the young get ideas, the old
+   get someone younger. */
+const OCTOBERS=[
+ {t:"The Announcement",b:[0,2],s:"The prize goes to Thorvald Lindqvist-Ahn and Beatriz Okonkwo-Reyes, \u201cfor the theory of markets in which nobody knows the price.\u201d You read the scientific background at your desk, all forty pages, and on page thirty-one there is a gap, and the gap is shaped like something you could do.",
+  ch:[{t:"Work out the twist. There is one.",fx:{wip:25,R:3,E:3,flag:"TWIST"},say:"There is one. It takes the winter. It is not the prize, obviously; it is a paper, and a good one, and it has the laureates in the first footnote, which is where you would like to be seen."},
+      {t:"Read the press release. Go back to the referee report.",fx:{K:1},say:"You go back to the referee report. Somebody at Calderon works out the twist in the spring. It is a good paper. You read it on a train."}]},
+ {t:"For Showing That",b:[0,2],s:"The prize goes to a man \u201cfor showing that people respond to incentives,\u201d with data. You had that idea in your second year. You had it as a joke, at lunch, and everybody laughed, and one of the people who laughed is now in the scientific background, on page four.",
+  ch:[{t:"Write the joke up, seriously.",fx:{wip:20,E:2,R:1},say:"It is harder than the joke. Most things are. It becomes a paper about why the joke works, which is a different paper, and a better one, and nobody laughs at it, which is the price."},
+      {t:"Tell it again, at lunch.",fx:{N:2},say:"It goes well at lunch. It always does. It is the best thing you say all year, again."}]},
+ {t:"Slide Fourteen",b:[0,1],s:"The laureate's lecture is online. You watch it twice. The second time you notice that slide fourteen is wrong: not the result, the derivation, a sign in the second line that nobody in Stockholm checked.",
+  ch:[{t:"Write to him.",fx:{N:3,E:2},say:"He writes back. It is two lines and the second one is \u201cyou are right,\u201d and you keep it, and you do not tell anyone about it for about a year, and then you tell everyone."},
+      {t:"Write it up.",fx:{wip:15,R:2,E:3},say:"A note. It is correct and it is small and it is published somewhere small, and it is the first thing on your web page for a decade, and you are not sure it should be."}]},
+ {t:"Someone Younger",b:[3,4],s:"The prize goes, this year, to someone younger than you, for causal inference, which you have been doing for twenty years without the name. The name is what they gave it for.",fx:{E:-5,B:2}},
+ {t:"The Elsewhere",b:[2,4],s:"The prize goes to a man for a result you refereed in 2029. Your report recommended rejection, on grounds that were correct. The paper was published elsewhere. The elsewhere is now in the citation, and so, in a sense you will not describe to anyone, are you.",fx:{E:-6}},
+ {t:"The Field",b:[1,4],s:"The prize goes to a field that did not exist when you were a student and, by Thursday, has a handbook, a society, and a job market. Three people in your department were already in it. They had not mentioned this.",fx:{E:-1,N:1}},
+ {t:"The Comment",b:[4,4],s:"Two macroeconomists, \u201cfor a model of the crisis before last.\u201d A journalist calls you for comment. You give a comment. It is thoughtful and about eighty words, and the piece, when it runs, uses somebody else's, which is twelve.",fx:{E:-2,P:1}},
+ {t:"The Subordinate Clause",b:[3,4],ga:{papers:3},s:"The prize goes to someone who cites you. In the lecture, in December, in Stockholm, your name is said aloud, once, in a subordinate clause, by a person in white tie. You watch it four times.",fx:{E:6,P:3,cites:150}},
+ {t:"The Family",b:[1,4],s:"The prize goes, \u201cfor the economics of the family,\u201d to a couple who are, by the time of the ceremony, no longer one. They sit at opposite ends of the row. The lecture is given jointly and is about bargaining."},
+ {t:"The Psychologist",b:[3,4],s:"The prize is shared with a psychologist, who thanks the economists, in the lecture, for their patience. The economists at the seminar the next day are not patient.",
+  ch:[{t:"Say something generous at the seminar.",fx:{N:2,E:1},say:"You say the field is bigger than it was. It is. Somebody says \u201cthat is one word for it,\u201d and the room laughs, and you laugh too, slightly later."},
+      {t:"Say something else.",fx:{E:3,N:-2},say:"You say what everyone is thinking, in a form that can be quoted, and it is quoted, and it reaches the psychologist, who is gracious about it in a way that costs you more than the sentence did."}]},
+ {t:"The Discussant",b:[2,4],s:"The prize goes to three people, one of whom discussed your paper in 2027 and said it was \u201cconfused.\u201d He has, in the scientific background, a paragraph. You have, in the scientific background, nothing, and a memory of the room.",fx:{E:-3,R:1}},
+ {t:"The Wrong One",b:[2,4],s:"The prize goes to the right person for the wrong paper. Everyone who knows says so, at dinner, for a month, with the confidence of people who will never be asked.",fx:{N:1}}
+];
+function octoberCard(){
+ g.octSeen=g.octSeen||{};
+ const pool=OCTOBERS.map((x,i)=>i).filter(i=>!g.octSeen[i]&&g.rank>=OCTOBERS[i].b[0]&&g.rank<=OCTOBERS[i].b[1]&&gateOK(OCTOBERS[i].ga));
+ if(!pool.length) return;
+ const i=pick(pool), it=OCTOBERS[i]; g.octSeen[i]=1;
+ if(it.ch){ card({append:true,cls:"gold",kicker:"OCTOBER",ti:it.t,sc:it.s,ch:it.ch}); return; }
+ newsCard(it,"OCTOBER","card quiet life october");
+}
+/* a choiceless card from a pool entry {t,s,fx?} */
+function newsCard(it,kicker,cls){
+ const snap={R:g.R,K:g.K,N:g.N,P:g.P,S:g.S,E:g.E,B:g.B};
+ if(it.fx) applyFx(it.fx);
+ const el=document.createElement("div");
+ el.className=cls;
+ el.innerHTML=`<div class="kicker"><span>${kicker}</span><span>${termName()} · age ${age()}</span></div>
+  <h2>${it.t}</h2><div class="scene">${fill(it.s,1)}</div>${it.fx?deltaStrip(snap):""}`;
+ $("cardslot").appendChild(el);
+}
 function lifeCard(){
  g.lifeSeen=g.lifeSeen||{};
  const pool=LIFE.map((x,i)=>i).filter(i=>!g.lifeSeen[i]&&gateOK(LIFE[i].ga));
@@ -3377,6 +3459,7 @@ function runTerm(){
  if(octoberPass()){ render(); return; }
  if(presSearchReady() && !(g.mods.searchcool>g.turn) && Math.random()<0.3){ render(); presSearch(); return; }
 
+ if(g.turn%2===0 && (g.vow==="NOBEL"||g.vow==="BOTH") && !g.won.NOBEL && Math.random()<0.45) octoberCard();   /* the year's laureates */
  if(Math.random()<0.4) lifeCard();        /* meanwhile: a life, mostly to no effect */
  if(pubs.length) pubCard(pubs);          /* news, not one of the two */
  g.draws=2; g.shown=pubs.length>0;
@@ -3450,6 +3533,7 @@ function submitCard(){
 }
 function nextCard(){
  if(g.ended||awaiting) return;
+ g.msPick=null; g.grantPick=null; g.jcPick=null;
  if(g.pendingSubmit>0){ g.pendingSubmit--; submitCard(); render(); return; }
  if(g.draws<=0){ if(!g.shown) quietCard(); render(); return; }
  g.draws--;

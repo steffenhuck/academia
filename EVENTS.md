@@ -295,7 +295,7 @@ A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
 G21) gets **The exit upward** — the office, the salary, and a phone that does
 not ring for presidents. The vow is unmet, so the card closes on salary.
 
-## What exists (218 events)
+## What exists (221 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
@@ -352,6 +352,23 @@ where you are. Denied: a question — a line at a lesser college with a
 four-year clock (first denial only), an associate deanship (know-how 30),
 or the exit. The Nobel is not killed by a denial any more; the lower
 prestige does that work on its own.
+
+## October
+
+`OCTOBERS` is a pool of Nobel announcements, for players whose vow includes
+the prize and who have not won it: on some falls (about half), on top of
+everything else, once each, filtered by rank band. The young ones have
+choices (the twist on page thirty-one, the joke written up seriously, slide
+fourteen); the older ones are choiceless with a small effect, and the oldest
+are about someone younger. Entries are `{t,b,s,ga?,fx?,ch?}`.
+
+## Things one is sent to judge
+
+`{ms}` draws a manuscript title from `MS_TITLES`, `{grant}` an application
+from `GRANT_TITLES`, `{journalC}` a low journal; each is fixed for the card
+it appears on, so the scene and the buttons agree. `MS1` The Manuscript
+(three texts), `MS2` The Board, `GR1` The Panel use them. Add titles to the
+pools freely.
 
 ## Meanwhile
 
