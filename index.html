@@ -209,6 +209,8 @@ header.mast .tag{
   background:var(--panel); border:2px solid var(--edge); border-radius:18px;
   padding:13px 14px 14px; margin-bottom:12px;
 }
+.desk.first{border-color:var(--gold);box-shadow:0 0 0 4px rgba(240,180,41,.14)}
+.desk.first .deskhead h3::after{content:" \2190 start here";font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-left:8px}
 .deskhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
 .deskhead h3{
   font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:19px;margin:0;letter-spacing:-.01em
@@ -2723,6 +2725,7 @@ function render(){
 
  /* desk */
  $("desk").hidden = awaiting || !!g.ended || !g.vow;
+ $("desk").classList.toggle("first", g.turn===0 && spent()===0);
  $("left").textContent = budget()-spent();
  $("levers").innerHTML=LEVERS.map(([k,n])=>{
   const v=g.alloc[k];
@@ -2735,7 +2738,9 @@ function render(){
    </div></div>`;
  }).join("");
  const h=LEVERS.find(l=>g.alloc[l[0]]>0);
- const base = h? h[2] : "Six places to put a term. There are only "+budget()+" points, and there have only ever been.";
+ const base = h? h[2] : (g.turn===0
+   ? "Spend the term: put your "+budget()+" points into the six activities above, then run it."
+   : "Six places to put a term. There are only "+budget()+" points, and there have only ever been.");
  $("hint").textContent = (taxed()? "The editorial desk takes "+(taxed()>1?taxed()+" points":"a point")+" this term. ":"")+base;
  $("go").disabled=awaiting||!!g.ended;
 }
@@ -2940,7 +2945,7 @@ function phdStart(){
   cls:"gold", kicker:"THE PROGRAM", ti:"Nearly done",
   sc:"You are twenty-five, most of the way through a PhD at <em>"+uniName()+"</em>. A stipend of $24k, a desk in a room with four other desks, and a dissertation in three chapters of which two exist.<br><br>Three years of it remain before the market. What you do with them will not appear on your CV, and will decide most of what follows.",
   ch:[{t:"Get to work.",why:"six terms until the job market",
-    fn(){ return "The room has a kettle and a whiteboard nobody erases. Somebody's job market paper is on it, from a year that has passed."; }}]
+    fn(){ return "The room has a kettle and a whiteboard nobody erases. Somebody's job market paper is on it, from a year that has passed.<br><br><em>Now spend the term. Below, put your five points into the six things a term can go on — writing, networking, publicity, service, teaching, rest — and run it. Every term, the same five points. It is never enough, and it never will be.</em>"; }}]
  });
 }
 function placeStep(){
