@@ -145,6 +145,10 @@ header.mast .tag{
 @keyframes tickflash{0%{background:var(--gold);color:#1A1509;border-color:var(--gold)}100%{}}
 .card.quiet{border-color:#2E2B3A;background:var(--panel)}
 .card.quiet .scene{color:var(--dim);font-style:italic}
+.choices.react{margin-top:10px;gap:6px}
+.choices.react button{font-size:12.5px;padding:7px 11px;width:auto;flex:0 1 auto}
+.choices.react button:disabled{opacity:.55}
+.card .reply{margin-top:9px;font-size:13.5px;line-height:1.5;color:var(--chalk);font-style:normal;padding-left:11px;border-left:2px solid var(--gold)}
 .card.october{border-color:#5A4A1E}
 .card.october .kicker span:first-child{color:var(--gold)}
 .card.gold{border-color:var(--gold);background:linear-gradient(180deg,#2A2418,var(--panel))}
@@ -387,7 +391,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.04.07";
+const VERSION="0.04.08";
 
 /* ============================================================
    THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
@@ -3019,11 +3023,11 @@ const LIFE=[
  {t:"Franziska",s:"An aunt, Franziska, whom you met twice, has died and left you a clock. It is a good clock. It does not fit anywhere, and you keep it, and it is the only thing in the house that is older than you."},
  {t:"The Balkans",s:"A right-wing party leader in a Balkan country has been shot on the steps of a parliament. He is expected to survive. You read the story on your phone and cannot decide, for a moment, whether it is anything to do with you. It is not.",flag:"BALKAN"},
  {t:"The Balkans, again",s:"The man who was shot on the steps has recovered and been re-elected with an increased majority. This is still not about you.",ga:{since:["BALKAN",10]}},
- {t:"The Bacon",s:"At the checkout of the supermarket you notice that you have been charged twice for the bacon. You say nothing. It is $6.40. You think about it, on and off, until Thursday."},
+ {t:"The Bacon",s:"At the checkout of the supermarket you notice that you have been charged twice for the bacon. You say nothing. It is $6.40. You think about it, on and off, until Thursday.",re:[["Go back and say something.","$6.40 is refunded, in coins, with a look. You will think about the look until Friday."],["Let it go.","You let it go. On Thursday you find that you have not."]]},
  {t:"The Dentist",s:"The dentist says you are grinding your teeth. She asks whether there is anything in your life that might be causing that. You say no."},
  {t:"The Neighbour",s:"The neighbour has put up a fence. It is a fine fence. It is, you measure it one evening with a tape, eleven inches onto your side, and you decide not to be the kind of person who mentions it, and you are that kind of person, and you do not."},
  {t:"The Concert",s:"A cellist you have never heard of plays something you have never heard of, in a church, and for about forty minutes you are not an economist."},
- {t:"The Cat",s:"A cat has begun to come to the office. Nobody knows whose it is. It sits on the second-best chair and stares at the whiteboard with an expression you have seen on referees."},
+ {t:"The Cat",s:"A cat has begun to come to the office. Nobody knows whose it is. It sits on the second-best chair and stares at the whiteboard with an expression you have seen on referees.",re:[["Stroke the cat.","The cat permits it, briefly, and returns to the whiteboard."],["Ask whose it is.","Nobody\u2019s. It is everybody\u2019s, which is a different thing, and the cat knows the difference."]]},
  {t:"The Reunion",s:"An invitation to a school reunion. Twenty-five years. You look at the list of names and can attach a face to eleven of them and a feeling to three."},
  {t:"The Marathon",s:"A colleague in the department has run a marathon and would like to talk about it. He would like to talk about it in the way that people who have run a marathon would like to talk about it, and you find that you are, for once, a good listener, because you are thinking about something else."},
  {t:"The Lottery",s:"Somebody in the building has won a modest amount in the lottery. It is discussed with the seriousness normally reserved for tenure cases, and with, on the whole, more accuracy."},
@@ -3032,26 +3036,26 @@ const LIFE=[
  {t:"The Other One",s:"At dinner, your spouse refers to the theorem — the one from June — as “the other one.” Everyone at the table laughs, and you laugh too, and it is a good evening, and the phrase stays.",ga:{since:["MARRIED_PROOF",8]}},
  {t:"The Weather",s:"A summer so hot that the seminar room's air conditioning is discussed in a faculty meeting, at length, with citations."},
  {t:"The Piano",s:"You buy a piano. You had one as a child. You play it for eleven days and then it becomes, like the clock, a good thing that is in the house."},
- {t:"The Novel",s:"A novel has been published in which a character is an economist. He is unpleasant in ways that are entirely accurate, and you read it on a plane and hope nobody in the row can see the cover."},
- {t:"The Wallet",s:"You leave your wallet on a train. It comes back three weeks later, by post, from a town you have never been to, with everything in it, and a note that says “found this,” and no name."},
- {t:"The Podcast",s:"A former student has a podcast. He would like you on it. You go on it. It is, as far as you can determine, listened to by his mother and by a man in Oslo who leaves a comment about the audio."},
+ {t:"The Novel",s:"A novel has been published in which a character is an economist. He is unpleasant in ways that are entirely accurate, and you read it on a plane and hope nobody in the row can see the cover.",re:[["Finish it.","The economist dies in chapter nine, of a heart attack, at a seminar, in a way that is entirely accurate."],["Leave it on the plane.","A stranger will read it and think of no one in particular, which is more than you managed."]]},
+ {t:"The Wallet",s:"You leave your wallet on a train. It comes back three weeks later, by post, from a town you have never been to, with everything in it, and a note that says “found this,” and no name.",re:[["Write back to the town.","There is no address. There is a postmark. You look up the town. It has a church and a bypass."],["Keep the note.","It is in the drawer with the clock and the medal nobody has heard of."]]},
+ {t:"The Podcast",s:"A former student has a podcast. He would like you on it. You go on it. It is, as far as you can determine, listened to by his mother and by a man in Oslo who leaves a comment about the audio.",re:[["Listen to it.","You are better than you remembered and worse than you hoped, and the man in Oslo is right about the audio."],["Never listen to it.","The correct decision, and the one everyone makes."]]},
  {t:"The Wedding",s:"A former student is getting married and has asked you to say a few words. You say a few words. They go well, and are about you, slightly, and nobody minds, because they are at a wedding."},
  {t:"The Roof",s:"The roof needs replacing. It is a number with a comma in it. You look at the number for a long time and then agree to it, in the way one agrees to a referee's third request."},
- {t:"The Eclipse",s:"There is an eclipse. You go out onto the quad with the cardboard glasses and stand with four hundred people, all looking up, and it is the only time that year that the whole college is looking at the same thing."},
+ {t:"The Eclipse",s:"There is an eclipse. You go out onto the quad with the cardboard glasses and stand with four hundred people, all looking up, and it is the only time that year that the whole college is looking at the same thing.",re:[["Look up, with the glasses.","Two minutes. The quad goes quiet in a way it never has for a lecture."],["Look at the people looking up.","Four hundred faces, upturned, and none of them thinking about the endowment. It is the best the college has ever looked."]]},
  {t:"The Dog",s:"You are asked to look after a colleague's dog for a week. The dog is better company than the colleague and you say so to nobody, and the dog, you are fairly sure, knows."},
  {t:"Kansas, rebuilt",s:"The town in Kansas has been rebuilt, on a different site, with a plaque. The plaque does not mention the coefficient.",ga:{since:["METEOR_SHRUG",12]}},
  {t:"The Haircut",s:"A new barber. He asks what you do. You say “teacher,” which is the word you use with barbers, and it is, for once, the true one."},
  {t:"The Election",s:"There is an election somewhere and the result is either a relief or not, and either way the seminar is at four and the speaker has a model."},
  {t:"The Letter",s:"A letter, on paper, from a stranger, about a paper you wrote a long time ago. It is four pages long and the handwriting is beautiful and the stranger has understood the paper completely and disagrees with it in a way you cannot answer. You keep the letter. You do not reply."},
  /* the ones that feed the ego, which otherwise only leaks */
- {t:"The Feature",s:"A serious newspaper has run eight hundred words on \u201c{best}\u201d. The headline is wrong and the second paragraph is right, and your mother has cut it out.",fx:{E:4,P:3},ga:{papers:1}},
+ {t:"The Feature",s:"A serious newspaper has run eight hundred words on \u201c{best}\u201d. The headline is wrong and the second paragraph is right, and your mother has cut it out.",fx:{E:4,P:3},ga:{papers:1},re:[["Frame it.","Your mother has already framed it. There is now one in each house."],["Correct the headline, in a letter.","The letter is not printed. The headline is now on your Wikipedia page."]]},
  {t:"The Thread",s:"Someone has posted about one of your papers and it has gone, for a day, wherever these things go. For a day you are the economist. By Thursday you are an economist again, which is fine, and you check twice.",fx:{E:3,P:4},ga:{papers:1}},
  {t:"The Syllabus",s:"\u201c{best}\u201d is on a graduate syllabus at Harwich, in week nine, between two people you have argued with. You look at it for some time.",fx:{E:3},ga:{papers:2}},
  {t:"The Stranger",s:"A stranger at an airport gate looks at your boarding pass and says your name, with a question mark, and then says they read your paper in graduate school, and it changed how they thought about the thing. They do not say which paper. You do not ask.",fx:{E:3},ga:{papers:1}},
  {t:"The Cat",s:"A student has named her cat after your model. The cat is, she says, difficult to identify.",fx:{E:3},ga:{papers:1}},
  {t:"The Quotation",s:"A minister has quoted your abstract in a speech. He has quoted it wrongly, and in your favour, and the correction, when it comes, is on page eleven.",fx:{E:3,P:2},ga:{papers:1}},
  {t:"The Festschrift",s:"A former student has proposed a festschrift. You are not yet sixty. You say it is far too early, and you say it in a voice you have not used before, and you mean the opposite.",fx:{E:5},ga:{papers:4}},
- {t:"The Page",s:"Somebody has made you a Wikipedia page. It is short, mostly right, and has a photograph from a conference in which you look like a man being handed the wrong coat. You do not edit it. You look at it on Tuesdays.",fx:{E:3,P:2},ga:{papers:2}},
+ {t:"The Page",s:"Somebody has made you a Wikipedia page. It is short, mostly right, and has a photograph from a conference in which you look like a man being handed the wrong coat. You do not edit it. You look at it on Tuesdays.",fx:{E:3,P:2},ga:{papers:2},re:[["Read the talk page.","Someone has questioned whether you are notable. Someone else has replied that you are. Neither is you. One of them cites you."],["Fix the photograph.","You cannot. It is the only free one."]]},
  {t:"The Host",s:"A podcast host, introducing you, uses the definite article: \u201cthe economist of\u201d something. It is not quite what you are. It is close enough that you let it stand, and the letting stand is noted, by you, and enjoyed.",fx:{E:3,P:2}},
  {t:"The Medal Nobody Has Heard Of",s:"A society you had forgotten joining has awarded you a medal. There is a ceremony in a hotel. Nobody in your department has heard of the medal, and you find that you would like them to.",fx:{E:4,S:2}},
  {t:"The Translation",s:"One of your papers has been translated into Korean without anyone asking you. It is, a colleague reports, a good translation. It has more citations there than here.",fx:{E:3},ga:{papers:1}},
@@ -3071,17 +3075,17 @@ const OCTOBERS=[
  {t:"Slide Fourteen",b:[0,1],s:"The laureate's lecture is online. You watch it twice. The second time you notice that slide fourteen is wrong: not the result, the derivation, a sign in the second line that nobody in Stockholm checked.",
   ch:[{t:"Write to him.",fx:{N:3,E:2},say:"He writes back. It is two lines and the second one is \u201cyou are right,\u201d and you keep it, and you do not tell anyone about it for about a year, and then you tell everyone."},
       {t:"Write it up.",fx:{wip:15,R:2,E:3},say:"A note. It is correct and it is small and it is published somewhere small, and it is the first thing on your web page for a decade, and you are not sure it should be."}]},
- {t:"Someone Younger",b:[3,4],s:"The prize goes, this year, to someone younger than you, for causal inference, which you have been doing for twenty years without the name. The name is what they gave it for.",fx:{E:-5,B:2}},
+ {t:"Someone Younger",b:[3,4],s:"The prize goes, this year, to someone younger than you, for causal inference, which you have been doing for twenty years without the name. The name is what they gave it for.",fx:{E:-5,B:2},re:[["Look up his age.","Forty-one. You were forty-one once, and were doing the same thing, and called it something else."],["Send a note of congratulation.","He replies within the hour. He cites you, in the reply. It is the reply you keep."]]},
  {t:"The Elsewhere",b:[2,4],s:"The prize goes to a man for a result you refereed in 2029. Your report recommended rejection, on grounds that were correct. The paper was published elsewhere. The elsewhere is now in the citation, and so, in a sense you will not describe to anyone, are you.",fx:{E:-6}},
- {t:"The Field",b:[1,4],s:"The prize goes to a field that did not exist when you were a student and, by Thursday, has a handbook, a society, and a job market. Three people in your department were already in it. They had not mentioned this.",fx:{E:-1,N:1}},
+ {t:"The Field",b:[1,4],s:"The prize goes to a field that did not exist when you were a student and, by Thursday, has a handbook, a society, and a job market. Three people in your department were already in it. They had not mentioned this.",fx:{E:-1,N:1},re:[["Join the society.","The membership fee is modest and the newsletter is not."],["Ask the three what the field is.","They explain. The explanation uses the word \u201cframework\u201d and you understand, at the end, that it is what you have been doing, with a worse name."]]},
  {t:"The Comment",b:[4,4],s:"Two macroeconomists, \u201cfor a model of the crisis before last.\u201d A journalist calls you for comment. You give a comment. It is thoughtful and about eighty words, and the piece, when it runs, uses somebody else's, which is twelve.",fx:{E:-2,P:1}},
  {t:"The Subordinate Clause",b:[3,4],ga:{papers:3},s:"The prize goes to someone who cites you. In the lecture, in December, in Stockholm, your name is said aloud, once, in a subordinate clause, by a person in white tie. You watch it four times.",fx:{E:6,P:3,cites:150}},
- {t:"The Family",b:[1,4],s:"The prize goes, \u201cfor the economics of the family,\u201d to a couple who are, by the time of the ceremony, no longer one. They sit at opposite ends of the row. The lecture is given jointly and is about bargaining."},
+ {t:"The Family",b:[1,4],s:"The prize goes, \u201cfor the economics of the family,\u201d to a couple who are, by the time of the ceremony, no longer one. They sit at opposite ends of the row. The lecture is given jointly and is about bargaining.",re:[["Watch the lecture.","It is about bargaining. It is, visibly, about bargaining."],["Skip it.","Everyone else watches it for the bargaining, and tells you about it, at length."]]},
  {t:"The Psychologist",b:[3,4],s:"The prize is shared with a psychologist, who thanks the economists, in the lecture, for their patience. The economists at the seminar the next day are not patient.",
   ch:[{t:"Say something generous at the seminar.",fx:{N:2,E:1},say:"You say the field is bigger than it was. It is. Somebody says \u201cthat is one word for it,\u201d and the room laughs, and you laugh too, slightly later."},
       {t:"Say something else.",fx:{E:3,N:-2},say:"You say what everyone is thinking, in a form that can be quoted, and it is quoted, and it reaches the psychologist, who is gracious about it in a way that costs you more than the sentence did."}]},
  {t:"The Discussant",b:[2,4],s:"The prize goes to three people, one of whom discussed your paper in 2027 and said it was \u201cconfused.\u201d He has, in the scientific background, a paragraph. You have, in the scientific background, nothing, and a memory of the room.",fx:{E:-3,R:1}},
- {t:"The Wrong One",b:[2,4],s:"The prize goes to the right person for the wrong paper. Everyone who knows says so, at dinner, for a month, with the confidence of people who will never be asked.",fx:{N:1}}
+ {t:"The Wrong One",b:[2,4],s:"The prize goes to the right person for the wrong paper. Everyone who knows says so, at dinner, for a month, with the confidence of people who will never be asked.",fx:{N:1},re:[["Say which paper it should have been.","Everyone agrees, and each of them names a different paper."],["Say the prize is always right.","A silence at the table, and then somebody says \u201cwell,\u201d and the dinner continues, without you."]]}
 ];
 function octoberCard(){
  g.octSeen=g.octSeen||{};
@@ -3091,34 +3095,41 @@ function octoberCard(){
  if(it.ch){ card({append:true,cls:"gold",kicker:"OCTOBER",ti:it.t,sc:it.s,ch:it.ch}); return; }
  newsCard(it,"OCTOBER","card quiet life october");
 }
-/* a choiceless card from a pool entry {t,s,fx?} */
+/* a choiceless card from a pool entry {t,s,fx?,re?}. `re` is a row of
+   reactions — read it, admire it, shrug — that answer in one line and
+   change nothing; the term does not wait for them. */
 function newsCard(it,kicker,cls){
  const snap={R:g.R,K:g.K,N:g.N,P:g.P,S:g.S,E:g.E,B:g.B};
  if(it.fx) applyFx(it.fx);
  const el=document.createElement("div");
  el.className=cls;
  el.innerHTML=`<div class="kicker"><span>${kicker}</span><span>${termName()} · age ${age()}</span></div>
-  <h2>${it.t}</h2><div class="scene">${fill(it.s,1)}</div>${it.fx?deltaStrip(snap):""}`;
+  <h2>${it.t}</h2><div class="scene">${fill(it.s,1)}</div>${it.fx?deltaStrip(snap):""}
+  ${it.re?`<div class="choices react">${it.re.map((r,i)=>`<button data-r="${i}">${r[0]}</button>`).join("")}</div><div class="reply" hidden></div>`:""}`;
+ if(it.re) el.querySelectorAll("button[data-r]").forEach(b=>b.onclick=()=>{
+  el.querySelectorAll("button[data-r]").forEach(x=>x.disabled=true); b.style.borderColor="var(--gold)";
+  const r=el.querySelector(".reply"); r.hidden=false; r.textContent=fill(it.re[+b.dataset.r][1]);
+ });
  $("cardslot").appendChild(el);
 }
 /* the literature: other people's papers, noticed. Choiceless, once each. */
 const LITERATURE=[
  {t:"Identified",s:"\u201cIs the Notion of Identification Identified?\u201d is out in {topjournal}. It is forty pages and the answer is no, and it is the most discussed paper of the year among people who have not read past the answer.",b:[1,4]},
- {t:"Three Differences",s:"\u201cDifferences in Differences in Differences of Difference-in-Difference Estimators\u201d has reached twelve thousand citations. Nobody has used the estimator. Everybody has cited the paper, in the paragraph where one explains that one is aware of the issue.",b:[2,4]},
+ {t:"Three Differences",s:"\u201cDifferences in Differences in Differences of Difference-in-Difference Estimators\u201d has reached twelve thousand citations. Nobody has used the estimator. Everybody has cited the paper, in the paragraph where one explains that one is aware of the issue.",b:[2,4],re:[["Cite it.","In the paragraph where one explains that one is aware of the issue."],["Use the estimator.","Nobody has. You look at the formula for some time and decide not to be the first."]]},
  {t:"A Theory of Behavioral Economists",s:"\u201cA Theory of Behavioral Economists\u2019 Behavior\u201d is out in {ajournal}. The model has two types. Both types are in the acknowledgments.",b:[1,4]},
- {t:"Games",s:"\u201cIs Game Theory a Theory of Games?\u201d appears in {bjournal}. The author has been asked this at every seminar for thirty years and has finally, in a fit of something, answered. The answer is nine pages and does not settle it.",b:[1,4]},
- {t:"Macro Must Be Boring",s:"\u201cMacro Must Be Boring: An Empirical Analysis of Salaries in Economics\u201d is out in {topjournal}, and is the most downloaded paper the journal has ever had, and every macroeconomist you know has read it and says it is not about them, and each of them is in Table 2.",b:[1,4],fx:{E:1}},
+ {t:"Games",s:"\u201cIs Game Theory a Theory of Games?\u201d appears in {bjournal}. The author has been asked this at every seminar for thirty years and has finally, in a fit of something, answered. The answer is nine pages and does not settle it.",b:[1,4],re:[["Read the nine pages.","It is a theory of games in the sense that a menu is a theory of dinner."],["Ask the author at a conference.","He says he no longer discusses it. You have a drink together anyway. It is a good drink."]]},
+ {t:"Macro Must Be Boring",s:"\u201cMacro Must Be Boring: An Empirical Analysis of Salaries in Economics\u201d is out in {topjournal}, and is the most downloaded paper the journal has ever had, and every macroeconomist you know has read it and says it is not about them, and each of them is in Table 2.",b:[1,4],fx:{E:1},re:[["Find yourself in Table 2.","Row fourteen. The number is correct. It is the correctness that stings."],["Send it to a macroeconomist.","He replies within the hour that it is not about him. He is in row three."]]},
  {t:"The Advantage",s:"\u201cOn the Advantage of Poverty\u201d is in {ajournal}. The author holds a named chair. The named chair is in the acknowledgments, as a funder.",b:[1,4]},
- {t:"A Waste",s:"\u201cWhy Teaching Economics Is a Waste\u201d has appeared in {cjournal}. You read it twice. It is not a good paper and it is not, in every particular, wrong, and it is printed out in the chair\u2019s office with a paragraph highlighted, and you know which paragraph.",b:[2,4],ga:{tdebt:5}},
+ {t:"A Waste",s:"\u201cWhy Teaching Economics Is a Waste\u201d has appeared in {cjournal}. You read it twice. It is not a good paper and it is not, in every particular, wrong, and it is printed out in the chair\u2019s office with a paragraph highlighted, and you know which paragraph.",b:[2,4],ga:{tdebt:5},re:[["Read it a third time.","It does not improve. Neither does the highlighted paragraph."],["Teach, this term, out of spite.","The students notice nothing. The chair does."]]},
  {t:"Competing for a Nobel",s:"\u201cCompeting for a Nobel: A Theory and Some Dismal Findings\u201d is out in {cjournal}. The findings are dismal. The theory is that people like you exist, and the dismal part is the number.",b:[2,4],ga:{nobelhope:1},fx:{E:-2}},
- {t:"Fair",s:"\u201cHas Fehr Been Fair? New Evidence\u201d is in {bjournal}. The evidence is new. The question is old and has never been asked in print before, because nobody wanted to be the one, and now someone has, and is looking for a job.",b:[1,4]},
- {t:"Why It All Sucks",s:"\u201cWhy It All Sucks: A General Equilibrium Approach\u201d appears in {cjournal}. It is a proper general equilibrium model with a proper existence proof, and the conclusion is in the title, and the referees, the editor notes in a footnote, agreed with it.",b:[1,4]},
- {t:"Gold from Berlin",s:"\u201cOnce Nash Was Wrong: A Memory about Gold from Berlin\u201d is in {cjournal}. It is by a man who was there. Nobody else was there. It is unfalsifiable and moving and cited by nobody, and you keep a copy.",b:[2,4]},
+ {t:"Fair",s:"\u201cHas Fehr Been Fair? New Evidence\u201d is in {bjournal}. The evidence is new. The question is old and has never been asked in print before, because nobody wanted to be the one, and now someone has, and is looking for a job.",b:[1,4],re:[["Look up the author.","On the market. Two interviews, both cancelled after the paper came out. The paper is right."],["Say nothing, anywhere.","The safest sentence in the profession, and you say it fluently."]]},
+ {t:"Why It All Sucks",s:"\u201cWhy It All Sucks: A General Equilibrium Approach\u201d appears in {cjournal}. It is a proper general equilibrium model with a proper existence proof, and the conclusion is in the title, and the referees, the editor notes in a footnote, agreed with it.",b:[1,4],re:[["Check the existence proof.","It holds. It holds under weaker assumptions than the author claims, which does not help."],["Share it.","Forty people like it. Three of them are referees on something of yours."]]},
+ {t:"Gold from Berlin",s:"\u201cOnce Nash Was Wrong: A Memory about Gold from Berlin\u201d is in {cjournal}. It is by a man who was there. Nobody else was there. It is unfalsifiable and moving and cited by nobody, and you keep a copy.",b:[2,4],re:[["Write to the author.","He replies, on paper, in a hand that has held gold. He would like to talk. You do not follow it up, and you will regret that in a way you cannot yet name."],["Keep the copy.","It is in the drawer with the clock."]]},
  {t:"Prizes",s:"\u201cPrizes Become Prizes: Theory and Evidence\u201d is out in {ajournal}. The theory is that a prize is worth what its last winner was. The evidence is a table of the last winners, and you look for your name in it before you have decided whether you want it there.",b:[3,4],ga:{anyflag:["MEDAL","GENIUS"]},fx:{E:2}},
  {t:"The Ego in Econ",s:"\u201cThe Ego in Econ\u201d is in {topjournal}. It has a dataset. You are in the dataset. You can tell from the summary statistics, which is not how summary statistics are supposed to work.",b:[2,4],ga:{E:70},fx:{E:-2}},
  {t:"WTF",s:"\u201cWTF, or Why Retiring from Academic Economics Is the Smart Option\u201d has been published in a journal so far down the list that the list ends. It is forwarded to you by three people, separately, without comment. You read it on a Sunday.",b:[3,4],ga:{since:["TENURED",20]},fx:{B:-2}},
- {t:"Gasoline",s:"\u201cGasoline\u201d is out in {topjournal}. One word in the title, forty-one pages under it, and the most cited paper of the year. There is a movement now for one-word titles. It will last until the first one is rejected.",b:[1,4]},
- {t:"An Economic Theory",s:"\u201cAn Economic Theory of Porn\u201d is out in {topjournal}, with a lead editor\u2019s note about the importance of the market. In the same month, \u201cAn Economic Theory of Love\u201d appears in {cjournal}, without a note.",b:[1,4]},
+ {t:"Gasoline",s:"\u201cGasoline\u201d is out in {topjournal}. One word in the title, forty-one pages under it, and the most cited paper of the year. There is a movement now for one-word titles. It will last until the first one is rejected.",b:[1,4],re:[["Read it.","Forty-one pages. It is about gasoline."],["Admire it.","One word. You have never managed one word."],["Shrug.","It is, when all is said, about gasoline."]]},
+ {t:"An Economic Theory",s:"\u201cAn Economic Theory of Porn\u201d is out in {topjournal}, with a lead editor\u2019s note about the importance of the market. In the same month, \u201cAn Economic Theory of Love\u201d appears in {cjournal}, without a note.",b:[1,4],re:[["Read both.","The one about love is better. It has a proof. Nobody will ever know."],["Read the editor\u2019s note.","It uses the word \u201cmarket\u201d nine times and the word \u201cimportant\u201d four times, and one of the fours is doing something."]]},
  {t:"Hard Data",s:"\u201cThe IFI That Outperformed Them All: Some Hard Data\u201d is in {ajournal}. The data are hard. The institution is not named, for legal reasons, and everyone knows which one it is, for the same reasons.",b:[2,4]}
 ];
 function litCard(){
@@ -3135,13 +3146,7 @@ function lifeCard(){
  if(!pool.length) return;
  const i=pick(pool), it=LIFE[i]; g.lifeSeen[i]=1;
  if(it.flag) g.flags[it.flag]=g.turn+1;
- const snap={R:g.R,K:g.K,N:g.N,P:g.P,S:g.S,E:g.E,B:g.B};
- if(it.fx) applyFx(it.fx);
- const el=document.createElement("div");
- el.className="card quiet life";
- el.innerHTML=`<div class="kicker"><span>MEANWHILE</span><span>${termName()} · age ${age()}</span></div>
-  <h2>${it.t}</h2><div class="scene">${fill(it.s,1)}</div>${it.fx?deltaStrip(snap):""}`;
- $("cardslot").appendChild(el);
+ newsCard(it,"MEANWHILE","card quiet life");
 }
 
 /* ---------- jokers: the things one stumbles into. On top of the two events,

@@ -378,6 +378,11 @@ Meanwhile card fired. `{topjournal}` `{ajournal}` `{bjournal}` `{cjournal}`
 draw a journal of that tier, fixed per card. Entries are `{t,s,b,ga?,fx?}`;
 gate the ones that should sting (`tdebt`, `nobelhope`, `E`, `since`).
 
+**Reactions.** Any choiceless pool entry (Meanwhile, the literature, a
+choiceless October) can carry `re:[["Read it.","one-line reply"],…]`: a row
+of small buttons under the card that answer in a line and change nothing.
+The term does not wait for them. Use them on some cards, not all.
+
 ## Meanwhile
 
 `LIFE` is a separate pool of things that happen in a life and change
