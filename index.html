@@ -265,6 +265,30 @@ header.mast .tag{
 .remembers{font-size:13.5px;color:var(--dim);font-style:italic;margin-top:11px;line-height:1.5}
 
 /* ---------- footer ---------- */
+.cvlink{
+  background:none;border:none;padding:0;margin:0;color:inherit;font:inherit;cursor:pointer;
+  border-bottom:1.5px dotted var(--gold);color:var(--chalk);
+}
+.cvlink:hover{color:var(--gold)}
+.cvlink b{color:inherit}
+#ovl{position:fixed;inset:0;background:rgba(10,9,14,.78);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
+#ovl[hidden]{display:none}
+.sheet{
+  width:100%;max-width:640px;background:var(--panel);border:2px solid var(--gold);border-radius:18px;
+  padding:16px 18px 18px;animation:rise .35s cubic-bezier(.2,.9,.3,1) both;
+}
+.sheet h2{font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:26px;margin:0 0 2px;letter-spacing:-.015em}
+.sheet .sub{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.cvlist{display:flex;flex-direction:column;gap:9px;max-height:62vh;overflow-y:auto;padding-right:4px}
+.cvrow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid #2E2B3A}
+.cvrow:first-child{border-top:none}
+.cvrow .ti{font-weight:700;color:var(--chalk);line-height:1.35}
+.cvrow .meta{font-family:"Space Mono",monospace;font-size:11.5px;color:var(--dim);margin-top:3px}
+.cvrow .meta i{color:var(--dim)}
+.cvrow .ct{font-family:"Space Mono",monospace;font-size:13px;font-weight:700;color:var(--gold);white-space:nowrap}
+.cvrow .ct small{display:block;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:right}
+.sheet .empty{color:var(--dim);font-style:italic;padding:10px 0}
+.sheet .close{margin-top:14px}
 footer{text-align:center;padding:6px 0 4px}
 footer a{color:var(--dimmer);font-style:italic;font-size:14px;text-decoration:none}
 footer a:hover{color:var(--gold)}
@@ -307,6 +331,7 @@ footer a:hover{color:var(--gold)}
 <div id="log"></div>
 
 <footer><a href="https://steffenhuck.github.io">steffen huck</a></footer>
+<div id="ovl" hidden></div>
 </div>
 
 <script>
@@ -2689,12 +2714,12 @@ function render(){
  $("cv").innerHTML=`
   <div class="cvhead">
    <div class="cvbig">${Math.round(g.cites).toLocaleString()}<small>citations</small></div>
-   <div class="cvsub">h-index <b>${hIndex()}</b><br>${g.papers.length} published &middot; <b>${aplus()}</b> in the top four</div>
+   <div class="cvsub">h-index <b>${hIndex()}</b><br><button class="cvlink" data-cv="all">${g.papers.length} published</button> &middot; <button class="cvlink" data-cv="top"><b>${aplus()}</b> in the top four</button></div>
   </div>
   <div class="papers">${g.papers.slice(0,6).map(p=>
    `<div class="prow"><span class="tierpill t-${p.tier==="A+"?"Aplus":p.tier}">${p.tier}</span>
     <span class="ti">${p.ti}</span><span class="jn">${p.jn}</span><span class="ct">${Math.round(p.c)}</span></div>`).join("")}</div>
-  <div class="wip">${q? q+" under review &middot; ":""}next paper ${Math.min(99,Math.round(g.wip))}% written</div>`;
+  <div class="wip">${q? `<button class="cvlink" data-cv="queue">${q} under review</button> &middot; `:""}next paper ${Math.min(99,Math.round(g.wip))}% written</div>`;
 
  /* desk */
  $("desk").hidden = awaiting || !!g.ended || !g.vow;
@@ -2933,6 +2958,35 @@ function placeStep(){
   ]
  });
 }
+
+/* ---------- the record, in full ---------- */
+function openCV(kind){
+ const tierCls=t=>"tierpill t-"+(t==="A+"?"Aplus":t);
+ let title, sub, rows;
+ if(kind==="queue"){
+  title="Under review"; sub=g.queue.length+" out";
+  rows=g.queue.slice().sort((a,b)=>a.due-b.due).map(p=>`<div class="cvrow"><span class="${tierCls(p.tier)}">${p.tier}</span>
+   <div><div class="ti">${p.ti}</div><div class="meta"><i>${p.jn}</i> \u00b7 ${p.rounds>=9?"decided":p.rounds?"revise and resubmit":"with the referees"}</div></div>
+   <div class="ct">${Math.max(0,p.due-g.turn)}<small>terms</small></div></div>`);
+ } else {
+  const list=(kind==="top"? g.papers.filter(p=>p.tier==="A+") : g.papers.slice()).sort((a,b)=>b.pub-a.pub);
+  title= kind==="top" ? "The top four" : "Published";
+  sub= list.length+(kind==="top"?" in the Quarterly, Metrica, the Review or the American":" papers")+" \u00b7 "+Math.round(g.cites).toLocaleString()+" citations \u00b7 h-index "+hIndex();
+  rows=list.map(p=>`<div class="cvrow"><span class="${tierCls(p.tier)}">${p.tier}</span>
+   <div><div class="ti">${p.ti}</div><div class="meta"><i>${p.jn}</i> \u00b7 age ${25+Math.floor(p.pub/2)}${p.f?" \u00b7 "+p.f:""}</div></div>
+   <div class="ct">${Math.round(p.c)}<small>cites</small></div></div>`);
+ }
+ $("ovl").innerHTML=`<div class="sheet" role="dialog" aria-label="${title}">
+  <h2>${title}</h2><div class="sub">${sub}</div>
+  <div class="cvlist">${rows.length?rows.join(""):'<div class="empty">Nothing yet. The drawer is where about forty percent of the field\u2019s best work lives.</div>'}</div>
+  <button class="go close" id="cvclose">Back to the term</button></div>`;
+ $("ovl").hidden=false;
+ $("cvclose").onclick=closeCV;
+}
+function closeCV(){ $("ovl").hidden=true; $("ovl").innerHTML=""; }
+$("cv").addEventListener("click",ev=>{ const b=ev.target.closest("[data-cv]"); if(b) openCV(b.dataset.cv); });
+$("ovl").addEventListener("click",ev=>{ if(ev.target===$("ovl")) closeCV(); });
+document.addEventListener("keydown",ev=>{ if(ev.key==="Escape"&&!$("ovl").hidden) closeCV(); });
 
 /* wiring */
 $("levers").addEventListener("click",ev=>{
