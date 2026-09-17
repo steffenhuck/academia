@@ -385,7 +385,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.04.02";
+const VERSION="0.04.03";
 
 /* ============================================================
    THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
@@ -3475,14 +3475,11 @@ function timeUpKind(){
    The state is one object, g. It is written to this browser at every clean
    point (all cards answered, nothing pending) and can be written to a file
    at the same points; a mid-card quit resumes from the start of that term. */
-const SAVE_KEY="discipline.save", WELCOME_KEY="discipline.welcomed";
-let welcomed=false;   /* in-memory fallback when the browser keeps nothing */
+const SAVE_KEY="discipline.save";
+/* the welcome opens every new career, over the blurred vow card; never on a resume */
 function showWelcome(){
- let seen=welcomed; try{ seen=seen||!!localStorage.getItem(WELCOME_KEY); }catch(e){}
- if(seen) return;
  $("welcome").hidden=false; document.querySelector(".wrap").classList.add("blurred");
- $("letsplay").onclick=()=>{ welcomed=true; try{ localStorage.setItem(WELCOME_KEY,"1"); }catch(e){}
-  $("welcome").hidden=true; document.querySelector(".wrap").classList.remove("blurred"); };
+ $("letsplay").onclick=()=>{ $("welcome").hidden=true; document.querySelector(".wrap").classList.remove("blurred"); };
 }
 let lastClean=null;
 function cleanPoint(){ return !!g&&!!g.vow&&!g.ended&&!awaiting&&!pendingNext&&g.draws<=0&&!(g.pendingSubmit>0); }
@@ -3546,7 +3543,7 @@ function boot(){
  $("termslot").innerHTML="";
  render();
  const sv=readSave();
- if(sv&&sv.g&&sv.g.vow&&!sv.g.ended){ welcomed=true; resumeCard(sv); return; }
+ if(sv&&sv.g&&sv.g.vow&&!sv.g.ended){ resumeCard(sv); return; }
  showWelcome();
  card({
   cls:"gold", kicker:"THE VOW", ti:"What is it for?",
