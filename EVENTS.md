@@ -200,10 +200,14 @@ one line to `ARCS`. Twenty-six exist.
 Recurring people have names, in `CAST`, and the prose refers to them with
 placeholders: `{advisor}` for the full name and title, `{advisorS}` for the
 surname alone. They are filled in when the card renders, so a name can be
-changed in one place.
+changed in one place. In scenes and outcomes the name is clickable and opens
+a short bio from `BIOS`, keyed like `CAST` without the `S`. **A new name in
+`CAST` needs a `BIOS` entry** (a role line and a bio of three or four
+sentences) or it renders as plain text.
 
 | placeholder | who |
 |---|---|
+| `{qpaper}` `{qjournal}` | the paper under review longest and where it is — the one the process mods act on. **Every event gated `queue:1` must name it**, so the player can find it in the under-review list |
 | `{paper}` | the title of the paper in the drawer — the one the next submission sends. Use it in a scene so the choice's `submit` is about a named paper |
 | `{senior}` `{seniorS}` | Professor Ambrose Kettlewell — the senior man who offers his name for the paper (P4) |
 | `{advisor}` | Professor Cornelius Vandersloot — has not read the chapter; wants his name on the job market paper; you write his obituary |

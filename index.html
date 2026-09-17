@@ -258,6 +258,9 @@ header.mast .tag{
 /* ---------- enemies ---------- */
 .foes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
 .foes:empty{display:none}
+.who{color:var(--chalk);border-bottom:1px dotted var(--gold);cursor:pointer}
+.who:hover{color:var(--gold)}
+.sheet .bio{font-size:15px;line-height:1.55;color:#DAD5E4}
 .foelbl{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--dimmer);align-self:center;margin-right:2px}
 .foe{
   font-size:11px;font-weight:700;border:1.5px solid #5B3742;background:rgba(255,90,107,.08);
@@ -345,7 +348,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.03.13";
+const VERSION="0.03.14";
 
 /* ============================================================
    THE DISCIPLINE — v0 engine
@@ -509,8 +512,49 @@ const CAST={
  shouter:"Professor Rupert Coldstream", shouterS:"Coldstream",
  senior:"Professor Ambrose Kettlewell", seniorS:"Kettlewell"
 };
-/* {paper} names the paper in the drawer — the one the next submission sends */
-const fill=str=>str? String(str).replace(/\{paper\}/g,()=>(g.nextPaper=g.nextPaper||makePaper()).ti).replace(/\{(\w+)\}/g,(m,k)=>CAST[k]!==undefined?CAST[k]:m) : str;
+/* who they are, for the click. Every new name in CAST needs a line here. */
+const BIOS={
+ advisor:{role:"your advisor",bio:"Professor Cornelius Vandersloot has supervised forty-one dissertations and read, by his own private count, nine. He is kind in the way of a man who has decided that kindness is cheaper than attention. His own best paper was written in 2009 and he has been giving the same talk about it since, with one slide updated. He wants his name on your job market paper and will not say so, and the not-saying is the closest thing to a lesson he will ever give you."},
+ discussant:{role:"the eminence",bio:"Professor Dr. Dr. h.c. mult. Klaus-Dieter Frobenius proved the theorem you extended, in 1994, in a paper that is cited more often than it is read and read more often than it is understood. He discusses papers as though they were minor infractions. He has four honorary doctorates and has attended, at each ceremony, with the expression of a man being handed the wrong coat."},
+ star:{role:"the one your age",bio:"Casimir Blunt was thirty-four with two papers in the Quarterly, and he is the person everyone at your stage would have given a year to be. He writes three-line emails and gives your talk better than you. He is, in person, disarmingly nice, which is the one thing about him nobody can forgive."},
+ calderon:{role:"the collaborator at Calderon",bio:"Professor Aurelio Santangelo has a view of the ocean, four postdocs, and a gift for arriving at the whiteboard just as somebody else\u2019s idea is finished. He is generous with acknowledgments. He is generous with everything except the thing that would have cost him something."},
+ student:{role:"your first student",bio:"Mira Halloran came to you with an idea in her second year and has never since needed another. She writes faster than you, cites you correctly, and will one day introduce you at a lecture with a warmth that will be entirely sincere and will make you feel about ninety."},
+ rival:{role:"the one from your cohort",bio:"Yulia Sorokina was in your cohort and got the Harwich job talk, and one of the two of you has been keeping score ever since. She does not remember which. Her papers are very good and she is unfailingly pleasant to you at conferences, which is the part you mind."},
+ laureate:{role:"the laureate",bio:"Sir Alasdair Penhaligon-Brack won it in a year when the committee was tired, and has spent the decades since being introduced as having won it. He orders the oysters. He has a bad paper at the Review that everyone has read and nobody has refereed, and a hand that rests, at dinner, where it should not."},
+ editor:{role:"the editor",bio:"Gerald Fenn-Whistler edits a journal you would like to be in and has dinner, monthly, with everyone you have ever been compared to. His letters are courteous, brief, and agree with whichever referee wrote last. He has never, as far as anyone knows, changed his mind, and he has never needed to."},
+ dean:{role:"the dean",bio:"Dean Constance Abara was a good economist for eleven years and has been a better dean for nine, which she regards as a failure of character. She reads the whole file. She remembers what you said at the meeting in a way that is neither a threat nor entirely not one."},
+ provost:{role:"the provost",bio:"Provost Leopold Marchand actually runs the place. He is loyal, capable, and in a relationship with a direct report, and all three facts are known to everyone, and only the third has been written down, by someone who would like a different provost."},
+ admin:{role:"the department administrator",bio:"Bernadette has been in the department for nine years, knows where every form goes and every body is buried, and has been taking money from the petty cash with a consistency that in another context would be called discipline. The department could not run without her. The bursar has a spreadsheet."},
+ trustee:{role:"the trustee",bio:"Chuck Kowalczyk III made his money in logistics software and his name is on the new building, in letters that can be read from the interstate. He would sincerely like to know what economics has learned in thirty years. His college roommate runs a fund that returns 24% a year, which is not possible."},
+ chair:{role:"the chair",bio:"Professor Ruth Eldridge is the chair, and takes you for coffee, which chairs do not do. She says exactly what she means about eighteen months before anyone else is prepared to hear it. She has read your file more carefully than you have."},
+ postdoc:{role:"your postdoc",bio:"Lena Vogt is twenty-nine, better at proofs than you were at twenty-nine, and has been in your office for an hour about one. At some point in the hour the proof stopped being the subject. She has a job talk in two years and, whatever happens, she will give it well."},
+ firm:{role:"the search firm",bio:"Perpetua Vance, of Vance & Halloway, has placed eleven presidents and describes each of them, at lunch, as \u201cthe obvious candidate, in the end.\u201d Her conversations are always exploratory. This is true right up until the moment it stops being true, which she can see coming and you cannot."},
+ hungarian:{role:"the man in the 1961 volume",bio:"\u00d6d\u00f6n Sz\u00e9kely-Bartha proved your result in four pages, in 1961, in a notation that has since died and a journal that has since been rebound and forgotten. He is dead. He did not get tenure. He is, in the only sense that lasts, ahead of you."},
+ historian:{role:"the historian",bio:"Dr. Winifred Scaife reviews economics in history journals and history in economics journals and is disliked in both, which she takes as evidence of standards. Her reviews are four thousand words long and the word \u201ceconomistic\u201d appears in each of them twice, like a watermark."},
+ prewitt:{role:"the second-year at Ostrander State",bio:"Ottoline Prewitt is a second-year at Ostrander State with a four-page PDF called \u201cA Note on Lemma 2.\u201d It is polite, correct, and already online. She has never met you. She would like to. This is the most frightening sentence in the profession."},
+ chile:{role:"the reader in Chile",bio:"Joaqu\u00edn Err\u00e1zuriz is a graduate student in Chile who has, from the text, actually read your paper, all of it, including the appendix. He is the only one. He will write to you once, with a question you cannot answer, and you will think about him for years."},
+ coauthor:{role:"the coauthor who stopped replying",bio:"Dominic Fairweather is eighty percent of the way through a paper with you and four months into not answering email. His last message said \u201con it.\u201d He is going through a divorce, or a breakdown, or a sabbatical, and from the outside the three are indistinguishable."},
+ mostcited:{role:"the department\u2019s most cited member",bio:"Professor Gideon Marsh brings in a third of the department\u2019s grant income and two thirds of its citations, and there is a complaint against him: three students, one pattern, six years. Everybody has known for five of them. He is charming at dinner and this is, at this point, evidence."},
+ shouter:{role:"the named chair",bio:"Professor Rupert Coldstream has a named chair, no recent papers, and a teaching load of nine hours a year, about which he shouts. He was, in 2011, genuinely important. He is aware of the year. He would like you to be aware of it too."},
+ senior:{role:"the senior colleague",bio:"Professor Ambrose Kettlewell has a window, a name that gets things read, and a reputation for having thought about doing it properly. He has coauthored with every junior person in the department in turn, and every one of them, later, tells the same story about the conference."}
+};
+/* {paper} names the paper in the drawer — the one the next submission sends.
+   {qpaper} and {qjournal} name the paper under review longest — the one the
+   process mods (accept, reject, resubmit, delay, publish) act on.
+   With html set, cast names become clickable and open their bio. */
+const oldestQ=()=>g.queue.slice().sort((a,b)=>a.due-b.due)[0];
+function fill(str,html){
+ if(!str) return str;
+ return String(str)
+  .replace(/\{paper\}/g,()=>(g.nextPaper=g.nextPaper||makePaper()).ti)
+  .replace(/\{qpaper\}/g,()=>{ const q=oldestQ(); return q?q.ti:"the paper"; })
+  .replace(/\{qjournal\}/g,()=>{ const q=oldestQ(); return q?q.jn:"the journal"; })
+  .replace(/\{(\w+)\}/g,(m,k)=>{
+   if(CAST[k]===undefined) return m;
+   const key=BIOS[k]?k:(BIOS[k.replace(/S$/,"")]?k.replace(/S$/,""):null);
+   return (html&&key)? `<span class="who" data-who="${key}">${CAST[k]}</span>` : CAST[k];
+  });
+}
 
 /* ---------- levers ---------- */
 const LEVERS=[
@@ -645,7 +689,7 @@ const EVENTS=[
  {t:"Say no, citing the clock.",fx:{R:5,wip:16,N:-4},say:"Entirely reasonable and entirely remembered. The clock excuse works exactly once per colleague."}]},
 
 {id:"A2",ti:"The Desk Reject",b:[2,4],ex:{base:1,lowMom:1.2},ga:{queue:1},
- sc:"Eleven days. The editor's note is four sentences long and two of them are about the journal's space constraints.",
+ sc:"“{qpaper}” comes back from {qjournal} in eleven days. The editor's note is four sentences long and two of them are about the journal's space constraints.",
  ch:[
  {t:"Send it down a tier tomorrow.",fx:{E:-4,mod:"resubmit"},say:"It goes out again in the morning, one tier down. Something about the paper's ambition quietly resizes itself to fit."},
  {t:"Appeal.",roll:{stat:"E",pivot:60,
@@ -804,7 +848,7 @@ const EVENTS=[
 
 /* ---------- early: the proof, the discussant, the visit ---------- */
 {id:"P7",ti:"The Proofs",b:[0,2],ex:{base:.9},ga:{queue:1},once:1,
- sc:"The paper is accepted. You are reading the proofs — the typeset pages, the last moment anything can change — and in Lemma 2 you see it. The inequality goes the wrong way. The result survives, probably, with a different argument you do not currently have.",
+ sc:"“{qpaper}” is accepted at {qjournal}. You are reading the proofs — the typeset pages, the last moment anything can change — and in Lemma 2 you see it. The inequality goes the wrong way. The result survives, probably, with a different argument you do not currently have.",
  ch:[
  {t:"Write to the editor tonight.",fx:{R:4,N:3,B:5,mod:"delay",flag:"OWNED_ERROR"},say:"The editor is, unexpectedly, gracious: “better now than in a comment.” Publication slips a year. The corrected lemma will be better than the original, and nobody but the two of you will ever know there was a first version."},
  {t:"Fix it in the proofs. Say nothing.",fx:{E:3,mod:"publish",flag:"SILENT_FIX"},say:"You rewrite two lines under the heading “typographical corrections.” The typesetter does not read mathematics. It goes through. For about three years you will feel a small cold thing whenever anyone cites Lemma 2."},
@@ -941,7 +985,7 @@ const EVENTS=[
  {t:"Leave it. Gods are for other people to fight.",fx:{B:-2,E:-2},say:"Footnote 11 stands. Somebody else finds it in 2044 and gets a job at Harwich for the comment. You read the comment in your office and recognise every step."}]},
 
 {id:"G8",ti:"The Editor's Friend",b:[1,4],ex:{base:.9,lowMom:.8},ga:{queue:1},
- sc:"Rejected. Two reports: one has misread the model, the other has misread the first report. The editor's letter agrees with both and is signed by {editor}, who has dinner, monthly, with everyone you have ever been compared to.",
+ sc:"“{qpaper}” is rejected at {qjournal}. Two reports: one has misread the model, the other has misread the first report. The editor's letter agrees with both and is signed by {editor}, who has dinner, monthly, with everyone you have ever been compared to.",
  ch:[
  {t:"Appeal, with a point-by-point.",roll:{stat:"N",pivot:55,
    win:{fx:{R:3,N:4,mom:5,mod:"accept"},say:"A third referee. Nine months. The acceptance, when it comes, will read as if the whole thing had been the editor's idea. You have learned that appeals work exactly when you are already known, which is the one case in which you do not need them."},
@@ -1292,7 +1336,7 @@ const EVENTS=[
 
 /* ---------- the publication process ---------- */
 {id:"R2",ti:"Referee 2",b:[1,4],ex:{base:.9},ga:{queue:1},
- sc:"Referee 2 has read the paper and would like a different one. Not a revision: a different paper, with a different question, which they describe over four pages with a clarity that suggests they have been meaning to write it themselves.",
+ sc:"Referee 2 at {qjournal} has read “{qpaper}” and would like a different one. Not a revision: a different paper, with a different question, which they describe over four pages with a clarity that suggests they have been meaning to write it themselves.",
  ch:[
  {t:"Write Referee 2's paper.",fx:{B:8,R:-3,mod:"delay"},say:"It will take a year. The new paper will be fine. It will not be yours, and it will not be Referee 2's either, and it will be cited by neither of you."},
  {t:"Write a response explaining why not.",roll:{stat:"R",pivot:50,
@@ -1301,7 +1345,7 @@ const EVENTS=[
  {t:"Withdraw. Send it elsewhere.",fx:{E:-2,B:2,mod:"resubmit"},say:"It goes out again, one tier down. Elsewhere has its own Referee 2."}]},
 
 {id:"R3",ti:"The Doable Request",b:[1,4],ex:{base:.9},ga:{queue:1},
- sc:"The request is reasonable. Add a section. Address the alternative explanation. Include the robustness table. Each item is doable, and you can see, with complete clarity, that doing all of them will make the paper longer, safer, and worse.",
+ sc:"The request from {qjournal}, on “{qpaper}”, is reasonable. Add a section. Address the alternative explanation. Include the robustness table. Each item is doable, and you can see, with complete clarity, that doing all of them will make the paper longer, safer, and worse.",
  ch:[
  {t:"Do all of it.",fx:{B:5,R:-2,mom:2,mod:"accept"},say:"Fifty-one pages, up from twenty-eight. It goes through. The result will be in there, somewhere around page nineteen, and the people who find it will be the people who already knew."},
  {t:"Do the table. Argue the rest.",fx:{R:3,B:3,mod:"delay"},say:"Thirty-four pages. One more round. The referee will, grudgingly, accept that the alternative explanation is addressed in footnote 9, which it was in the first version."},
@@ -1310,13 +1354,13 @@ const EVENTS=[
    lose:{fx:{E:-8,mom:-4,mod:"reject"},say:"Rejected, with a line about “unwillingness to engage.” The paper is back in the drawer. You were right about the paper and wrong about the process, and only one of those is on your CV."}}}]},
 
 {id:"R4",ti:"The Recent Literature",b:[1,4],ex:{base:.8},ga:{queue:1},
- sc:"The editor's letter, in its last paragraph, notes that the paper “would benefit from engaging with the recent literature on the topic,” and lists four papers. All four are by the editor.",
+ sc:"The editor's letter on “{qpaper}”, in its last paragraph, notes that the paper “would benefit from engaging with the recent literature on the topic,” and lists four papers. All four are by the editor.",
  ch:[
  {t:"Cite all four.",fx:{N:3,E:-3,mod:"accept"},say:"It goes through. The paragraph you wrote about the editor's work is polite and untrue, and will be read by the editor's students as evidence of influence."},
  {t:"Cite the one that is actually relevant.",fx:{R:2,E:2,mod:"delay"},say:"One more round. The editor does not mention the other three. It will get there, eventually, with a slightly colder covering letter."}]},
 
 {id:"R5",ti:"Round Three",b:[2,4],ex:{base:.8},ga:{queue:1},
- sc:"Third revision. The paper has been under review for three years, has been read by seven people, and is now longer than your dissertation. The new report asks for one more thing. It is small. It is always small.",
+ sc:"Third revision. “{qpaper}” has been under review at {qjournal} for three years, has been read by seven people, and is now longer than your dissertation. The new report asks for one more thing. It is small. It is always small.",
  ch:[
  {t:"Do it.",fx:{B:6,R:-1,mod:"accept"},say:"It goes through. You do not open the champagne. It will appear four years and two months after it was finished, and the field will have moved, and it will be cited as if it had appeared in the year it was written, which it did not."},
  {t:"Withdraw. Post it as a working paper. Forever.",fx:{E:3,mom:2,R:1,cites:30,mod:"reject",flag:"FOREVER_WP"},say:"It is cited more as a working paper than it would have been in print. It is not on your CV in the right column. Both of those facts are true, and the second is the one that counts."}]},
@@ -1898,7 +1942,7 @@ function accProb(q,tier){
 }
 function submitPaper(o){
  o=o||{};
- const q=clamp(g.R*0.72+ri(-14,14)+(g.mods.bigpaper?18:0)+(o.q||0), 5, 100);
+ const q= o.q0!==undefined ? o.q0 : clamp(g.R*0.72+ri(-14,14)+(g.mods.bigpaper?18:0)+(o.q||0), 5, 100);
  let z=-1.9+3.0*q/100+0.9*g.N/100+1.1*prestige()+0.5*g.M/100+(o.bias||0);
  if(g.flags.CARTEL)z+=0.35;
  z-=0.2*foesOf("referee");
@@ -1907,7 +1951,7 @@ function submitPaper(o){
  const lag = o.lag ? ri(o.lag[0],o.lag[1]) : tier==="A+"? ri(5,9) : tier==="A"? ri(4,7) : ri(2,5);
  const pp=o.pp||g.nextPaper||makePaper(); g.nextPaper=null; if(o.f) pp.f=o.f;
  g.queue.push({ti:pp.ti, f:pp.f, tier, jn:o.jn||journalFor(tier,pp.f), q, due:g.turn+lag, rounds:o.rounds===undefined?0:o.rounds, bonusCites:o.cites||0,
-  pAcc:o.target?accProb(q,tier):undefined});
+  pAcc:o.target?accProb(q,tier):undefined, vain:!!o.vain});
  line("info","✉ Submitted: “"+g.queue[g.queue.length-1].ti+"” — out for review.");
  if(g.mods.bigpaper) delete g.mods.bigpaper;
 }
@@ -1922,7 +1966,9 @@ function reviewPass(){
    if(s.tier==="C"){ s.pAcc=undefined; s.due=g.turn+ri(1,2); line("bad","\u2717 Rejected at "+was+". It goes to the next one down the list, which has no list."); continue; }
    s.tier=nt; s.jn=journalFor(nt,s.f); s.pAcc=accProb(s.q,nt); s.due=g.turn+ri(2,4); s.rounds=1;
    g.E=clamp(g.E-2,0,100);
-   line("bad","\u2717 Rejected at "+was+": \u201c"+s.ti+"\u201d goes out again, to "+s.jn+".");
+   if(s.vain){ s.vain=false; g.B=clamp(g.B+4,0,100); g.E=clamp(g.E-3,0,100);
+    line("bad","\u2717 Rejected at "+was+": \u201c"+s.ti+"\u201d, which was where it belonged. You take it personally. It goes to "+s.jn+"."); }
+   else line("bad","\u2717 Rejected at "+was+": \u201c"+s.ti+"\u201d goes out again, to "+s.jn+".");
    continue;
   }
   if(s.rounds<1 && Math.random()<0.45){
@@ -2207,6 +2253,7 @@ function applyFx(fx){
    /* these act on the paper that has been under review longest */
    const q=g.queue.slice().sort((a,b)=>a.due-b.due)[0];
    if(q){
+    q.pAcc=undefined;   /* the event has decided; no separate rejection roll */
     if(fx.mod==="accept"){ q.due=g.turn+1; q.rounds=9; }
     else if(fx.mod==="reject"){ g.queue.splice(g.queue.indexOf(q),1); g.wip+=45; line("bad","\u2717 \u201c"+q.ti+"\u201d is back in the drawer."); }
     else if(fx.mod==="resubmit"){ const t=["A+","A","B","C"]; q.tier=t[Math.min(3,t.indexOf(q.tier)+1)]; q.jn=journalFor(q.tier,q.f); q.due=g.turn+ri(2,4); q.rounds=9; line("info","\u2192 \u201c"+q.ti+"\u201d goes to "+q.jn+"."); }
@@ -2652,8 +2699,8 @@ function autoCard(e,sc){
  const el=document.createElement("div");
  el.className="card "+(bad?"grim":good?"gold":"");
  el.innerHTML=`<div class="kicker"><span>${bad?"BAD NEWS":good?"GOOD NEWS":"NEWS"}</span><span>${termName()} \u00b7 age ${age()}</span></div>
-  <h2>${fill(e.ti)}</h2><div class="scene">${fill(sc)}</div>
-  <div class="outcome${bad?" bad":""}">${fill(e.auto.say)}${deltaStrip(snap)}</div>`;
+  <h2>${fill(e.ti,1)}</h2><div class="scene">${fill(sc,1)}</div>
+  <div class="outcome${bad?" bad":""}">${fill(e.auto.say,1)}${deltaStrip(snap)}</div>`;
  $("cardslot").appendChild(el);
  awaiting=false;
 }
@@ -2792,8 +2839,8 @@ function card(o){
  el.className="card "+(o.cls||"");
  el.innerHTML=`
   <div class="kicker"><span>${o.kicker||"THE TERM"}</span><span>${termName()} · age ${age()}</span></div>
-  <h2>${fill(o.ti)}</h2>
-  <div class="scene">${fill(o.sc)}</div>
+  <h2>${fill(o.ti,1)}</h2>
+  <div class="scene">${fill(o.sc,1)}</div>
   <div class="choices">${o.ch.map((c,i)=>{
     const ok=gateOK(c.gate);
     const sub = ok ? (c.why||"") : lockWhy(c.gate);
@@ -2824,7 +2871,7 @@ function card(o){
   if(msg){
    out.hidden=false;
    out.className="outcome"+(bad?" bad":"");
-   out.innerHTML=fill(msg)+deltaStrip(snap);
+   out.innerHTML=fill(msg,1)+deltaStrip(snap);
   }
   if(pendingNext){
    const go=pendingNext; pendingNext=null;
@@ -2935,14 +2982,54 @@ function runTerm(){
  render();
 }
 /* two events a term: a due storyline step gets the first slot if there is one */
-/* a finished draft: where to send it. Not one of the term's two events. */
+/* a finished draft: where to send it. Not one of the term's two events.
+   The paper has a true quality; what the player is told is the quality as
+   seen through the ego, which is the one downside of a large one. */
+const DRAFT_SC={
+ weak:[
+  "\u201c{paper}\u201d is done, in the sense that you have stopped. The result is there if you hold the page at an angle. Section 4 apologises for Section 3. The question is where to send it, and the honest answer is that it does not much matter.",
+  "You have finished \u201c{paper}\u201d and you have read it through once, quickly, the way one checks a bill. It is fine. It is the word \u201cfine\u201d in a form that can be cited. The question is where.",
+  "\u201c{paper}\u201d exists. The introduction promises a great deal and the conclusion, twenty pages later, has forgotten what. It could go out tomorrow. Where is a question you are asking yourself with less conviction than usual."
+ ],
+ solid:[
+  "\u201c{paper}\u201d is finished, or finished enough. It has a result, an introduction that oversells the result, and a section 5 you hope nobody reads. The question is where. Aim high and it comes back, in a year, with three reports; aim low and it is in print by spring, where nobody will find it.",
+  "\u201c{paper}\u201d is done. It is a proper paper: a question, an answer, a table that supports the answer, and a paragraph on limitations that is longer than you would like. Somebody will publish it. The question is who, and how long they will take.",
+  "You send \u201c{paper}\u201d to a friend for comments and the comments come back kind, which is not the same as enthusiastic. It is solid. Solid is what most careers are made of, and nobody has ever put it on a poster."
+ ],
+ strong:[
+  "\u201c{paper}\u201d is finished and it is good. You know it is good the way one knows a room is warm. The result is clean, the proof is short, and the one obvious objection is dealt with in a footnote that you are slightly too pleased with.",
+  "\u201c{paper}\u201d is the best thing you have written this year, and you have said so to two people, which is one more than is wise. The introduction does not oversell it, for once. The question is where to send something you actually believe in.",
+  "You finish \u201c{paper}\u201d at 1 a.m. and read it again at 7 and it is still good, which almost never happens. Where it goes will decide whether people find out."
+ ],
+ best:[
+  "\u201c{paper}\u201d is, you are fairly sure, the best thing you have ever written. You have been fairly sure of this before. It is the kind of paper people write one of, and you have now written one of it, and the only question is which of the four journals will have the privilege.",
+  "\u201c{paper}\u201d is finished and you have already, in your head, given the talk. The talk goes well. The question of where to send it feels, honestly, like a formality, and you notice that you have used the word \u201chonestly\u201d to yourself, which is usually a sign.",
+  "There are papers and there is \u201c{paper}\u201d. You have shown it to nobody, because nobody would understand it yet. The top four exist for exactly this. Everything below them would be a kind of insult."
+ ]
+};
+const DRAFT_SAY={
+ "A+":["It goes to one of the four. The submission fee is $250. The editor\u2019s automated reply is warmer than anything the referees will write.",
+       "Out to the top. The website says a first decision \u201ctypically\u201d takes four months, and the word \u201ctypically\u201d has never done more work in its life.",
+       "Submitted. You check the status page that evening, and the next, and it says \u201cwith editor\u201d for a length of time that will teach you something about yourself."],
+ "A": ["A real journal. The editor knows your advisor, which will help or will not, depending on which paper of your advisor\u2019s the editor is thinking of.",
+       "It goes to a good field journal, where the referees will at least have read the literature it is in. This is more than can be said for the top four, and it is also why they are the top four.",
+       "Sent. The acknowledgement is signed by a managing editor whose entire job is this acknowledgement, and who does it well."],
+ "B": ["It will be published. It will be published in the way a stone is dropped into a well: the sound arrives, faintly, and that is all.",
+       "Out, to a journal that will take it. The decision will come before you have quite stopped thinking about the paper, which is the only mercy the process offers.",
+       "It goes somewhere quick. In eighteen months it will be a line, and the line will be read by search committees at exactly the speed at which they read lines."]
+};
 function submitCard(){
- card({append:true,kicker:"THE DRAFT",ti:"Where to send it",
-  sc:"\u201c{paper}\u201d is finished, or finished enough. It has a result, an introduction that oversells the result, and a section 5 you hope nobody reads. The question is where. Aim high and it comes back, in a year, with three reports; aim low and it is in print by spring, where nobody will find it.",
+ const pp=g.nextPaper=g.nextPaper||makePaper();
+ const q=clamp(g.R*0.72+ri(-14,14)+(g.mods.bigpaper?18:0),5,100);
+ const seen=q+(g.E-50)*0.4+ri(-5,5);            /* the paper as the ego reports it */
+ const band= seen<38?"weak": seen<58?"solid": seen<76?"strong":"best";
+ const vain=g.E>=65;
+ card({append:true,kicker:"THE DRAFT",ti: band==="best"?"Where it belongs": band==="weak"?"Where to put it":"Where to send it",
+  sc:pick(DRAFT_SC[band]),
   ch:[
-   {t:"The top four.",why:"a year or more; likely to come back",fn(){ submitPaper({target:"A+",lag:[5,9]}); return "It goes to one of the four. The submission fee is $250. The editor\u2019s automated reply is warmer than anything the referees will write."; }},
-   {t:"A good field journal.",why:"the sensible choice, which is the problem with it",fn(){ submitPaper({target:"A",lag:[4,7]}); return "A real journal. The editor knows your advisor, which will help or will not, depending on which paper of your advisor\u2019s the editor is thinking of."; }},
-   {t:"Somewhere quick.",why:"in print by spring",fn(){ submitPaper({target:"B",lag:[2,3]}); return "It will be published. It will be published in the way a stone is dropped into a well: the sound arrives, faintly, and that is all."; }}
+   {t:"The top four.",why: vain?"where it belongs":"a year or more; likely to come back",fn(){ submitPaper({target:"A+",lag:[5,9],q0:q,vain}); return pick(DRAFT_SAY["A+"]); }},
+   {t:"A good field journal.",why: vain?"beneath it, arguably":"the sensible choice, which is the problem with it",fn(){ submitPaper({target:"A",lag:[4,7],q0:q}); return pick(DRAFT_SAY["A"]); }},
+   {t:"Somewhere quick.",why: vain?"unthinkable, but listed":"in print by spring",fn(){ submitPaper({target:"B",lag:[2,3],q0:q}); return pick(DRAFT_SAY["B"]); }}
   ]});
 }
 function nextCard(){
@@ -3000,14 +3087,19 @@ function phdStart(){
  });
 }
 function placeStep(){
- const post=pick(TOP), tt=pick(MID);
+ const post=pick(TOP), tt=pick(MID.filter(u=>u!==g.uni));
+ const home=post===g.uni;
+ const postTxt = home
+  ? "A postdoc at <em>"+UNIS[post].n+"</em>, which is to say they offer to keep you: same building, a slightly better desk, two years, no teaching, no security, and an address that does roughly a third of the work of a career and is already on your CV."
+  : "A postdoc at <em>"+UNIS[post].n+"</em> — two years, no teaching, no security, and an address that does roughly a third of the work of a career.";
  card({
   append:true,cls:"gold",kicker:"THE MARKET",ti:"Two offers",
-  sc:"The market has produced exactly two things. A postdoc at <em>"+UNIS[post].n+"</em> — two years, no teaching, no security, and an address that does roughly a third of the work of a career. Or a tenure-track line at <em>"+UNIS[tt].n+"</em> — seven years on the clock, starting now.<br><br>Everyone will tell you there is an obvious answer. They will not agree about which.",
+  sc:"The market has produced exactly two things. "+postTxt+" Or a tenure-track line at <em>"+UNIS[tt].n+"</em> — seven years on the clock, starting now.<br><br>Everyone will tell you there is an obvious answer. They will not agree about which.",
   ch:[
-   {t:"The postdoc at "+UNIS[post].n+".",why:UNIS[post].blurb+" — two years, and no clock.",fn(){
+   {t: home? "Stay on at "+UNIS[post].n+" as a postdoc." : "The postdoc at "+UNIS[post].n+".",why:(home?"They know you, which cuts both ways":UNIS[post].blurb)+" — two years, and no clock.",fn(){
      g.uni=post; g.rank=1; g.S=58; g.flags.POSTDOC=1; g.postdocEnd=g.turn+4;
-     return "Two years in a building where the coffee is bad and the corridor conversations are not. Nobody asks what you teach, because you do not."; }},
+     return home ? "Two more years in the same building. The desk is by the window now. Nobody asks what you teach, because you do not, and nobody asks what you are working on, because they think they know."
+                 : "Two years in a building where the coffee is bad and the corridor conversations are not. Nobody asks what you teach, because you do not."; }},
    {t:"The tenure-track line at "+UNIS[tt].n+".",why:UNIS[tt].blurb+" — seven years, starting now.",fn(){
      startClock(tt,7);
      return "An office with your name on a card in a slot, which is how they indicate that the name is provisional. The clock starts this September."; }}
@@ -3022,8 +3114,8 @@ function openCV(kind){
  if(kind==="queue"){
   title="Under review"; sub=g.queue.length+" out";
   rows=g.queue.slice().sort((a,b)=>a.due-b.due).map(p=>`<div class="cvrow"><span class="${tierCls(p.tier)}">${p.tier}</span>
-   <div><div class="ti">${p.ti}</div><div class="meta"><i>${p.jn}</i> \u00b7 ${p.rounds>=9?"decided":p.rounds?"revise and resubmit":"with the referees"}</div></div>
-   <div class="ct">${Math.max(0,p.due-g.turn)}<small>terms</small></div></div>`);
+   <div><div class="ti">${p.ti}</div><div class="meta"><i>${p.jn}</i> \u00b7 ${p.rounds>=9?"decided, not yet in print":p.rounds?"revise and resubmit":"with the referees"}</div></div>
+   <div></div></div>`);
  } else {
   const list=(kind==="top"? g.papers.filter(p=>p.tier==="A+") : g.papers.slice()).sort((a,b)=>b.pub-a.pub);
   title= kind==="top" ? "The top four" : "Published";
@@ -3039,7 +3131,17 @@ function openCV(kind){
  $("ovl").hidden=false;
  $("cvclose").onclick=closeCV;
 }
+function openBio(key){
+ const b=BIOS[key]; if(!b) return;
+ $("ovl").innerHTML=`<div class="sheet" role="dialog" aria-label="${CAST[key]}">
+  <h2>${CAST[key]}</h2><div class="sub">${b.role}</div>
+  <div class="bio">${b.bio}</div>
+  <button class="go close" id="cvclose">Back to the term</button></div>`;
+ $("ovl").hidden=false;
+ $("cvclose").onclick=closeCV;
+}
 function closeCV(){ $("ovl").hidden=true; $("ovl").innerHTML=""; }
+$("cardslot").addEventListener("click",ev=>{ const w=ev.target.closest(".who"); if(w) openBio(w.dataset.who); });
 $("cv").addEventListener("click",ev=>{ const b=ev.target.closest("[data-cv]"); if(b) openCV(b.dataset.cv); });
 $("ovl").addEventListener("click",ev=>{ if(ev.target===$("ovl")) closeCV(); });
 document.addEventListener("keydown",ev=>{ if(ev.key==="Escape"&&!$("ovl").hidden) closeCV(); });
