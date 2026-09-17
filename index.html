@@ -345,7 +345,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.03.12";
+const VERSION="0.03.13";
 
 /* ============================================================
    THE DISCIPLINE — v0 engine
@@ -2734,7 +2734,7 @@ function render(){
  $("ladder").innerHTML=RANKS.map((r,i)=>
   `<i class="${i<g.rank?"done":i===g.rank?"now":""}" title="${r}"></i>`).join("");
  $("rank").innerHTML="<b>"+title()+"</b>";
- $("place").textContent=g.uni? uniShort()+" · "+UNIS[g.uni].note : "";
+ $("place").textContent=g.uni? uniName() : "";
 
  /* board */
  $("board").innerHTML =
@@ -2761,7 +2761,7 @@ function render(){
   <div class="papers">${g.papers.slice(0,6).map(p=>
    `<div class="prow"><span class="tierpill t-${p.tier==="A+"?"Aplus":p.tier}">${p.tier}</span>
     <span class="ti">${p.ti}</span><span class="jn">${p.jn}</span><span class="ct">${Math.round(p.c)}</span></div>`).join("")}</div>
-  <div class="wip">${q? `<button class="cvlink" data-cv="queue">${q} under review</button> &middot; `:""}next paper ${Math.min(99,Math.round(g.wip))}% written</div>`;
+  ${q? `<div class="wip"><button class="cvlink" data-cv="queue">${q} under review</button></div>`:""}`;
 
  /* desk */
  $("desk").hidden = awaiting || !!g.ended || !g.vow;
@@ -2994,7 +2994,7 @@ function phdStart(){
  g.uni=pick(TOP.concat(MID)); g.rank=0; g.S=24;
  card({
   cls:"gold", kicker:"THE PROGRAM", ti:"Nearly done",
-  sc:"You are twenty-five, most of the way through a PhD at <em>"+uniName()+"</em> under {advisor}, who has not read the third chapter. A stipend of $24k, a desk in a room with four other desks, and a dissertation in three chapters of which two exist.<br><br>Three years of it remain before the market. What you do with them will not appear on your CV, and will decide most of what follows.",
+  sc:"You are twenty-five, most of the way through a PhD at <em>"+uniName()+"</em> under {advisor}, who has not read the third chapter. "+UNIS[g.uni].blurb+" A stipend of $24k, a desk in a room with four other desks, and a dissertation in three chapters of which two exist.<br><br>Three years of it remain before the market. What you do with them will not appear on your CV, and will decide most of what follows.",
   ch:[{t:"Get to work.",why:"six terms until the job market",
     fn(){ return "The room has a kettle and a whiteboard nobody erases. Somebody's job market paper is on it, from a year that has passed.<br><br><em>Now spend the term. Below, put your five points into the six things a term can go on — research, networking, media, service, teaching, recovery — and run it. Every term, the same five points. It is never enough, and it never will be.</em>"; }}]
  });
