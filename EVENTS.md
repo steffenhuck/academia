@@ -159,7 +159,9 @@ president), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
 *not* set, for the other half of a pair like `Y9`/`Y9H`; `{tdebt:8}` — the
 hidden teaching debt (one point a term without teaching, two off per teaching
 point) has reached that level. `Y10` is how neglected teaching eventually
-goes wrong in a room.
+goes wrong in a room. `{nobelhope:1}` — a Nobel is still possible and
+hoped for: not the presidency vow alone, not won, not dead, full professor,
+fifty or over (`Z4`, the prank call).
 
 `{queue:1}` — at least one paper under review; required by any event about the
 review process.
@@ -212,6 +214,7 @@ sentences) or it renders as plain text.
 
 | placeholder | who |
 |---|---|
+| `{worst}` | the title of the player's lowest-quality published paper — the one the prank caller asks about |
 | `{qpaper}` `{qjournal}` | the paper under review longest and where it is — the one the process mods act on. **Every event gated `queue:1` must name it**, so the player can find it in the under-review list |
 | `{paper}` | the title of the paper in the drawer — the one the next submission sends. Use it in a scene so the choice's `submit` is about a named paper |
 | `{senior}` `{seniorS}` | Professor Ambrose Kettlewell — the senior man who offers his name for the paper (P4) |
@@ -292,7 +295,7 @@ A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
 G21) gets **The exit upward** — the office, the salary, and a phone that does
 not ring for presidents. The vow is unmet, so the card closes on salary.
 
-## What exists (205 events)
+## What exists (213 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
@@ -311,6 +314,24 @@ That is roughly the size the engine was built for. Adding more is still only
 writing.
 
 ---
+
+## Meanwhile
+
+`LIFE` is a separate pool of things that happen in a life and change
+nothing: a nephew called Francis, an aunt's clock, the bacon charged twice.
+One may appear in a term (about one in three), before the events, as a dim
+card headed MEANWHILE, and it is never one of the term's two. Entries are
+`{t, s, ga?, flag?}`: `ga` gates like an event, `flag` sets a flag so a later
+entry can pick the thread up (`since:["NEPHEW",18]` is Francis at nine).
+Each shows once per career. They are for entertainment; keep them free of
+effects, and let the odd one make the player wonder whether it matters.
+
+**Multi-stage cards in one term.** A choice's `fn` can set `pendingNext` to
+a function that opens the next card: `fn(){ pendingNext=()=>card(PRANK2);
+return "…"; }`. The outcome then gets a Continue button, the slot is cleared,
+and the next card opens at once. `Z4` → `PRANK2` → `PRANK3` is the prank
+call, escalating within a single morning; the exits from the chain are
+ordinary `fx` choices.
 
 ## Tense
 

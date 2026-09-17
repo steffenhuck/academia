@@ -363,7 +363,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.03.17";
+const VERSION="0.03.18";
 
 /* ============================================================
    THE DISCIPLINE — v0 engine
@@ -564,6 +564,7 @@ function fill(str,html){
   .replace(/\{paper\}/g,()=>(g.nextPaper=g.nextPaper||makePaper()).ti)
   .replace(/\{qpaper\}/g,()=>{ const q=oldestQ(); return q?q.ti:"the paper"; })
   .replace(/\{qjournal\}/g,()=>{ const q=oldestQ(); return q?q.jn:"the journal"; })
+  .replace(/\{worst\}/g,()=>{ const p=g.papers.slice().sort((a,b)=>a.q-b.q)[0]; return p?p.ti:"your early work"; })
   .replace(/\{(\w+)\}/g,(m,k)=>{
    if(CAST[k]===undefined) return m;
    const key=BIOS[k]?k:(BIOS[k.replace(/S$/,"")]?k.replace(/S$/,""):null);
@@ -1973,6 +1974,57 @@ const EVENTS=[
  sc:"A letter, on paper, from {dean}. It uses the phrase “pattern of concern” and the phrase “teaching load” in the same sentence, and it is copied to the chair.",
  auto:{bad:1,fx:{K:-4,N:-4,mom:-5,S:-3},say:"The letter is in the file. The file will be on the table at the next thing that matters, and it will be read aloud by someone who has been waiting to read it aloud. Your teaching load, in the meantime, goes up, which is the department's idea of a joke and also its idea of a remedy."}}
 
+,
+
+/* ---------- batch 7: the meteor, the hospital, the call, the opera, the wedding ---------- */
+{id:"Z1",ti:"Kansas",b:[1,4],ex:{base:.7},once:1,
+ sc:"A meteor has obliterated a small town in Kansas. Eleven hundred people, a grain elevator, a Methodist church, and a county with unusually good administrative data going back to 1954. The news has it for a day. The economists have it for a decade.",
+ ch:[
+ {t:"Shrug. It is a town.",fx:{E:-1,flag:"METEOR_SHRUG"},say:"It was a town. Four papers appear within three years, one of them very good, none of them yours. You read the good one on a train and feel, for a stop or two, something that is not quite grief."},
+ {t:"Pounce on the natural experiment.",fx:{R:3,wip:20,B:3,N:2,flag:"METEOR_POUNCE"},say:"By Thursday you have the county data and a research assistant who has never been to Kansas. The identification is immaculate. The town, in the paper, is called “the treated unit,” and this is the phrase you will use for it for the rest of your life."}]},
+
+{id:"Z2",ti:"The Treated Unit",b:[1,4],ex:{base:1},ga:{flag:"METEOR_POUNCE"},once:1,
+ sc:"The Kansas draft is done. Every person who was in the town is in the data, and so is every person who was not, and the difference between them is a coefficient with two stars. There is a paragraph, near the end, about the people, and it is the paragraph you rewrote most.",
+ ch:[
+ {t:"Send it out.",fx:{submit:{pp:{ti:"Exogenous Shocks to Everything: Evidence from a Meteor",f:"labour"},bias:1.0,lag:[4,6],cites:30},E:3},say:"It goes out. A referee will describe the setting as “a clean shock,” and the referee is right, and you will be asked to present it at a conference in Kansas City, and you will not go."},
+ {t:"Put it in the drawer. It feels, on reflection, like something.",fx:{R:1,E:-2,wip:20,flag:"METEOR_DRAWER"},say:"The drawer. The coefficient stays in it, with its two stars, and somebody at Calderon publishes the same coefficient in 2039, with three. You read it and feel nothing, which is what you were hoping to feel, and it is not quite that."}]},
+
+{id:"Z3",ti:"The Laptop Bag",b:[3,4],ex:{base:.7},once:1,
+ sc:"Your fourth-year student was to finish the structural estimation by Friday. On Wednesday a car went through a red light. He is in hospital with two broken legs, a great deal of morphine, and a laptop bag that the nurse describes, on the phone, as “completely undamaged.”",
+ ch:[
+ {t:"Send flowers.",fx:{N:3,B:2,R:-2,wip:-15,flag:"FLOWERS"},say:"Lilies, and a card. The estimation waits. It waits nine weeks, which is the length of two casts and a first attempt at stairs, and when he comes back he is slower and more careful and the paper is better, and you will never be entirely sure that you meant that to happen."},
+ {t:"Bring him the laptop.",fx:{R:4,wip:25,E:3,N:-4,flag:"LAPTOP"},say:"He is glad to see you. He is glad, after a pause, to see the laptop. The estimation converges on Sunday, on morphine, and the standard errors are, you will think later, slightly too good. The nurse says something as you leave. You do not catch it. You catch it years later, unprompted, in a lift."},
+ {t:"Finish it yourself.",fx:{R:3,B:9,wip:20,K:-1},say:"You have not run the code yourself in eleven years. It takes the weekend and most of a week and it teaches you, for the second time in your life, what a research assistant is for. The paper is out on Friday. He reads it in hospital and finds the mistake, and is kind about it."}]},
+
+{id:"Z4",ti:"The Call",b:[4,4],ex:{base:1.1},ga:{nobelhope:1,papers:3},tr:"nobel",once:1,
+ sc:"5:40 a.m., in October. The number begins with the digits you long ago decided were Swedish. A voice with an accent says it is calling from the Royal Swedish Academy of Sciences and would like to know whether you are sitting down.",
+ ch:[
+ {t:"Say you are honoured. Sit down.",fn(){ pendingNext=()=>card(PRANK2); return "You are sitting down. The voice says the announcement is in forty minutes and that there are a few questions for the press release, if you have a moment. You have a moment. You have had the moment ready for thirty years."; }},
+ {t:"Ask which paper.",fn(){ pendingNext=()=>card(PRANK2); return "“The committee was particularly struck,” the voice says, and there is a rustle of paper, “by the paper on—” and it names one. It is not the one you would have chosen. It is not the one anyone would have chosen."; }},
+ {t:"Hang up. It is 5:40.",fx:{E:2,B:-2},say:"You hang up. It does not ring again. You will never be entirely certain, and this is, on balance, the better outcome, and you know it, and it will keep you awake in October for the rest of your life."}]},
+
+{id:"Z5",ti:"One Night at the Opera",b:[2,4],ex:{base:.6},once:1,
+ sc:"<em>Aida</em>, act three. Radamès tells Aida the army's route, and at that moment, in the dark, you see it: the Pharaoh cannot commit, the priests can, and the Nile is a participation constraint. You write it on the programme with a pencil you do not remember bringing. The woman next to you moves slightly away.",
+ ch:[
+ {t:"Write it.",fx:{submit:{pp:{ti:"Commitment on the Nile: Aida as a Problem in Mechanism Design",f:"theory"},tier:"B",jn:"the Cambridge Opera Journal",lag:[3,5],cites:12,rounds:1},P:5,E:4,N:-4,flag:"OPERA"},say:"It takes a month and it is, as far as you can tell, correct. It is accepted at a very good journal that no economist has heard of, and the hard-nosed people in the corridor learn the title and use it, in a particular tone, for years. Three musicologists write to you. One of them is right about something."},
+ {t:"Try to forget it.",fx:{E:-1,flag:"OPERA_FORGOT"},say:"You put the programme in a drawer and the idea in the other drawer. It stays in there, mostly. On certain nights, in certain keys, it comes back, and you do nothing about it, which is a decision, and you have made it."},
+ {t:"Tell it at dinner, as a joke.",fx:{N:3,E:-1,flag:"OPERA_TOLD"},say:"It goes very well at dinner. It is the best thing you say all year. Somebody at the table laughs slightly less than the others and asks, later, near the coats, whether you are going to write it up."}]},
+
+{id:"Z6",ti:"The Dream",b:[2,4],ex:{base:1},ga:{flag:"OPERA_FORGOT"},once:1,
+ sc:"You dream that you are giving the paper — the Aida paper, the one you did not write — to a full house at the Met, in a room that is also, in the way of dreams, a seminar room, and the discussant is the Pharaoh, and he has read it.",
+ auto:{fx:{},say:"You wake at four. The paper does not exist. You lie in the dark and can remember, exactly, the second proposition, and by breakfast you cannot, and by lunch it is a thing you once dreamed about, and by the evening it is not even that."}},
+
+{id:"Z6T",ti:"The Coats",b:[2,4],ex:{base:1},ga:{flag:"OPERA_TOLD"},once:1,
+ sc:"A working paper is circulating with a title that includes the word “Aida” and a colon. It is by the person who laughed slightly less at dinner. It is good. The acknowledgments thank “conversations with colleagues.”",
+ auto:{bad:1,fx:{E:-4},say:"You read it twice. The second proposition is yours, exactly, and the first is better than yours would have been. You write a warm note. It is the warmest note you have ever written and it costs you a week."}},
+
+{id:"Z7",ti:"June",b:[1,4],ex:{base:.55},once:1,
+ sc:"You are getting married. It is in June. There is a honeymoon booked, three weeks, and there is a theorem, nearly done, that has been nearly done since March. These two facts have been sitting in the same room for some time, not speaking.",
+ ch:[
+ {t:"The honeymoon. Three weeks. No laptop.",fx:{B:-14,N:2,R:-2,flag:"MARRIED"},say:"Three weeks. You do not think about the theorem for four days, and then you think about it constantly, and then, in the third week, on a boat, you stop, and the stopping is the thing you will remember. The theorem is still nearly done in September. It will be nearly done for a while."},
+ {t:"Finish the theorem first. The wedding is in June.",fx:{R:6,wip:25,B:4,E:3,flag:"MARRIED_PROOF"},say:"The theorem is done by the end of May. It is a good theorem. The honeymoon is postponed to a date that is never set, and the sentence “after the theorem” enters the marriage, where it will be quoted at you, gently, for thirty years, and less gently on two occasions."},
+ {t:"Both. The laptop comes.",fx:{R:3,wip:12,B:-5,N:-1,flag:"MARRIED_LAPTOP"},say:"The laptop comes. It is opened on four mornings, early, on a terrace, and each time it is closed again, quietly, by a hand that is not yours. The theorem is not finished. Neither, in a sense, is the honeymoon, which is a thing you will find you are able to say aloud, once, many years on."}]}
+
 ];
 
 /* ============================================================
@@ -1984,6 +2036,8 @@ const EVENTS=[
 const ARCS=[
  {id:"advisor",    steps:["P1","P11","G6"],           gap:[3,6]},
  {id:"selfref",    steps:["Y1","Y2G","Y2H"],          gap:[10,16]},
+ {id:"kansas",     steps:["Z1","Z2"],                 gap:[5,9]},
+ {id:"aida",       steps:["Z5","Z6","Z6T"],           gap:[8,16]},
  {id:"statue",     steps:["Y5","Y6A","Y6B","Y6C"],    gap:[2,4]},
  {id:"lecture",    steps:["Y10","Y11"],               gap:[2,4]},
  {id:"frobenius",  steps:["P8","A11","G21"],          gap:[6,10]},
@@ -2299,6 +2353,7 @@ function gateOK(ga){
  if(ga.anyflag&&!ga.anyflag.some(f=>g.flags[f])) return false;
  if(ga.noflag&&g.flags[ga.noflag]) return false;
  if(ga.tdebt&&g.tdebt<ga.tdebt) return false;
+ if(ga.nobelhope&&!(g.vow!=="PRES"&&!g.won.NOBEL&&!g.nobelDead&&g.rank>=4&&age()>=50)) return false;
  if(ga.field&&!(g.fields&&g.fields[ga.field])) return false;
  if(ga.queue&&g.queue.length<ga.queue) return false;
  if(ga.h&&hIndex()<ga.h) return false;
@@ -2335,6 +2390,20 @@ function drawEvent(){
  for(const[e,w] of pool){ r-=w; if(r<=0) return e; }
  return null;
 }
+/* the prank call, stages two and three (Z4 opens it) */
+const PRANK2={append:true,kicker:"THE CALL",ti:"For the press release",
+ sc:"“Could you explain, in a sentence, for the press release, what the world should take from your paper \u2018{worst}\u2019?” There is a silence on the line, which you fill.",
+ ch:[
+  {t:"Explain it, in earnest, for eleven minutes.",fn(){ pendingNext=()=>card(PRANK3); return "Eleven minutes. You use the word \u201cfundamentally\u201d four times. The voice says \u201cmm\u201d at intervals that are, you will later realise, slightly too regular."; }},
+  {t:"Say, carefully, that you hope it was not for that one.",fn(){ pendingNext=()=>card(PRANK3); return "A pause. \u201cThe committee,\u201d the voice says, \u201cwas unanimous.\u201d You find that you are, in spite of yourself, prepared to accept the committee\u2019s view."; }},
+  {t:"Ask for the caller\u2019s name, and a number to call back.",fx:{E:-3,B:2,K:2},say:"There is a name, and it is a name from a children\u2019s book, and the line goes dead. You sit in the kitchen for some time. Nobody will ever know; you make sure of that, which takes some doing, and then in 2049 you tell the story yourself, and everyone says they would have fallen for it, and some of them are lying."}
+ ]};
+const PRANK3={append:true,kicker:"THE CALL",ti:"The Permanent Secretary",
+ sc:"You are asked to hold for the Permanent Secretary. The Permanent Secretary, when he comes on, has an accent that has travelled some distance west of Stockholm, and he would like to know whether, given the exchange rate, you would be willing to accept the prize in cryptocurrency.",
+ ch:[
+  {t:"Yes. Whatever is simplest.",fx:{P:-12,E:-15,N:-6,mom:-10,B:6,flag:"PRANKED"},say:"By noon the recording is on the radio station\u2019s website, all of it, with the eleven minutes. By six it is on the news, in a segment after the real laureates, who are gracious about it in a way that is the worst part. The department is kind. Kindness, at this scale, is a verdict."},
+  {t:"Hang up.",fx:{E:-5,B:3},say:"You hang up. You have been on the line for nineteen minutes, and the nineteen minutes exist as a file, and the file is played, lightly edited, for a week. You did not say yes. That is the sentence you will use, and it is a good sentence, and it is not enough."}
+ ]};
 const QUIET=[
  "A term passes. Two papers are submitted somewhere in the building; neither is yours.",
  "Nothing happens, at length. The literature grows by four hundred papers.",
@@ -2551,6 +2620,11 @@ const ENDTEXT={
  TIME:()=>["Emeritus","They give you an office on the fourth floor with a window facing the car park, and a mug. The seminar still invites you. You still go. About once a term someone young asks you a question that indicates they have actually read the 2041 paper, and it is worth the entire afternoon."]
 };
 const EPITHETS={
+ METEOR_POUNCE:"called it the treated unit",
+ LAPTOP:"brought the laptop to the hospital",
+ PRANKED:"accepted the prize from a radio station",
+ OPERA:"explained Aida",
+ MARRIED_PROOF:"finished the theorem first",
  GLOWING_SELF:"refereed their own paper, warmly",
  LITIGIOUS:"threatened to sue a research council",
  STATUE_DOWN:"took the statue down with a crane",
@@ -2827,6 +2901,55 @@ function quietCard(){
   <div class="scene">${pick(QUIET)}</div>`;
  $("cardslot").appendChild(el);
 }
+
+/* ---------- meanwhile: things that happen in a life, to no effect ----------
+   One of these may appear in a term, before the events, and does nothing.
+   ga gates; flag sets a flag so a later one can pick the thread up. */
+const LIFE=[
+ {t:"Francis",s:"Your sister has had a boy. He is called Francis, after nobody. You see a photograph on a phone in a corridor and say the right thing, and mean it, and go back into the seminar.",flag:"NEPHEW"},
+ {t:"Francis, nine",s:"Francis, who is nine now, asks what you do. You explain. He listens carefully and asks whether it is a job.",ga:{since:["NEPHEW",18]}},
+ {t:"Franziska",s:"An aunt, Franziska, whom you met twice, has died and left you a clock. It is a good clock. It does not fit anywhere, and you keep it, and it is the only thing in the house that is older than you."},
+ {t:"The Balkans",s:"A right-wing party leader in a Balkan country has been shot on the steps of a parliament. He is expected to survive. You read the story on your phone and cannot decide, for a moment, whether it is anything to do with you. It is not.",flag:"BALKAN"},
+ {t:"The Balkans, again",s:"The man who was shot on the steps has recovered and been re-elected with an increased majority. This is still not about you.",ga:{since:["BALKAN",10]}},
+ {t:"The Bacon",s:"At the checkout of the supermarket you notice that you have been charged twice for the bacon. You say nothing. It is $6.40. You think about it, on and off, until Thursday."},
+ {t:"The Dentist",s:"The dentist says you are grinding your teeth. She asks whether there is anything in your life that might be causing that. You say no."},
+ {t:"The Neighbour",s:"The neighbour has put up a fence. It is a fine fence. It is, you measure it one evening with a tape, eleven inches onto your side, and you decide not to be the kind of person who mentions it, and you are that kind of person, and you do not."},
+ {t:"The Concert",s:"A cellist you have never heard of plays something you have never heard of, in a church, and for about forty minutes you are not an economist."},
+ {t:"The Cat",s:"A cat has begun to come to the office. Nobody knows whose it is. It sits on the second-best chair and stares at the whiteboard with an expression you have seen on referees."},
+ {t:"The Reunion",s:"An invitation to a school reunion. Twenty-five years. You look at the list of names and can attach a face to eleven of them and a feeling to three."},
+ {t:"The Marathon",s:"A colleague in the department has run a marathon and would like to talk about it. He would like to talk about it in the way that people who have run a marathon would like to talk about it, and you find that you are, for once, a good listener, because you are thinking about something else."},
+ {t:"The Lottery",s:"Somebody in the building has won a modest amount in the lottery. It is discussed with the seriousness normally reserved for tenure cases, and with, on the whole, more accuracy."},
+ {t:"The Birthday",s:"It is your birthday. Two people remember. One of them is the bank."},
+ {t:"The Anniversary",s:"It is your tenth anniversary. You remember at four in the afternoon, in a meeting, and you leave the meeting, and it is the best decision you make that year.",ga:{anyflag:["MARRIED","MARRIED_PROOF","MARRIED_LAPTOP"]}},
+ {t:"The Other One",s:"At dinner, your spouse refers to the theorem — the one from June — as “the other one.” Everyone at the table laughs, and you laugh too, and it is a good evening, and the phrase stays.",ga:{since:["MARRIED_PROOF",8]}},
+ {t:"The Weather",s:"A summer so hot that the seminar room's air conditioning is discussed in a faculty meeting, at length, with citations."},
+ {t:"The Piano",s:"You buy a piano. You had one as a child. You play it for eleven days and then it becomes, like the clock, a good thing that is in the house."},
+ {t:"The Novel",s:"A novel has been published in which a character is an economist. He is unpleasant in ways that are entirely accurate, and you read it on a plane and hope nobody in the row can see the cover."},
+ {t:"The Wallet",s:"You leave your wallet on a train. It comes back three weeks later, by post, from a town you have never been to, with everything in it, and a note that says “found this,” and no name."},
+ {t:"The Podcast",s:"A former student has a podcast. He would like you on it. You go on it. It is, as far as you can determine, listened to by his mother and by a man in Oslo who leaves a comment about the audio."},
+ {t:"The Wedding",s:"A former student is getting married and has asked you to say a few words. You say a few words. They go well, and are about you, slightly, and nobody minds, because they are at a wedding."},
+ {t:"The Roof",s:"The roof needs replacing. It is a number with a comma in it. You look at the number for a long time and then agree to it, in the way one agrees to a referee's third request."},
+ {t:"The Eclipse",s:"There is an eclipse. You go out onto the quad with the cardboard glasses and stand with four hundred people, all looking up, and it is the only time that year that the whole college is looking at the same thing."},
+ {t:"The Dog",s:"You are asked to look after a colleague's dog for a week. The dog is better company than the colleague and you say so to nobody, and the dog, you are fairly sure, knows."},
+ {t:"Kansas, rebuilt",s:"The town in Kansas has been rebuilt, on a different site, with a plaque. The plaque does not mention the coefficient.",ga:{since:["METEOR_SHRUG",12]}},
+ {t:"The Haircut",s:"A new barber. He asks what you do. You say “teacher,” which is the word you use with barbers, and it is, for once, the true one."},
+ {t:"The Election",s:"There is an election somewhere and the result is either a relief or not, and either way the seminar is at four and the speaker has a model."},
+ {t:"The Letter",s:"A letter, on paper, from a stranger, about a paper you wrote a long time ago. It is four pages long and the handwriting is beautiful and the stranger has understood the paper completely and disagrees with it in a way you cannot answer. You keep the letter. You do not reply."},
+ {t:"The Ambulance",s:"An ambulance in the street at two in the morning, for a house three doors down. Everyone is fine, it turns out. You stand at the window in the dark for some time anyway, and the standing is, you think, some kind of a prayer, and you are not sure to whom."}
+];
+function lifeCard(){
+ g.lifeSeen=g.lifeSeen||{};
+ const pool=LIFE.map((x,i)=>i).filter(i=>!g.lifeSeen[i]&&gateOK(LIFE[i].ga));
+ if(!pool.length) return;
+ const i=pick(pool), it=LIFE[i]; g.lifeSeen[i]=1;
+ if(it.flag) g.flags[it.flag]=g.turn+1;
+ const el=document.createElement("div");
+ el.className="card quiet life";
+ el.innerHTML=`<div class="kicker"><span>MEANWHILE</span><span>${termName()} · age ${age()}</span></div>
+  <h2>${it.t}</h2><div class="scene">${fill(it.s,1)}</div>`;
+ $("cardslot").appendChild(el);
+}
+
 /* an exogenous event: no choice, the thing simply happens */
 function autoCard(e,sc){
  const snap={R:g.R,K:g.K,N:g.N,P:g.P,S:g.S,E:g.E,B:g.B};
@@ -3113,6 +3236,7 @@ function runTerm(){
  if(octoberPass()){ render(); return; }
  if(presSearchReady() && !(g.mods.searchcool>g.turn) && Math.random()<0.40){ render(); presSearch(); return; }
 
+ if(Math.random()<0.35) lifeCard();       /* meanwhile: a life, to no effect */
  if(pubs.length) pubCard(pubs);          /* news, not one of the two */
  g.draws=2; g.shown=pubs.length>0;
  nextCard();
