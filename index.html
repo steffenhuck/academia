@@ -348,7 +348,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.03.15";
+const VERSION="0.03.16";
 
 /* ============================================================
    THE DISCIPLINE — v0 engine
@@ -1854,12 +1854,12 @@ const EVENTS=[
 ,
 
 /* ---------- batch 6: the referee's own paper, the grant, the presidency's follies, the classroom ---------- */
-{id:"Y1",ti:"The Invitation to Referee",b:[1,4],ex:{base:1.1},ga:{anyflag:["BORROWED","STAR_COAUTHOR"]},once:1,
- sc:"An email from the Quarterly: would you referee the attached? You open the attachment. It is your paper — the one with two names on it, of which yours is second — and the editor, matching names to the manuscript, has matched only the first. There is a deadline of six weeks and a form for declaring conflicts of interest, which is optional.",
+{id:"Y1",ti:"The Invitation to Referee",b:[1,4],ex:{base:.9},ga:{queue:1},once:1,
+ sc:"An email from {qjournal}: would you referee the attached? You open the attachment. It is “{qpaper}”. It is your paper, under review there since you sent it, and the managing editor's software, asked for the person best placed to judge the manuscript, has answered, in a sense, correctly. There is a deadline of six weeks and a form for declaring conflicts of interest, which is optional.",
  ch:[
- {t:"Write a glowing report.",fx:{mom:10,N:4,E:5,cites:40,flag:"GLOWING_SELF"},say:"It takes an afternoon. You know the paper's weaknesses better than anyone alive and you describe none of them. It is accepted in four months, which is a record, and your coauthor says, at dinner, that for once the referees understood the paper, and you agree that it is rare."},
- {t:"Write to the editor, warmly, pointing out the mistake.",fx:{K:3,N:2,E:-1,flag:"HONEST_REF"},say:"Three lines, with a joke in the second. The editor replies in nine minutes with a word that is not quite an apology and is not quite a thank you. The paper goes to somebody else and takes a year longer. The editor, who has a very good memory, files the nine minutes somewhere."},
- {t:"Referee it straight, as if it were anyone's.",fx:{R:4,E:2,B:4,flag:"STRAIGHT_REF"},say:"Eleven problems, four of them real. It gets a revise and resubmit. For a year your coauthor is furious with the anonymous referee in your presence, and you help him draft the response, which is the strangest document you will ever co-write."}]},
+ {t:"Write a glowing report.",fx:{mom:10,N:4,E:5,cites:40,mod:"accept",flag:"GLOWING_SELF"},say:"It takes an afternoon. You know the paper's weaknesses better than anyone alive and you describe none of them. It is accepted in four months, which is a record, and at a seminar somebody says the referees at that journal are unusually perceptive, and you agree that it is rare."},
+ {t:"Write to the editor, warmly, pointing out the mistake.",fx:{K:3,N:2,E:-1,mod:"delay",flag:"HONEST_REF"},say:"Three lines, with a joke in the second. The editor replies in nine minutes with a word that is not quite an apology and is not quite a thank you. The paper goes to somebody else and takes a year longer. The editor, who has a very good memory, files the nine minutes somewhere."},
+ {t:"Referee it straight, as if it were anyone's.",fx:{R:4,E:2,B:4,mod:"delay",flag:"STRAIGHT_REF"},say:"Eleven problems, four of them real. It gets a revise and resubmit, and you spend the spring answering your own report, point by point, with a courtesy toward the referee that the referee did not extend to you. The revised paper is better. It is the strangest document you will ever write."}]},
 
 {id:"Y2G",ti:"The Very Good Memory",b:[2,4],ex:{base:1},ga:{flag:"GLOWING_SELF"},once:1,
  sc:"A conference bar, years on. Somebody who was on the Quarterly's board at the time says, not to you but audibly, that the most enthusiastic report the journal ever received was on a paper by the referee. The story is told well. Two people at the table look at you. One of them is on your next committee.",

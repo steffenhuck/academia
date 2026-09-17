@@ -239,8 +239,7 @@ it produces at the end. The ones other events currently gate on:
 
 | flag | set by | gates |
 |---|---|---|
-| `BORROWED` / `STAR_COAUTHOR` | P4 / D5 | `Y1` — the Quarterly asks you to referee your own coauthored paper |
-| `GLOWING_SELF` / `HONEST_REF` | Y1 | `Y2G` the story at the bar / `Y2H` the editor's dinner |
+| `GLOWING_SELF` / `HONEST_REF` | Y1, the journal sends you your own paper to referee (any paper under review) | `Y2G` the story at the bar / `Y2H` the editor's dinner |
 | `LITIGIOUS` | Y3, threatening the Council | `Y4`, repeatable, a coin each time; a small penalty in every presidential search |
 | `STATUE_DOWN` / `STATUE_PLAQUE` / `STATUE_KEPT` | Y5 | `Y6A` / `Y6B` / `Y6C` — the cameras, one version each |
 | `EDGEWORTH_HOME` | Y8, the first edition | `Y9H` instead of `Y9` — the monument, with the book on your shelf |
