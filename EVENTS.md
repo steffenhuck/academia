@@ -59,7 +59,11 @@ still rank 3 or 4.
   arrives some terms later with a title and a journal. Options: `tier:"A+"`
   forces the tier; `bias:1.2` shifts the odds instead; `lag:[3,4]` terms to a
   decision; `q:8` quality; `f:"theory"` field; `jn:"the Handbook"` names the
-  outlet; `cites:60` starts it with citations; `rounds:1` skips the R&R roll.
+  outlet; `cites:60` starts it with citations; `rounds:1` skips the R&R roll;
+  `target:"A"` aims at a tier instead of rolling one — the paper can then be
+  rejected and go down a tier, which is what the player's own "Where to send
+  it" card does. If the scene named the paper with `{paper}`, that is the
+  paper that goes out.
   An array submits several. **Use this, not prose, whenever a choice results
   in a paper** — the feedback should say it went out, and the card that comes
   later says it is in
@@ -73,9 +77,12 @@ still rank 3 or 4.
   are no papers yet
 - `flag:"NAME"` — sets a permanent flag; add it to `EPITHETS` to have it appear
   in the ending's *"The field remembers…"* line
-- `foe:1` — makes an enemy, with a generated name, grudge and what they poison
-- `foe:{why:"you rejected their paper", poisons:"committee"}` — a specific
-  enemy. `why` is what they remember; `poisons` is where it bites:
+- `foe:{why:"you rejected their paper", poisons:"committee"}` — an enemy.
+  **Always write `why`**: it is shown as "X will remember that <why>", so it
+  must be the thing that just happened in this event. (`foe:1` still works
+  and draws from a neutral grudge list; it is only for the unscripted
+  enemies the engine makes on its own.) `who:"{senior}"` names a cast
+  member instead of a generated stranger. `poisons` is where it bites:
   `"referee"` lowers the odds of a good journal on every submission,
   `"vote"` and `"committee"` are named no-votes at tenure, `"committee"` also
   hurts the October roll, `"search"` hurts the presidential search
@@ -197,6 +204,8 @@ changed in one place.
 
 | placeholder | who |
 |---|---|
+| `{paper}` | the title of the paper in the drawer — the one the next submission sends. Use it in a scene so the choice's `submit` is about a named paper |
+| `{senior}` `{seniorS}` | Professor Ambrose Kettlewell — the senior man who offers his name for the paper (P4) |
 | `{advisor}` | Professor Cornelius Vandersloot — has not read the chapter; wants his name on the job market paper; you write his obituary |
 | `{discussant}` | Professor Dr. Dr. h.c. mult. Klaus-Dieter Frobenius — the theorem you extended; "confused"; a possible letter writer; on the Harwich longlist |
 | `{star}` | Casimir Blunt — two papers in the Quarterly at thirty-four; the email; gives your talk better than you, later |
