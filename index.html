@@ -300,6 +300,14 @@ header.mast .tag{
 .cvrow .ct small{display:block;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:right}
 .sheet .empty{color:var(--dim);font-style:italic;padding:10px 0}
 .sheet .close{margin-top:14px}
+/* ---------- save / load / restart ---------- */
+.sysbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px;margin:18px 0 6px;padding-top:12px;border-top:1px solid #2E2B3A}
+.sysbar button{
+  font-family:"Archivo",sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);background:transparent;border:1.5px solid #3A3648;border-radius:999px;padding:6px 11px;cursor:pointer;
+}
+.sysbar button:hover{color:var(--chalk);border-color:var(--gold)}
+.sysbar .note{font-family:"Space Mono",monospace;font-size:10.5px;color:var(--dimmer);margin-left:auto;text-align:right}
 footer{text-align:center;padding:6px 0 4px}
 footer a{color:var(--dimmer);font-style:italic;font-size:14px;text-decoration:none}
 footer a:hover{color:var(--gold)}
@@ -342,13 +350,20 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <div id="log"></div>
 
+<div class="sysbar" id="sysbar">
+  <button id="sv" type="button">Save to file</button>
+  <button id="ld" type="button">Load a file</button>
+  <button id="rs" type="button">Start again</button>
+  <input type="file" id="ldf" accept=".json,application/json" hidden>
+  <span class="note" id="savenote"></span>
+</div>
 <footer><a href="https://steffenhuck.github.io">steffen huck</a> <span class="ver" id="ver"></span></footer>
 <div id="ovl" hidden></div>
 </div>
 
 <script>
 'use strict';
-const VERSION="0.03.16";
+const VERSION="0.03.17";
 
 /* ============================================================
    THE DISCIPLINE — v0 engine
@@ -2724,7 +2739,7 @@ const EPITHETS={
 
 function end(kind){
  if(g.ended) return;
- g.ended=kind;
+ g.ended=kind; clearSave();
  if(kind==="NOBEL"){ g.won.NOBEL=1; if(g.vow==="BOTH"&&!g.won.PRES){ nobelInterlude(); return; } }
  if(kind==="PRES"&&g.vow==="BOTH"&&!g.won.NOBEL){ g.ended=null; presInterlude(); return; }
  const key = (g.vow==="BOTH"&&g.won.NOBEL&&g.won.PRES)?"BOTH":kind;
@@ -2933,6 +2948,7 @@ function render(){
 
  /* desk */
  $("desk").hidden = awaiting || !!g.ended || !g.vow;
+ autosave();
  $("desk").classList.toggle("first", g.turn===0 && spent()===0);
  $("left").textContent = budget()-spent();
  $("levers").innerHTML=LEVERS.map(([k,n])=>{
@@ -3183,11 +3199,74 @@ function timeUpKind(){
 /* ============================================================
    OPENING
    ============================================================ */
+/* ---------- the file: saving and picking up again ----------
+   The state is one object, g. It is written to this browser at every clean
+   point (all cards answered, nothing pending) and can be written to a file
+   at the same points; a mid-card quit resumes from the start of that term. */
+const SAVE_KEY="discipline.save";
+let lastClean=null;
+function cleanPoint(){ return !!g&&!!g.vow&&!g.ended&&!awaiting&&!pendingNext&&g.draws<=0&&!(g.pendingSubmit>0); }
+function snapshot(){ return JSON.stringify({v:VERSION,at:Date.now(),g}); }
+function autosave(){
+ if(!cleanPoint()) return;
+ lastClean=snapshot();
+ const n=$("savenote");
+ try{ localStorage.setItem(SAVE_KEY,lastClean); if(n) n.textContent="saved in this browser \u00b7 "+termName(); }
+ catch(e){ if(n) n.textContent="this browser will not keep a save \u2014 use Save to file"; }
+}
+function readSave(){ try{ const raw=localStorage.getItem(SAVE_KEY); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
+function clearSave(){ lastClean=null; try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+function loadState(obj){
+ if(!obj||!obj.g||!obj.g.vow) throw new Error("not a saved career");
+ newGame(); g=Object.assign(g,obj.g);          /* fields added since the save keep their defaults */
+ g.draws=0; g.pendingSubmit=g.pendingSubmit||0; g.alloc={write:0,net:0,pub:0,serv:0,teach:0,rest:0};
+ awaiting=false; pendingNext=null; ledgerEl=null;
+ $("log").innerHTML=""; $("cardslot").innerHTML="";
+ if(g.ended){ clearSave(); boot(); return; }
+ termBanner(); render(); autosave();
+}
+function describeSave(sv){
+ const keep=g; g=sv.g;
+ const d=`<b>${title()}</b>, ${uniName()} \u00b7 age ${age()} \u00b7 ${termName()} \u00b7 ${g.papers.length} paper${g.papers.length===1?"":"s"}, ${Math.round(g.cites).toLocaleString()} citations`;
+ g=keep; return d;
+}
+function resumeCard(sv){
+ card({
+  cls:"gold", kicker:"THE FILE", ti:"A career in progress",
+  sc:"There is one on file: "+describeSave(sv)+".<br><br>The vow was <b>"+({NOBEL:"the Nobel Prize",PRES:"the presidency of Harwich College",BOTH:"both"}[sv.g.vow]||sv.g.vow)+"</b>. It is still on.",
+  ch:[
+   {t:"Pick it up where it was.",why:"from the start of the term it was saved in",fn(){ pendingNext=()=>loadState(sv); return "The office is as you left it. The email is not."; }},
+   {t:"Begin again.",why:"the career on file is lost",fn(){ clearSave(); pendingNext=boot; return "It is forgotten. Careers are, mostly."; }}
+  ]
+ });
+}
+function saveToFile(){
+ const data=lastClean||(cleanPoint()?snapshot():null);
+ if(!data){ alert("Nothing to save yet."); return; }
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
+ a.download="the-discipline-"+termName().replace(/[^\w]+/g,"-").toLowerCase()+".json";
+ document.body.appendChild(a); a.click(); a.remove();
+ const n=$("savenote"); if(n) n.textContent="saved to a file \u00b7 as of "+JSON.parse(data).g.turn.toString().replace(/^/,"term ")+(cleanPoint()?"":" (the card in front of you is not in it)");
+}
+function loadFromFile(file){
+ const r=new FileReader();
+ r.onload=()=>{ try{ const obj=JSON.parse(r.result); loadState(obj); try{ localStorage.setItem(SAVE_KEY,JSON.stringify(obj)); }catch(e){} }
+               catch(e){ alert("That is not a saved career."); } };
+ r.readAsText(file);
+}
+$("sv").onclick=saveToFile;
+$("ld").onclick=()=>$("ldf").click();
+$("ldf").onchange=ev=>{ const f=ev.target.files&&ev.target.files[0]; if(f) loadFromFile(f); ev.target.value=""; };
+$("rs").onclick=()=>{ if(confirm("Start a new career? The one in progress is lost.")){ clearSave(); boot(); } };
+
 function boot(){
  newGame(); ledgerEl=null;
  $("log").innerHTML="";
  $("termslot").innerHTML="";
  render();
+ const sv=readSave();
+ if(sv&&sv.g&&sv.g.vow&&!sv.g.ended){ resumeCard(sv); return; }
  card({
   cls:"gold", kicker:"THE VOW", ti:"What is it for?",
   sc:"You are twenty-five. You have a dissertation that is nearly finished, an advisor who has not read the third chapter, and forty years.<br><br>Everyone in this profession is doing it for something. Most of them will not say what. <em>Say what.</em>",
