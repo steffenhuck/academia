@@ -152,8 +152,8 @@ A weight of `1` is a normal pull, `2` a strong one. Every draw also has a
 ## Gates (`ga`, and per-choice `gate`)
 
 `{R:45}` `{K:50}` `{N:40}` `{P:60}` `{E:70}` `{flag:"SPEC"}` — any combination.
-Also: `{office:1}` (at least department chair; `2` dean, `3` provost, `4`
-president), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
+Also: `{office:1}` (at least department chair; `2` dean, `3` vice-president, `4`
+president; the head of St Cuthbert's is called Provost), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
 `{since:["FLAG",6]}` — the flag was set at least six terms ago;
 `{anyflag:["A","B"]}` — at least one of several; `{noflag:"A"}` — the flag is
 *not* set, for the other half of a pair like `Y9`/`Y9H`; `{tdebt:8}` — the
@@ -295,7 +295,7 @@ A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
 G21) gets **The exit upward** — the office, the salary, and a phone that does
 not ring for presidents. The vow is unmet, so the card closes on salary.
 
-## What exists (213 events)
+## What exists (218 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
@@ -315,6 +315,44 @@ writing.
 
 ---
 
+## Once, by default
+
+Every event fires at most once per career. An event with `alt` texts can fire
+once per text (`alt:[a,b]` → three times, the original first), and `max:n`
+sets the count directly. `once:1` is now redundant and harmless. The draft
+card draws its twelve scenes without replacement and falls back to one line
+per band after that.
+
+## Jokers
+
+`JOKERS` is a third pool: the things one stumbles into. About one term in
+eight, on top of the two events and never counted against them, a JOKER
+card fires, weighted by `w`, each once per career. The common ones are big
+strokes of luck or bad luck (the hit paper connected to nothing, the central
+banker's speech, the textbook box, the medal, the bug found with
+screenshots). The magical ones (`w:.1`, with a `when()` test on the state)
+are the only way to Both: the laureate who is called by Harwich, the
+president whose 2031 draft turns out to be the foundation. Add jokers as
+`{id,ti,w,b,ga?,when?,sc,ch}`; they render as gold cards.
+
+## The president's ladder
+
+A president accrues a hidden `run` count: +1 for a choice that gains know-how
+while in office, −1 for one that loses it, `run:n` in `fx` to set it
+directly, a small drift each term from the know-how level. At `run` 4 and a
+better college on the list, `PL1` The Better Offer fires (up to three times)
+and taking it moves the presidency up a rung. Rungs and `run` warm the
+Harwich search. `ga:{ladder:1}` is the gate; `{better}` names the college.
+
+## Tenure
+
+No tally. One probability from research, know-how, network, citations, top
+four, profile, teaching debt and named enemies. Granted: associate professor
+where you are. Denied: a question — a line at a lesser college with a
+four-year clock (first denial only), an associate deanship (know-how 30),
+or the exit. The Nobel is not killed by a denial any more; the lower
+prestige does that work on its own.
+
 ## Meanwhile
 
 `LIFE` is a separate pool of things that happen in a life and change
@@ -323,8 +361,9 @@ One may appear in a term (about one in three), before the events, as a dim
 card headed MEANWHILE, and it is never one of the term's two. Entries are
 `{t, s, ga?, flag?}`: `ga` gates like an event, `flag` sets a flag so a later
 entry can pick the thread up (`since:["NEPHEW",18]` is Francis at nine).
-Each shows once per career. They are for entertainment; keep them free of
-effects, and let the odd one make the player wonder whether it matters.
+Each shows once per career. Most are free of effects; a dozen carry a small
+ego lift (`fx:{E:6}`), because the ego otherwise only leaks. `{best}` names
+the player's best paper in these.
 
 **Multi-stage cards in one term.** A choice's `fn` can set `pendingNext` to
 a function that opens the next card: `fn(){ pendingNext=()=>card(PRANK2);
