@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Discipline</title>
+<title>The Young Economist’s Game to Professional Success</title>
 <meta name="description" content="An academic career, 25 to 65. Declare your vow — the Nobel, a presidency, or both — and spend forty years finding out what the field actually counts.">
 <script data-goatcounter="https://steffenhuck.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -300,6 +300,19 @@ header.mast .tag{
 .cvrow .ct small{display:block;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:right}
 .sheet .empty{color:var(--dim);font-style:italic;padding:10px 0}
 .sheet .close{margin-top:14px}
+/* ---------- the welcome ---------- */
+.wrap.blurred{filter:blur(7px) saturate(.8);pointer-events:none;user-select:none}
+#welcome{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:rgba(10,9,14,.55)}
+#welcome[hidden]{display:none}
+.welcome{
+  width:100%;max-width:560px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:2px solid var(--gold);border-radius:20px;
+  padding:20px 22px 22px;animation:rise .45s cubic-bezier(.2,.9,.3,1) both;box-shadow:0 30px 80px rgba(0,0,0,.55);
+}
+.welcome h2{font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:30px;line-height:1.04;margin:10px 0 14px;letter-spacing:-.015em;text-wrap:balance}
+.welcome h2 em{color:var(--gold);font-style:italic}
+.welcome p{font-size:16.5px;line-height:1.5;color:var(--chalk);margin:0 0 10px}
+.welcome p.fine{font-size:13px;color:var(--dim);margin-bottom:16px}
+.welcome .go{width:100%}
 /* ---------- save / load / restart ---------- */
 .sysbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 6px;margin:18px 0 6px;padding-top:12px;border-top:1px solid #2E2B3A}
 .sysbar button{
@@ -318,7 +331,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 <div class="wrap">
 
 <header class="mast">
-  <h1>The Discipline</h1>
+  <h1>The Economist’s Game</h1>
   <div class="tag">an academic career &middot; 25 to 65</div>
   <div class="vowbar">
     <span class="vowchip" id="vowchip">no vow yet</span>
@@ -359,14 +372,23 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 </div>
 <footer><a href="https://steffenhuck.github.io">steffen huck</a> <span class="ver" id="ver"></span></footer>
 <div id="ovl" hidden></div>
+<div id="welcome" hidden>
+  <div class="welcome" role="dialog" aria-label="Welcome">
+    <div class="kicker"><span>A CAREER SIMULATION</span><span>25 to 65</span></div>
+    <h2>Welcome to <em>The Young Economist’s Game to Professional Success</em></h2>
+    <p>Choose whether you want to become a Nobel Laureate or a University President. Or both. ☺</p>
+    <p class="fine">Five points a term, two events a term, forty years. Everything you do will be remembered by someone.</p>
+    <button class="go" id="letsplay">Let’s play</button>
+  </div>
+</div>
 </div>
 
 <script>
 'use strict';
-const VERSION="0.04.00";
+const VERSION="0.04.01";
 
 /* ============================================================
-   THE DISCIPLINE — v0 engine
+   THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
    80 turns = 2 terms x 40 years, age 25 to 65.
    ============================================================ */
 
@@ -3453,7 +3475,15 @@ function timeUpKind(){
    The state is one object, g. It is written to this browser at every clean
    point (all cards answered, nothing pending) and can be written to a file
    at the same points; a mid-card quit resumes from the start of that term. */
-const SAVE_KEY="discipline.save";
+const SAVE_KEY="discipline.save", WELCOME_KEY="discipline.welcomed";
+let welcomed=false;   /* in-memory fallback when the browser keeps nothing */
+function showWelcome(){
+ let seen=welcomed; try{ seen=seen||!!localStorage.getItem(WELCOME_KEY); }catch(e){}
+ if(seen) return;
+ $("welcome").hidden=false; document.querySelector(".wrap").classList.add("blurred");
+ $("letsplay").onclick=()=>{ welcomed=true; try{ localStorage.setItem(WELCOME_KEY,"1"); }catch(e){}
+  $("welcome").hidden=true; document.querySelector(".wrap").classList.remove("blurred"); };
+}
 let lastClean=null;
 function cleanPoint(){ return !!g&&!!g.vow&&!g.ended&&!awaiting&&!pendingNext&&g.draws<=0&&!(g.pendingSubmit>0); }
 function snapshot(){ return JSON.stringify({v:VERSION,at:Date.now(),g}); }
@@ -3495,7 +3525,7 @@ function saveToFile(){
  if(!data){ alert("Nothing to save yet."); return; }
  const a=document.createElement("a");
  a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
- a.download="the-discipline-"+termName().replace(/[^\w]+/g,"-").toLowerCase()+".json";
+ a.download="the-economists-game-"+termName().replace(/[^\w]+/g,"-").toLowerCase()+".json";
  document.body.appendChild(a); a.click(); a.remove();
  const n=$("savenote"); if(n) n.textContent="saved to a file \u00b7 as of "+JSON.parse(data).g.turn.toString().replace(/^/,"term ")+(cleanPoint()?"":" (the card in front of you is not in it)");
 }
@@ -3516,7 +3546,8 @@ function boot(){
  $("termslot").innerHTML="";
  render();
  const sv=readSave();
- if(sv&&sv.g&&sv.g.vow&&!sv.g.ended){ resumeCard(sv); return; }
+ if(sv&&sv.g&&sv.g.vow&&!sv.g.ended){ welcomed=true; resumeCard(sv); return; }
+ showWelcome();
  card({
   cls:"gold", kicker:"THE VOW", ti:"What is it for?",
   sc:"You are twenty-five. You have a dissertation that is nearly finished, an advisor who has not read the third chapter, and forty years.<br><br>Everyone in this profession is doing it for something. Most of them will not say what. <em>Say what.</em>",

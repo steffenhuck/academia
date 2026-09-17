@@ -1,4 +1,4 @@
-# Writing events for The Discipline
+# Writing events for The Young Economist’s Game to Professional Success
 
 Events are pure data. Add one by pasting an object into the `EVENTS` array in
 `index.html` — no other code needs to change. The engine handles selection,
