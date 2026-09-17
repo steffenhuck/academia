@@ -296,7 +296,7 @@ A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
 G21) gets **The exit upward** — the office, the salary, and a phone that does
 not ring for presidents. The vow is unmet, so the card closes on salary.
 
-## What exists (230 events)
+## What exists (233 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
