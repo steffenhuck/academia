@@ -387,7 +387,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.04.06";
+const VERSION="0.04.07";
 
 /* ============================================================
    THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
@@ -596,6 +596,10 @@ function fill(str,html){
   .replace(/\{qjournal\}/g,()=>{ const q=oldestQ(); return q?q.jn:"the journal"; })
   .replace(/\{better\}/g,()=>{ g.betterPick=g.betterPick||betterCollege(); return g.betterPick?UNIS[g.betterPick].n:"a better college"; })
   .replace(/\{best\}/g,()=>{ const p=g.papers.slice().sort((a,b)=>b.q-a.q)[0]; return p?p.ti:"your best paper"; })
+  .replace(/\{topjournal\}/g,()=>(g.jtPick=g.jtPick||pick(JOURNALS["A+"].n)))
+  .replace(/\{ajournal\}/g,()=>(g.jaPick=g.jaPick||pick(JOURNALS.A.n)))
+  .replace(/\{bjournal\}/g,()=>(g.jbPick=g.jbPick||pick(JOURNALS.B.n)))
+  .replace(/\{cjournal\}/g,()=>(g.jcPick=g.jcPick||pick(JOURNALS.C.n)))
   .replace(/\{ms\}/g,()=>(g.msPick=g.msPick||pickOnce(MS_TITLES,"msSeen")))
   .replace(/\{grant\}/g,()=>(g.grantPick=g.grantPick||pickOnce(GRANT_TITLES,"grantSeen")))
   .replace(/\{journalC\}/g,()=>(g.jcPick=g.jcPick||pick(JOURNALS.C.n.concat(JOURNALS.B.n.slice(0,2)))))
@@ -3097,6 +3101,34 @@ function newsCard(it,kicker,cls){
   <h2>${it.t}</h2><div class="scene">${fill(it.s,1)}</div>${it.fx?deltaStrip(snap):""}`;
  $("cardslot").appendChild(el);
 }
+/* the literature: other people's papers, noticed. Choiceless, once each. */
+const LITERATURE=[
+ {t:"Identified",s:"\u201cIs the Notion of Identification Identified?\u201d is out in {topjournal}. It is forty pages and the answer is no, and it is the most discussed paper of the year among people who have not read past the answer.",b:[1,4]},
+ {t:"Three Differences",s:"\u201cDifferences in Differences in Differences of Difference-in-Difference Estimators\u201d has reached twelve thousand citations. Nobody has used the estimator. Everybody has cited the paper, in the paragraph where one explains that one is aware of the issue.",b:[2,4]},
+ {t:"A Theory of Behavioral Economists",s:"\u201cA Theory of Behavioral Economists\u2019 Behavior\u201d is out in {ajournal}. The model has two types. Both types are in the acknowledgments.",b:[1,4]},
+ {t:"Games",s:"\u201cIs Game Theory a Theory of Games?\u201d appears in {bjournal}. The author has been asked this at every seminar for thirty years and has finally, in a fit of something, answered. The answer is nine pages and does not settle it.",b:[1,4]},
+ {t:"Macro Must Be Boring",s:"\u201cMacro Must Be Boring: An Empirical Analysis of Salaries in Economics\u201d is out in {topjournal}, and is the most downloaded paper the journal has ever had, and every macroeconomist you know has read it and says it is not about them, and each of them is in Table 2.",b:[1,4],fx:{E:1}},
+ {t:"The Advantage",s:"\u201cOn the Advantage of Poverty\u201d is in {ajournal}. The author holds a named chair. The named chair is in the acknowledgments, as a funder.",b:[1,4]},
+ {t:"A Waste",s:"\u201cWhy Teaching Economics Is a Waste\u201d has appeared in {cjournal}. You read it twice. It is not a good paper and it is not, in every particular, wrong, and it is printed out in the chair\u2019s office with a paragraph highlighted, and you know which paragraph.",b:[2,4],ga:{tdebt:5}},
+ {t:"Competing for a Nobel",s:"\u201cCompeting for a Nobel: A Theory and Some Dismal Findings\u201d is out in {cjournal}. The findings are dismal. The theory is that people like you exist, and the dismal part is the number.",b:[2,4],ga:{nobelhope:1},fx:{E:-2}},
+ {t:"Fair",s:"\u201cHas Fehr Been Fair? New Evidence\u201d is in {bjournal}. The evidence is new. The question is old and has never been asked in print before, because nobody wanted to be the one, and now someone has, and is looking for a job.",b:[1,4]},
+ {t:"Why It All Sucks",s:"\u201cWhy It All Sucks: A General Equilibrium Approach\u201d appears in {cjournal}. It is a proper general equilibrium model with a proper existence proof, and the conclusion is in the title, and the referees, the editor notes in a footnote, agreed with it.",b:[1,4]},
+ {t:"Gold from Berlin",s:"\u201cOnce Nash Was Wrong: A Memory about Gold from Berlin\u201d is in {cjournal}. It is by a man who was there. Nobody else was there. It is unfalsifiable and moving and cited by nobody, and you keep a copy.",b:[2,4]},
+ {t:"Prizes",s:"\u201cPrizes Become Prizes: Theory and Evidence\u201d is out in {ajournal}. The theory is that a prize is worth what its last winner was. The evidence is a table of the last winners, and you look for your name in it before you have decided whether you want it there.",b:[3,4],ga:{anyflag:["MEDAL","GENIUS"]},fx:{E:2}},
+ {t:"The Ego in Econ",s:"\u201cThe Ego in Econ\u201d is in {topjournal}. It has a dataset. You are in the dataset. You can tell from the summary statistics, which is not how summary statistics are supposed to work.",b:[2,4],ga:{E:70},fx:{E:-2}},
+ {t:"WTF",s:"\u201cWTF, or Why Retiring from Academic Economics Is the Smart Option\u201d has been published in a journal so far down the list that the list ends. It is forwarded to you by three people, separately, without comment. You read it on a Sunday.",b:[3,4],ga:{since:["TENURED",20]},fx:{B:-2}},
+ {t:"Gasoline",s:"\u201cGasoline\u201d is out in {topjournal}. One word in the title, forty-one pages under it, and the most cited paper of the year. There is a movement now for one-word titles. It will last until the first one is rejected.",b:[1,4]},
+ {t:"An Economic Theory",s:"\u201cAn Economic Theory of Porn\u201d is out in {topjournal}, with a lead editor\u2019s note about the importance of the market. In the same month, \u201cAn Economic Theory of Love\u201d appears in {cjournal}, without a note.",b:[1,4]},
+ {t:"Hard Data",s:"\u201cThe IFI That Outperformed Them All: Some Hard Data\u201d is in {ajournal}. The data are hard. The institution is not named, for legal reasons, and everyone knows which one it is, for the same reasons.",b:[2,4]}
+];
+function litCard(){
+ g.litSeen=g.litSeen||{};
+ const pool=LITERATURE.map((x,i)=>i).filter(i=>!g.litSeen[i]&&g.rank>=LITERATURE[i].b[0]&&g.rank<=LITERATURE[i].b[1]&&gateOK(LITERATURE[i].ga));
+ if(!pool.length) return;
+ const i=pick(pool); g.litSeen[i]=1;
+ g.jtPick=null; g.jaPick=null; g.jbPick=null; g.jcPick=null;
+ newsCard(LITERATURE[i],"THE LITERATURE","card quiet life");
+}
 function lifeCard(){
  g.lifeSeen=g.lifeSeen||{};
  const pool=LIFE.map((x,i)=>i).filter(i=>!g.lifeSeen[i]&&gateOK(LIFE[i].ga));
@@ -3461,6 +3493,7 @@ function runTerm(){
 
  if(g.turn%2===0 && (g.vow==="NOBEL"||g.vow==="BOTH") && !g.won.NOBEL && Math.random()<0.3) octoberCard();   /* the year's laureates */
  if(Math.random()<0.4) lifeCard();        /* meanwhile: a life, mostly to no effect */
+ else if(Math.random()<0.22) litCard();   /* other people's papers, noticed */
  if(pubs.length) pubCard(pubs);          /* news, not one of the two */
  g.draws=2; g.shown=pubs.length>0;
  if(g.rank>=4 && !g.flags.GROWN){ g.flags.GROWN=g.turn+1; grownCard(); }   /* the word comes off the title */
@@ -3533,7 +3566,7 @@ function submitCard(){
 }
 function nextCard(){
  if(g.ended||awaiting) return;
- g.msPick=null; g.grantPick=null; g.jcPick=null;
+ g.msPick=null; g.grantPick=null; g.jcPick=null; g.jtPick=null; g.jaPick=null; g.jbPick=null;
  if(g.pendingSubmit>0){ g.pendingSubmit--; submitCard(); render(); return; }
  if(g.draws<=0){ if(!g.shown) quietCard(); render(); return; }
  g.draws--;

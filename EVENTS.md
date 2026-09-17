@@ -370,6 +370,14 @@ it appears on, so the scene and the buttons agree. `MS1` The Manuscript
 (three texts), `MS2` The Board, `GR1` The Panel use them. Add titles to the
 pools freely.
 
+## The literature
+
+`LITERATURE` is a pool of other people's papers, noticed: choiceless dim
+cards headed THE LITERATURE, once each, about one term in eight when no
+Meanwhile card fired. `{topjournal}` `{ajournal}` `{bjournal}` `{cjournal}`
+draw a journal of that tier, fixed per card. Entries are `{t,s,b,ga?,fx?}`;
+gate the ones that should sting (`tdebt`, `nobelhope`, `E`, `since`).
+
 ## Meanwhile
 
 `LIFE` is a separate pool of things that happen in a life and change
