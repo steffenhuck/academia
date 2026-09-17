@@ -331,7 +331,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 <div class="wrap">
 
 <header class="mast">
-  <h1>The Economist’s Game</h1>
+  <h1 id="h1">The Young Economist’s Game to Professional Success</h1>
   <div class="tag">an academic career &middot; 25 to 65</div>
   <div class="vowbar">
     <span class="vowchip" id="vowchip">no vow yet</span>
@@ -385,7 +385,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.04.03";
+const VERSION="0.04.04";
 
 /* ============================================================
    THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
@@ -3157,8 +3157,14 @@ function needle(){
  </div>`;
 }
 
+/* the title ages: the full thing over the opening, Young until full professor, then not */
+function gameTitle(){
+ if(!g||!g.vow||g.turn===0) return "The Young Economist\u2019s Game to Professional Success";
+ return g.rank>=4 ? "The Economist\u2019s Game" : "The Young Economist\u2019s Game";
+}
 function render(){
  /* masthead */
+ $("h1").textContent=gameTitle();
  $("vowchip").textContent = g.vow? vowLabel(false) : "no vow yet";
  $("agechip").textContent = "age "+age()+" · "+termName();
  const tc=$("tenurechip");
@@ -3361,7 +3367,7 @@ function runTerm(){
   if(g.clock<=0){ render(); tenureVote(); return; }
  }
 
- if(g.rank===0 && g.turn>=6){ render(); placeStep(); return; }
+ if(g.rank===0 && g.turn>=6){ render(); gradStep(); return; }
 
  /* op-ed window after a viral collapse */
  if(g.mods.opedwindow && g.turn>=g.mods.opedwindow){
@@ -3374,7 +3380,8 @@ function runTerm(){
  if(Math.random()<0.4) lifeCard();        /* meanwhile: a life, mostly to no effect */
  if(pubs.length) pubCard(pubs);          /* news, not one of the two */
  g.draws=2; g.shown=pubs.length>0;
- if(g.rank>=1 && Math.random()<0.09) jokerCard();   /* on top of the two */
+ if(g.rank>=4 && !g.flags.GROWN){ g.flags.GROWN=g.turn+1; grownCard(); }   /* the word comes off the title */
+ else if(g.rank>=1 && Math.random()<0.09) jokerCard();   /* on top of the two */
  nextCard();
  render();
 }
@@ -3562,6 +3569,27 @@ function phdStart(){
   sc:"You are twenty-five, most of the way through a PhD at <em>"+uniName()+"</em> under {advisor}, who has not read the third chapter. "+UNIS[g.uni].blurb+" A stipend of $24k, a desk in a room with four other desks, and a dissertation in three chapters of which two exist.<br><br>Three years of it remain before the market. What you do with them will not appear on your CV, and will decide most of what follows.",
   ch:[{t:"Get to work.",why:"six terms until the job market",
     fn(){ return "The room has a kettle and a whiteboard nobody erases. Somebody's job market paper is on it, from a year that has passed.<br><br><em>Now spend the term. Below, put your five points into the six things a term can go on — research, networking, media, service, teaching, recovery — and run it. Every term, the same five points. It is never enough, and it never will be.</em>"; }}]
+ });
+}
+/* the defence: a doctorate is a moment, before the market is */
+function gradStep(){
+ card({
+  append:true, cls:"gold", kicker:"THE DEFENCE", ti:"Doctor",
+  sc:"Two hours, three examiners, one of whom has read it. {advisorS} asks the first question, which is a kindness, and the external asks the second, which is not. Around the ninety-minute mark you understand the third chapter better than you did when you wrote it, and it is because of a question you cannot answer.<br><br>Then a corridor, and a door, and a handshake, and a word in front of your name that will never come off.",
+  ch:[
+   {t:"Thank the committee.",why:"and go to the pub",fn(){ applyFx({N:3,E:4,B:-3}); pendingNext=placeStep; return "You thank them. {advisorS} takes you for a drink and talks about his own defence, in 1998, for some time. The market is in the autumn. You are, from today, Doctor, and nobody will use the word except your mother and, once, a bank."; }},
+   {t:"Correct the external on a point of notation, after the handshake.",why:"you were right",fn(){ applyFx({E:6,R:2,N:-3}); pendingNext=placeStep; return "You were right. The external agrees that you were right, in a voice that will be on a hiring committee in 2034. {advisorS} closes his eyes briefly. The market is in the autumn."; }}
+  ]
+ });
+}
+function grownCard(){
+ card({
+  append:true, kicker:"THE MASTHEAD", ti:"No longer young",
+  sc:"Somewhere between the promotion letter and the first meeting at which you were the oldest person in the room, a word has fallen off the top of the page. Nobody announced it. The word was \u201cyoung.\u201d It was doing a great deal of work \u2014 the excuses it covered, the discounts it earned, the sentence \u201cfor someone at that stage\u201d \u2014 and it has stopped.<br><br>Congratulations. You are a full professor, and you are not young.",
+  ch:[
+   {t:"Accept it.",fx:{E:3,B:-2,K:1},say:"You accept it. It is, on balance, a relief: the young are compared to what they might become, and you are now compared to what you have done, which is at least a fixed quantity."},
+   {t:"Object.",fx:{E:5,N:-1},say:"You say that fifty is the new forty, to a room of people who are thirty. They nod. The nod is the same nod you used to give, and you recognise it, and it is too late to take the sentence back."}
+  ]
  });
 }
 function placeStep(){
