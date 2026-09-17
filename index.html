@@ -348,7 +348,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.03.14";
+const VERSION="0.03.15";
 
 /* ============================================================
    THE DISCIPLINE — v0 engine
@@ -1441,7 +1441,7 @@ const EVENTS=[
  {t:"Serve. Make sure your enemies don't get it.",fx:{K:8,N:5,E:3,clearFoe:"search",flag:"BLOCKED_AT_HARWICH"},say:"You are scrupulously fair in every meeting and devastating in one of them, about one candidate, on the merits. The candidate is not appointed. Nobody in the room knows the history, and one person guesses, and says nothing, and is now someone who knows something about you."},
  {t:"Serve honestly. Recuse where you should.",fx:{K:6,N:8,flag:"SERVED_HARWICH"},say:"You recuse from two discussions and say so out loud, which the chair notes with something like surprise. The appointment is a good one. For the rest of your life you are “someone who was on the Harwich search,” which turns out to open doors you had not thought were doors."},
  {t:"Decline — and put your own name forward.",gate:{K:60},fn(){
-   const p=sig((g.K-82)/12 + 0.9*(g.N-60)/30 + (g.won.PRESALT?0.9:0) - 0.5*foesOf("search"));
+   const p=sig((g.K-82)/12 + 0.9*(g.N-60)/30 + (g.won.PRESALT?0.9:0) - 0.5*foesOf("search") - (g.flags.LITIGIOUS?0.25:0));
    if(Math.random()<p){
     if(g.target){ g.won.PRES=1; g.office=4; g.uni="HARWICH"; g.S+=80; pendingNext=()=>end("PRES"); return "The committee, without you on it, chooses you. The search firm says this has never happened and that it will not be mentioning where the idea came from."; }
     g.office=4; g.uni="HARWICH"; g.won.PRESALT="HARWICH"; g.presSince=g.turn; g.S+=80; g.nobelDead=true;
@@ -1851,6 +1851,113 @@ const EVENTS=[
  sc:"The person who taught you to write a referee report has retired. The party is in the common room. She gives a speech about the field that is four minutes long, contains one joke, and is the best account of what the job is that you have ever heard, and nobody records it.",
  auto:{good:1,fx:{E:-2,B:-3,N:2},say:"You write down the joke on the walk home. You get it slightly wrong. You tell it for twenty years, slightly wrong, and it is still the best joke you know."}}
 
+,
+
+/* ---------- batch 6: the referee's own paper, the grant, the presidency's follies, the classroom ---------- */
+{id:"Y1",ti:"The Invitation to Referee",b:[1,4],ex:{base:1.1},ga:{anyflag:["BORROWED","STAR_COAUTHOR"]},once:1,
+ sc:"An email from the Quarterly: would you referee the attached? You open the attachment. It is your paper — the one with two names on it, of which yours is second — and the editor, matching names to the manuscript, has matched only the first. There is a deadline of six weeks and a form for declaring conflicts of interest, which is optional.",
+ ch:[
+ {t:"Write a glowing report.",fx:{mom:10,N:4,E:5,cites:40,flag:"GLOWING_SELF"},say:"It takes an afternoon. You know the paper's weaknesses better than anyone alive and you describe none of them. It is accepted in four months, which is a record, and your coauthor says, at dinner, that for once the referees understood the paper, and you agree that it is rare."},
+ {t:"Write to the editor, warmly, pointing out the mistake.",fx:{K:3,N:2,E:-1,flag:"HONEST_REF"},say:"Three lines, with a joke in the second. The editor replies in nine minutes with a word that is not quite an apology and is not quite a thank you. The paper goes to somebody else and takes a year longer. The editor, who has a very good memory, files the nine minutes somewhere."},
+ {t:"Referee it straight, as if it were anyone's.",fx:{R:4,E:2,B:4,flag:"STRAIGHT_REF"},say:"Eleven problems, four of them real. It gets a revise and resubmit. For a year your coauthor is furious with the anonymous referee in your presence, and you help him draft the response, which is the strangest document you will ever co-write."}]},
+
+{id:"Y2G",ti:"The Very Good Memory",b:[2,4],ex:{base:1},ga:{flag:"GLOWING_SELF"},once:1,
+ sc:"A conference bar, years on. Somebody who was on the Quarterly's board at the time says, not to you but audibly, that the most enthusiastic report the journal ever received was on a paper by the referee. The story is told well. Two people at the table look at you. One of them is on your next committee.",
+ ch:[
+ {t:"Laugh. It is, after all, a good story.",roll:{stat:"N",pivot:60,
+   win:{fx:{E:2,N:2},say:"It stays a story. It is told at that bar for years and you are never quite named in it, and the not-naming is a courtesy that you will spend the rest of your career repaying, without anyone saying so."},
+   lose:{fx:{N:-12,P:-6,E:-10,mom:-8,foe:{why:"the report you wrote on your own paper, which they were told about",poisons:"committee"},flag:"EXPOSED_REPORT"},say:"The story acquires your name by Thursday. The editor writes to the board, the board writes to nobody, and nothing formal happens, which is worse: for the rest of your career there is a sentence people say about you after you leave the room, and you know the sentence."}}},
+ {t:"Leave the bar.",fx:{E:-4,B:4,N:-3},say:"You leave. It is noticed. The story is told once more, to your empty chair, and the chair does not defend itself."}]},
+
+{id:"Y2H",ti:"A Very Good Memory, the Other Way",b:[2,4],ex:{base:1},ga:{flag:"HONEST_REF"},once:1,
+ sc:"The editor of the Quarterly, retiring, gives a dinner. You are invited, which is unexpected, and seated near the top, which is more so. In the speech, without naming you, he describes the referee who wrote back in three lines with a joke in the second.",
+ auto:{good:1,fx:{N:8,mom:6,K:3},say:"Nobody at the table knows it was you except him. Then a woman on the board leans over and says, “It was you, wasn't it.” It was. Her journal is looking for an associate editor, and the field, for the next decade, is slightly more open to you than it was."}},
+
+{id:"Y3",ti:"Submission 002342",b:[1,4],ex:{base:.8},once:1,
+ sc:"A letter from the National Research Council: the proposal is funded, in full, for three years. You take the department out. You tell your mother. On the Thursday a second letter, in a smaller envelope, explains that owing to a clerical error the award was made to submission 002341, and that yours, 002342, was not successful, and that the Council regrets any inconvenience.",
+ ch:[
+ {t:"Accept the loss.",fx:{E:-5,B:3,R:1},say:"You write back thanking them for the clarification, which is the most dignified sentence you will write that year and also the most expensive. Submission 002341 is on a subject you have never heard of. You look it up. It is good."},
+ {t:"Threaten to sue.",roll:{stat:"K",pivot:55,
+   win:{fx:{R:6,wip:30,N:-3,S:4,flag:"LITIGIOUS"},say:"A letter from a lawyer who is your cousin, on paper that cost more than the advice. The Council caves in nine days and funds both, from a reserve nobody knew existed. Three years of money. And, from that week on, a sentence attached to your name in the corridors of every funding body in the country."},
+   lose:{fx:{N:-7,E:-3,B:5,flag:"LITIGIOUS"},say:"The Council's counsel replies in one paragraph, the second sentence of which is about the terms and conditions you ticked. You do not sue. But the letter exists, and the Council's reviewers are your colleagues, and the word for you, from that week, is a word you will not be told."}}}]},
+
+{id:"Y4",ti:"The Word for You",b:[1,4],ex:{base:.7},ga:{flag:"LITIGIOUS"},
+ sc:"In a conversation about salary, the dean mentions, lightly, apropos of nothing, that he has heard you “know some lawyers.” He is smiling. It is not clear what the smile is for.",
+ alt:["A search committee chair calls, for the reference-checking stage, and asks, after the usual questions, whether the “thing with the Council” was ever “resolved.” You explain. The explanation is longer than the question.",
+      "A junior colleague, being pushed around by the same Council over a smaller grant, asks you, quietly, whether the threat “worked.” Half the department is listening to a conversation that is not happening."],
+ ch:[
+ {t:"Let the story do its work.",roll:{stat:"coin",
+   win:{fx:{S:10,K:3,E:3},say:"It works. The number moves before you have finished the sentence, and the sentence was not about lawyers. You have become someone it is easier to give things to than to argue with, which is a kind of power, and a kind of reputation, and they are the same kind."},
+   lose:{fx:{N:-6,P:-3,foe:{why:"the story about the grant council, which they believed in full",poisons:"search"}},say:"It works against you. The conversation ends pleasantly and, some way down the line, a shortlist is drawn up without you on it, by someone who would rather not be sued."}}},
+ {t:"Correct it, patiently, again.",fx:{K:2,B:3,E:-2},say:"You explain it, again. The explanation is true, and it is dull, and it does not travel. The story does."}]},
+
+{id:"Y5",ti:"The Statue",b:[3,4],ex:{base:1.2,office:2},ga:{office:4},once:1,
+ sc:"Four hundred students on the quad, around the bronze of Josiah Harrowgate, second benefactor, whose plaque says he made his money in “trade.” The trade was in people. The students know this; the trustees know this; the plaque has known it since 1911. The students have a banner and a spokesperson, and the spokesperson has a lawyer's phrasing and a historian's footnotes.",
+ ch:[
+ {t:"Take it down tonight, with a crane.",fx:{P:8,N:-6,K:-3,S:-6,flag:"STATUE_DOWN"},say:"It is gone by six. The photograph of the empty plinth is on every front page and the alumni magazine runs it, cropped, with a letter from the chair of the board, who was not consulted. The students cheer for a night. Two donors write. One of them writes to a lawyer."},
+ {t:"Add a plaque. Convene a committee on the Harrowgate legacy.",fx:{K:5,B:4,P:-2,flag:"STATUE_PLAQUE"},say:"The committee has eleven members, a historian, and a mandate to report. The plaque, in the meantime, says “contested.” The students are not fooled and are also, term by term, graduating, which is the thing the committee understands about time."},
+ {t:"Defend it. History is history.",fx:{E:5,N:4,P:-6,flag:"STATUE_KEPT"},say:"You say a sentence about not erasing the past. It is a sentence four hundred students have been waiting for you to say, and they say it back, at volume, for a month. The trustees send a note of support. It is the warmest note you will receive from them, and you will read it, later, with some care."}]},
+
+{id:"Y6A",ti:"The Empty Plinth",b:[3,4],ex:{base:1},ga:{flag:"STATUE_DOWN"},once:1,
+ sc:"A television crew on the quad, in front of the plinth, and a national columnist who has never been to the college and has strong views about it. The board meets on Friday. Three alumni, one of them the name on the science building, have asked for “a conversation.”",
+ ch:[
+ {t:"Give the interview yourself.",roll:{stat:"P",pivot:55,
+   win:{fx:{P:10,N:3,K:3},say:"Four minutes. You say one thing that is true and one thing that is quotable, and they are the same thing. The columnist writes a second column, softer. The name on the science building stays on the science building."},
+   lose:{fx:{P:-8,K:-5,N:-6,B:6},say:"Four minutes. You say one sentence that is accurate and sounds appalling in a caption. The name on the science building asks for the name to be removed, from the building, and a lawyer explains that this is more complicated than putting it on."}}},
+ {t:"Let the board chair speak for the college.",fx:{K:4,P:-4,N:2},say:"He speaks for the college. He speaks for eleven minutes, mostly about process. The crew leaves early. The story dies of boredom, which is what boards are for, and the students, watching, understand exactly what they have been handed."}]},
+
+{id:"Y6B",ti:"The Committee Convenes",b:[3,4],ex:{base:1},ga:{flag:"STATUE_PLAQUE"},once:1,
+ sc:"A local station films the first meeting of the Harrowgate Legacy Committee, which has been scheduled, by someone, in a room with the Harrowgate portrait in it.",
+ auto:{bad:1,fx:{P:-4,K:2,B:2},say:"The committee reports in fourteen months. The report recommends a further committee, with a broader remit, and a “campus conversation.” The statue is still there. The students who started it have graduated, and one of them is a journalist now, and she has your number."}},
+
+{id:"Y6C",ti:"The Sentence",b:[3,4],ex:{base:1},ga:{flag:"STATUE_KEPT"},once:1,
+ sc:"The protest has doubled and acquired a television crew and a tent. Your sentence about not erasing the past is on a banner, in your own font, above a picture of the plaque. A student journalist has found the shipping manifests. They are specific.",
+ ch:[
+ {t:"Say it again, better, on camera.",roll:{stat:"P",pivot:62,
+   win:{fx:{P:6,E:4,N:3},say:"You say it better. You say something about teaching the past rather than removing it, and you announce a course, and the course is real, and it fills. The tent comes down in the rain. The trustees are delighted with you and will remain so for a year."},
+   lose:{fx:{P:-10,K:-5,N:-4,B:8,flag:"STATUE_HEADLINE"},say:"You say it again and it is worse. A headline uses four of your words and one of theirs. The tent stays for the term. A donor who has never previously expressed a view on anything expresses one, and it is about you."}}},
+ {t:"Take it down after all, quietly, in the summer.",fx:{P:-3,K:-4,E:-6,N:-2},say:"The crane comes in July. Nobody is on the quad to see it and everybody knows. You have managed to be blamed by both sides, in sequence, which is a genuine administrative achievement and is not the one you were aiming for."}]},
+
+{id:"Y7",ti:"The Quad",b:[3,4],ex:{base:1,office:1.6},ga:{office:4},once:1,
+ sc:"There is money — a bequest, unrestricted, from a woman who loved the gardens — and there is the quad, which has been a lawn with a path across it since 1911. Presidents redesign the quad. It is the one thing they do that is still there afterwards, and everybody who has ever held the office has understood this, and so has the grounds department.",
+ ch:[
+ {t:"A maze. Yew. Nine feet high.",fx:{E:6,P:5,K:-2,B:-4,flag:"MAZE"},say:"The hedges take nine years to reach nine feet and the grounds department takes it personally. A student is lost in it, briefly, and writes about it, well. It is the most photographed thing on campus within a decade, and nobody who photographs it knows your name, which is roughly what a legacy is."},
+ {t:"A great lawn by a very famous landscape architect.",fx:{K:4,N:5,B:3,P:2},say:"The architect's fee is a number you say aloud only once. The lawn is magnificent and is not to be walked on, and there is a sign. Every prospectus for thirty years has the lawn on the cover, and the students, in the photograph, are standing carefully on the path."},
+ {t:"Leave it. Plant one tree.",fx:{K:3,E:-2,B:-3},say:"An oak, near the path. The grounds department is moved, and says so. The bequest goes to scholarships, which nobody photographs. The tree will be taller than the chapel in eighty years, and by then it will simply be the tree, which is the best thing a tree can be."}]},
+
+{id:"Y8",ti:"The Department Library",b:[0,2],ex:{base:.7},once:1,
+ sc:"There is a room on the fourth floor with a door nobody uses and, behind it, the department's library, which stopped acquiring in 1974. On the third shelf, between a run of the Economic Journal and a book on rent control, is a first edition of Edgeworth's <em>Mathematical Psychics</em>, 1881, uncut, with a bookplate. Nobody has opened it. Nobody, on the evidence of the dust, has opened the door.",
+ ch:[
+ {t:"Leave it where it is.",fx:{K:2,E:-1,flag:"EDGEWORTH_LEFT"},say:"You put it back exactly. You think about it on the stairs. You think about it, on and off, for the rest of your career, which is the only thing Edgeworth ever managed to do to anyone."},
+ {t:"Take it home. Make sure it gets a better home.",fx:{E:5,R:2,B:-2,flag:"EDGEWORTH_HOME"},say:"It sits on your shelf, at home, where the light is right. You read it, which is more than the department did in fifty years. You have not stolen it; you have rescued it; the two words will change places, quietly, on the day you become somebody."},
+ {t:"Tell the librarian. Have it catalogued.",fx:{N:3,K:2,flag:"EDGEWORTH_CAT"},say:"It is catalogued, valued, insured, and moved to Special Collections, where it is stolen within the year by somebody who read the catalogue. The librarian writes you a thank-you note first."}]},
+
+{id:"Y9",ti:"The Monument",b:[3,4],ex:{base:.9,office:1.4},ga:{office:4,noflag:"EDGEWORTH_HOME"},once:1,
+ sc:"You propose, at a meeting of the board, a monument to Francis Ysidro Edgeworth: economist, statistician, a man who called a book <em>Mathematical Psychics</em> and meant it. The board asks, with respect, whether he attended the college. He did not. They ask whether he gave to the college. He did not. They ask who he was.",
+ ch:[
+ {t:"A bronze. Twelve feet. In the quad.",fx:{E:8,P:4,N:-4,K:-3},say:"It is cast. The students assume he is a benefactor and protest him within the year, for reasons nobody can specify, and the plaque, which explains indifference curves, does not help. It is a very good bronze. You visit it, occasionally, at night."},
+ {t:"A bench, with the contract curve cut into the back.",fx:{E:3,K:2,P:1,B:-2},say:"The bench is by the path. The curve is exactly right and nobody notices it for a decade, until a graduate student does, and posts a photograph, and for a week the bench is famous among about four hundred people, all of whom you would have liked to meet."},
+ {t:"A lecture. Annual. The first one by you.",fx:{P:5,E:4,N:3,B:3},say:"The Edgeworth Lecture. You give the first, on Edgeworth, and it is good. The second is given by a laureate on his own work, with Edgeworth in the title, and by the fifth nobody says the name aloud except the person introducing it."}]},
+
+{id:"Y9H",ti:"The Monument",b:[3,4],ex:{base:.9,office:1.4},ga:{office:4,flag:"EDGEWORTH_HOME"},once:1,
+ sc:"You propose, at a meeting of the board, a monument to Francis Ysidro Edgeworth: economist, statistician, a man who called a book <em>Mathematical Psychics</em> and meant it. A first edition of that book is on a shelf in your house, where the light is right, and has been for decades, and you have never quite been able to say how it got there. The board asks who he was.",
+ ch:[
+ {t:"A bronze. Twelve feet. The plaque to quote the first edition.",fx:{E:9,P:4,N:-4,K:-3,flag:"EDGEWORTH_PLAQUE"},say:"The plaque says “from a copy in the President's own collection.” You wrote that line yourself, and read it, on the day of the unveiling, with a feeling you would not describe to anyone. The students protest the bronze within the year. The book stays where it is."},
+ {t:"A bench, with the contract curve cut into the back.",fx:{E:3,K:2,P:1,B:-2},say:"The bench is by the path. You check the curve against the book, at home, the night before the stonemason begins. It is exactly right. The book goes back on the shelf, and the bench goes by the path, and the two things are, as far as anyone will ever know, unconnected."},
+ {t:"Give the book back, and propose nothing.",fx:{E:-4,K:4,N:2,B:-3,flag:"EDGEWORTH_RETURNED"},say:"You give it to Special Collections with a letter that uses the word “deposit.” The librarian, who is young, is thrilled, and asks where it has been. You say “safe.” This is true. It is also the last word on the subject, and it is not quite the word you would have chosen."}]},
+
+{id:"Y10",ti:"The Lecture",b:[2,4],ex:{base:.3,tdebt:3.2},ga:{tdebt:8},
+ sc:"You have not changed the slides since the year they were made, and the room knows it: someone has put that year's deck beside this year's on a website, with the differences highlighted, and there are none. In week six you teach the wrong lecture for twenty-five minutes before a student, kindly, says so. The evaluations arrive in a thick envelope. The chair has a copy.",
+ alt:["Again. This time it is a graduate class, and it is the proof that goes wrong, on the board, for forty minutes, in front of people who can see it going wrong before you can. The evaluations use the word “unprepared” eleven times, and one of them uses it correctly."],
+ ch:[
+ {t:"Apologise. Rebuild the course over the summer.",fx:{B:8,R:-3,K:3,mod:"teachfix"},say:"A summer. It costs a paper and it is, in the end, a good course, and the students in it will never know what it replaced, and the chair will, and says nothing, which from a chair is a compliment."},
+ {t:"Blame the room, the software, and the cohort.",fx:{E:4,P:-4,N:-5,foe:{why:"the email about the cohort, which was forwarded to the cohort",poisons:"vote"}},say:"The email is forwarded within the hour. It reaches the students, then the chair, then a colleague who teaches the same cohort well and is now, for reasons you have supplied, your enemy."},
+ {t:"Say nothing. It is a lecture.",fx:{E:2,K:-3,N:-3,flag:"CLASSROOM"},say:"You say nothing. The evaluations go up the chain unaccompanied, which is worse than any explanation, and somewhere in the dean's office a file that did not exist acquires a first page."}]},
+
+{id:"Y11",ti:"The Dean's Letter",b:[2,4],ex:{base:1},ga:{flag:"CLASSROOM"},once:1,
+ sc:"A letter, on paper, from {dean}. It uses the phrase “pattern of concern” and the phrase “teaching load” in the same sentence, and it is copied to the chair.",
+ auto:{bad:1,fx:{K:-4,N:-4,mom:-5,S:-3},say:"The letter is in the file. The file will be on the table at the next thing that matters, and it will be read aloud by someone who has been waiting to read it aloud. Your teaching load, in the meantime, goes up, which is the department's idea of a joke and also its idea of a remedy."}}
+
 ];
 
 /* ============================================================
@@ -1861,6 +1968,9 @@ const EVENTS=[
    ============================================================ */
 const ARCS=[
  {id:"advisor",    steps:["P1","P11","G6"],           gap:[3,6]},
+ {id:"selfref",    steps:["Y1","Y2G","Y2H"],          gap:[10,16]},
+ {id:"statue",     steps:["Y5","Y6A","Y6B","Y6C"],    gap:[2,4]},
+ {id:"lecture",    steps:["Y10","Y11"],               gap:[2,4]},
  {id:"frobenius",  steps:["P8","A11","G21"],          gap:[6,10]},
  {id:"blunt",      steps:["D5","N16"],                gap:[20,30]},
  {id:"sorokina",   steps:["P10","G10"],               gap:[30,40]},
@@ -1894,7 +2004,9 @@ for(const e of EVENTS){ if(ARC_STEP.has(e.id)&&e.ga&&e.ga.since){ e.ga.flag=e.ga
 const byId=id=>EVENTS.find(e=>e.id===id);
 function branchDead(e){
  const ga=e.ga||{}; const need=[].concat(ga.flag||[],ga.flags||[]);
- return need.some(f=>!g.flags[f]);
+ if(need.some(f=>!g.flags[f])) return true;
+ if(ga.anyflag&&!ga.anyflag.some(f=>g.flags[f])) return true;
+ return false;
 }
 function stepReady(e){ return g.rank>=e.b[0]&&g.rank<=e.b[1]&&gateOK(e.ga)&&!(e.once&&g.seen[e.id]); }
 function startArcs(e){
@@ -2169,6 +2281,9 @@ function gateOK(ga){
  if(ga.E&&g.E<ga.E) return false;
  if(ga.flag&&!g.flags[ga.flag]) return false;
  if(ga.flags){ for(const f of ga.flags) if(!g.flags[f]) return false; }
+ if(ga.anyflag&&!ga.anyflag.some(f=>g.flags[f])) return false;
+ if(ga.noflag&&g.flags[ga.noflag]) return false;
+ if(ga.tdebt&&g.tdebt<ga.tdebt) return false;
  if(ga.field&&!(g.fields&&g.fields[ga.field])) return false;
  if(ga.queue&&g.queue.length<ga.queue) return false;
  if(ga.h&&hIndex()<ga.h) return false;
@@ -2421,6 +2536,12 @@ const ENDTEXT={
  TIME:()=>["Emeritus","They give you an office on the fourth floor with a window facing the car park, and a mug. The seminar still invites you. You still go. About once a term someone young asks you a question that indicates they have actually read the 2041 paper, and it is worth the entire afternoon."]
 };
 const EPITHETS={
+ GLOWING_SELF:"refereed their own paper, warmly",
+ LITIGIOUS:"threatened to sue a research council",
+ STATUE_DOWN:"took the statue down with a crane",
+ MAZE:"built the maze",
+ EDGEWORTH_HOME:"has a first edition of Edgeworth that is not, strictly, theirs",
+ EDGEWORTH_RETURNED:"gave the Edgeworth back",
  RAN_SEMINAR:"ran the job market seminar, for nothing",
  ANTISOCIAL:"was not, in the end, really a colleague",
  GENEROUS:"wrote the kindest report someone ever got",

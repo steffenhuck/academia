@@ -154,7 +154,12 @@ A weight of `1` is a normal pull, `2` a strong one. Every draw also has a
 `{R:45}` `{K:50}` `{N:40}` `{P:60}` `{E:70}` `{flag:"SPEC"}` — any combination.
 Also: `{office:1}` (at least department chair; `2` dean, `3` provost, `4`
 president), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
-`{since:["FLAG",6]}` — the flag was set at least six terms ago.
+`{since:["FLAG",6]}` — the flag was set at least six terms ago;
+`{anyflag:["A","B"]}` — at least one of several; `{noflag:"A"}` — the flag is
+*not* set, for the other half of a pair like `Y9`/`Y9H`; `{tdebt:8}` — the
+hidden teaching debt (one point a term without teaching, two off per teaching
+point) has reached that level. `Y10` is how neglected teaching eventually
+goes wrong in a room.
 
 `{queue:1}` — at least one paper under review; required by any event about the
 review process.
@@ -234,6 +239,12 @@ it produces at the end. The ones other events currently gate on:
 
 | flag | set by | gates |
 |---|---|---|
+| `BORROWED` / `STAR_COAUTHOR` | P4 / D5 | `Y1` — the Quarterly asks you to referee your own coauthored paper |
+| `GLOWING_SELF` / `HONEST_REF` | Y1 | `Y2G` the story at the bar / `Y2H` the editor's dinner |
+| `LITIGIOUS` | Y3, threatening the Council | `Y4`, repeatable, a coin each time; a small penalty in every presidential search |
+| `STATUE_DOWN` / `STATUE_PLAQUE` / `STATUE_KEPT` | Y5 | `Y6A` / `Y6B` / `Y6C` — the cameras, one version each |
+| `EDGEWORTH_HOME` | Y8, the first edition | `Y9H` instead of `Y9` — the monument, with the book on your shelf |
+| `CLASSROOM` | Y10, saying nothing | `Y11` — the dean's letter |
 | `SPEC` | P6 the defensible specification | N6 the replication |
 | `LEFT_ERROR` | P7 leaving the lemma wrong | G12 the graduate student, 8+ terms later |
 | `REPLACED_SILENT` | P9 going home quietly | G13 the paper you weren't on, 6+ terms later |
@@ -282,7 +293,7 @@ A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
 G21) gets **The exit upward** — the office, the salary, and a phone that does
 not ring for presidents. The vow is unmet, so the card closes on salary.
 
-## What exists (190 events)
+## What exists (205 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
