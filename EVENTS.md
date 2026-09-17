@@ -156,7 +156,8 @@ Also: `{office:1}` (at least department chair; `2` dean, `3` vice-president, `4`
 president; the head of St Cuthbert's is called Provost), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
 `{since:["FLAG",6]}` — the flag was set at least six terms ago;
 `{anyflag:["A","B"]}` — at least one of several; `{noflag:"A"}` — the flag is
-*not* set, for the other half of a pair like `Y9`/`Y9H`; `{tdebt:8}` — the
+*not* set, for the other half of a pair like `Y9`/`Y9H`; `{seen:"C4"}` — the player has seen that event, whichever choice they made
+(the cheapest way to give a character a second scene); `{tdebt:8}` — the
 hidden teaching debt (one point a term without teaching, two off per teaching
 point) has reached that level. `Y10` is how neglected teaching eventually
 goes wrong in a room. `{nobelhope:1}` — a Nobel is still possible and
@@ -295,7 +296,7 @@ A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
 G21) gets **The exit upward** — the office, the salary, and a phone that does
 not ring for presidents. The vow is unmet, so the card closes on salary.
 
-## What exists (221 events)
+## What exists (230 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
@@ -343,6 +344,20 @@ directly, a small drift each term from the know-how level. At `run` 4 and a
 better college on the list, `PL1` The Better Offer fires (up to three times)
 and taking it moves the presidency up a rung. Rungs and `run` warm the
 Harwich search. `ga:{ladder:1}` is the gate; `{better}` names the college.
+
+## Second scenes
+
+Every named character gets at least two. The second is usually gated
+`seen:` on the first, or `since:` on a flag the first set, and its text
+often forks on that flag inside an `fn` (Kettlewell's retirement dinner reads
+differently if you took his name). Walk-ons come back as Meanwhile cards.
+`rememberJn:"selfJn"` in `fx` records the journal of the paper under review
+longest, so a follow-up can name it with `{selfjn}` (the referee arc).
+
+## Arcs late in a career
+
+A storyline's next step is never scheduled past term 76, so an arc started
+late is compressed rather than lost.
 
 ## Tenure
 
