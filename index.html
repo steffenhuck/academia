@@ -768,8 +768,8 @@ const EVENTS=[
  sc:"The paper is accepted. You are reading the proofs — the typeset pages, the last moment anything can change — and in Lemma 2 you see it. The inequality goes the wrong way. The result survives, probably, with a different argument you do not currently have.",
  ch:[
  {t:"Write to the editor tonight.",fx:{R:4,N:3,B:5,mod:"delay",flag:"OWNED_ERROR"},say:"The editor is, unexpectedly, gracious: “better now than in a comment.” Publication slips a year. The corrected lemma will be better than the original, and nobody but the two of you will ever know there was a first version."},
- {t:"Fix it in the proofs. Say nothing.",fx:{E:3,mod:"accept",flag:"SILENT_FIX"},say:"You rewrite two lines under the heading “typographical corrections.” The typesetter does not read mathematics. It goes through. For about three years you will feel a small cold thing whenever anyone cites Lemma 2."},
- {t:"It's a lemma. Let it go.",fx:{R:-2,mod:"accept",flag:"LEFT_ERROR"},say:"It goes through. The lemma will be wrong in print. The result, as it happens, is true anyway — which is not the same as the proof being right, and one day a graduate student with time on their hands will notice the difference."}]},
+ {t:"Fix it in the proofs. Say nothing.",fx:{E:3,mod:"publish",flag:"SILENT_FIX"},say:"You rewrite two lines under the heading “typographical corrections.” The typesetter does not read mathematics. It goes through. For about three years you will feel a small cold thing whenever anyone cites Lemma 2."},
+ {t:"It's a lemma. Let it go.",fx:{R:-2,mod:"publish",flag:"LEFT_ERROR"},say:"It goes through. The lemma will be wrong in print. The result, as it happens, is true anyway — which is not the same as the proof being right, and one day a graduate student with time on their hands will notice the difference."}]},
 
 {id:"G12",ti:"The Graduate Student With Time",b:[2,4],ex:{base:.6},ga:{since:["LEFT_ERROR",8]},once:1,
  sc:"An email from a second-year at Ostrander State, {prewitt}, with a PDF attached. The PDF is four pages long and its title is “A Note on Lemma 2.” It is polite, correct, and already on the working paper series.",
@@ -1874,16 +1874,21 @@ function reviewPass(){
    line("info","↻ R&R at "+s.jn+": three referees, one of whom wants a different paper.");
    continue;
   }
-  g.queue.splice(g.queue.indexOf(s),1);
-  const jn=s.jn||pick(JOURNALS[s.tier].n);
-  g.papers.unshift({ti:s.ti,f:s.f,jn,tier:s.tier,q:s.q,c:s.bonusCites||0,pub:g.turn,yr:Math.floor(g.turn/2)+1});
-  g.fields=g.fields||{}; if(s.f) g.fields[s.f]=(g.fields[s.f]||0)+1;
-  out.push(g.papers[0]);
-  if(s.tier==="A+"){ g.M=clamp(g.M+16,0,100); g.E=clamp(g.E+7,0,100); }
-  else if(s.tier==="A"){ g.M=clamp(g.M+6,0,100); g.E=clamp(g.E+3,0,100); }
-  else if(s.tier==="C"){ g.E=clamp(g.E-2,0,100); }
+  out.push(publishPaper(s));
  }
  return out;
+}
+/* a paper leaves the queue and enters the record — now, not next term */
+function publishPaper(s){
+ g.queue.splice(g.queue.indexOf(s),1);
+ const jn=s.jn||pick(JOURNALS[s.tier].n);
+ g.papers.unshift({ti:s.ti,f:s.f,jn,tier:s.tier,q:s.q,c:s.bonusCites||0,pub:g.turn,yr:Math.floor(g.turn/2)+1});
+ g.fields=g.fields||{}; if(s.f) g.fields[s.f]=(g.fields[s.f]||0)+1;
+ g.cites=g.papers.reduce((a,p)=>a+p.c,0);
+ if(s.tier==="A+"){ g.M=clamp(g.M+16,0,100); g.E=clamp(g.E+7,0,100); }
+ else if(s.tier==="A"){ g.M=clamp(g.M+6,0,100); g.E=clamp(g.E+3,0,100); }
+ else if(s.tier==="C"){ g.E=clamp(g.E-2,0,100); }
+ return g.papers[0];
 }
 
 function citationPass(){
@@ -2138,6 +2143,10 @@ function applyFx(fx){
  if(fx.mod){
   if(fx.mod==="resignOffice") g.office=0;
   else if(fx.mod==="nobelDead") g.nobelDead=true;
+  else if(fx.mod==="publish"){
+   const q=g.queue.slice().sort((a,b)=>a.due-b.due)[0];
+   if(q){ q.rounds=9; const p=publishPaper(q); pubCard([p]); }
+  }
   else if(["accept","reject","resubmit","delay"].includes(fx.mod)){
    /* these act on the paper that has been under review longest */
    const q=g.queue.slice().sort((a,b)=>a.due-b.due)[0];
