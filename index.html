@@ -387,7 +387,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.04.05";
+const VERSION="0.04.06";
 
 /* ============================================================
    THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
@@ -427,7 +427,7 @@ const LOW=["BOWHEAD","VERONA","CRANMOOR"];
 const JOURNALS={
  "A+":{w:9.0, n:["the Quarterly","Metrica","the Review","the American"]},
  "A" :{w:3.6, n:["the Journal of Economic Theory and Practice","the Economic Journal of the Midwest","the Scandinavian Journal of Economic Thought","the Journal of the Association"]},
- "B" :{w:1.4, n:["the Review of Economic Reviews","the Canadian Review of Null Results","Regional Science and Public Choice","the Bulletin of Applied Economics","Economics Letters to the Editor","the Southern Economic Review of the North","Applied Economics, Applied","the Journal of Economic Perspectives on Perspectives"]},
+ "B" :{w:1.4, n:["the Canadian Journal of Preliminary Findings","the Canadian Review of Null Results","Regional Science and Public Choice","the Bulletin of Applied Economics","Economics Letters to the Editor","the Southern Economic Review of the North","Applied Economics Quarterly (Biannual)","the Journal of Economic Perspectives, Regional"]},
  "C" :{w:0.4, n:["the Journal of Economical Results","the Theoretical Journal of Economic Insights","the Hourly Review of Economics","the Journal of Applied Modelling","the International Journal of Economics and Business Research","the Global Journal of Economics, Finance and Management Studies","Advances in Economic Sciences and Innovation","the Open Economics Review (Open Access)"]}
 };
 const FIELDS=["theory","micro","macro","metrics","finance","labour","development","political","behavioural","history"];
@@ -445,7 +445,7 @@ const TITLES=[
  ["Cheap Talk with Costly Listening","theory"],["Renegotiation-Proof Contracts under Mutual Contempt","theory"],
  ["A Folk Theorem for Departments","theory"],["Commitment Devices for the Uncommitted","theory"],
  ["Bayesian Persuasion with a Persuadable Sender","theory"],["Existence of Equilibrium when Nobody Wants One","theory"],
- ["On the Impossibility of Impossibility Results","theory"],["Mechanism Design for Committees that Will Not Meet","theory"],
+ ["A Possibility Result, Under Conditions That Do Not Hold","theory"],["Mechanism Design for Committees that Will Not Meet","theory"],
  ["Signalling with an Uninformative Signal","theory"],["The Core of an Empty Coalition","theory"],
  ["Second-Price Auctions for First-Rate Objects","micro"],["Collusion among the Uncoordinated: Evidence from Cement","micro"],
  ["Price Discrimination in Airport Sandwiches","micro"],["Search Frictions in the Market for Lost Umbrellas","micro"],
@@ -470,23 +470,23 @@ const TITLES=[
  ["Minimum Wages and the Employment of Economists","labour"],["Peer Effects in the Absence of Peers","labour"],
  ["The Returns to Schooling in a School Nobody Attended","labour"],["Gender Gaps in Referee Reports","labour"],
  ["Job Search with a Search Engine","labour"],["Intergenerational Mobility in a Single Generation","labour"],
- ["The Gig Economy and the Economy of Gigs","labour"],["Monopsony in the Market for Postdocs","labour"],
+ ["The Gig Economy: Evidence from Three Gigs","labour"],["Monopsony in the Market for Postdocs","labour"],
  ["Who Gets Tenure? Evidence from Those Who Did","labour"],["Human Capital and the Depreciation of Humans","labour"],
  ["Does Rainfall Cause Civil Conflict? Evidence from Denmark","development"],["Microfinance and the Macro of Micro","development"],
- ["Cash Transfers to People Who Already Had Cash","development"],["A Field Experiment on Field Experiments","development"],
+ ["Cash Transfers to People Who Already Had Cash","development"],["A Field Experiment in a Field: Crop Yields and the Researcher's Presence","development"],
  ["Institutions, Colonial Origins, and a Very Old Map","development"],["The Persistence of Everything","development"],
- ["Randomised Evaluation of a Programme that Was Not Randomised","development"],["Deworming, Revisited, Revisited","development"],
+ ["Randomised Evaluation of a Programme that Was Not Randomised","development"],["Deworming: A Third Opinion","development"],
  ["Mobile Money and the Immobility of Everything Else","development"],["Growth Diagnostics for a Patient Who Feels Fine","development"],
  ["Committee Voting when the Committee Has Already Decided","political"],["Cheap Talk in Parliament: A Redundancy","political"],
- ["The Political Economy of the Political Economy","political"],["Lobbying with Nothing to Offer","political"],
- ["Term Limits and the Limits of Terms","political"],["Populism as an Equilibrium Selection Device","political"],
- ["Media Bias in the Coverage of Media Bias","political"],["Gerrymandering Optimal Districts","political"],
+ ["The Political Economy of Losing Gracefully","political"],["Lobbying with Nothing to Offer","political"],
+ ["Term Limits and the Politicians Who Outlive Them","political"],["Populism as an Equilibrium Selection Device","political"],
+ ["Media Bias: Evidence from Newspapers That Have Since Closed","political"],["Gerrymandering Optimal Districts","political"],
  ["Why Do Voters Vote? A Survey of Voters Who Did Not","political"],["The Rational Ignorance of Referees","political"],
- ["Heterogeneous Regret and Its Regretters","behavioural"],["Rational Inattention to Rational Inattention","behavioural"],
+ ["Heterogeneous Regret and Its Regretters","behavioural"],["Rational Inattention: Why Nobody Read Section 4","behavioural"],
  ["Present Bias among the Future-Oriented","behavioural"],["Nudging the Nudgers","behavioural"],
  ["Loss Aversion in Gains","behavioural"],["Bounded Rationality in a Boundless Model","behavioural"],
  ["Social Preferences in the Absence of Society","behavioural"],["Overconfidence: A Meta-Analysis of Our Own Work","behavioural"],
- ["Time Preference among the Timeless","behavioural"],["The Endowment Effect and the Endowment","behavioural"],
+ ["Time Preference among the Timeless","behavioural"],["The Endowment Effect in a University Endowment","behavioural"],
  ["The Great Divergence, Slightly Less Great","history"],["Guilds, Grain, and the Invention of the Footnote","history"],
  ["Railways and the Making of a Regression","history"],["The Long Shadow of a Short Event","history"],
  ["Cliometrics for the Post-Metric Age","history"],["Bread Prices in Bruges, 1381\u20131384","history"],
@@ -580,8 +580,8 @@ const BIOS={
  senior:{role:"the senior colleague",bio:"Professor Ambrose Kettlewell has a window, a name that gets things read, and a reputation for having thought about doing it properly. He has coauthored with every junior person in the department in turn, and every one of them, later, tells the same story about the conference."}
 };
 /* things one is sent to judge */
-const MS_TITLES=["Towards a Theory of Towards","The Elasticity of Elasticity","Rational Expectations of Rational Expectations: A Survey","A Note on a Note","Does Money Matter? Evidence from People Who Have It","On the Optimality of the Status Quo, by the Status Quo","Heterogeneous Agents with Homogeneous Conclusions","A Structural Model of the Reduced Form","The Long Run in the Short Run: Evidence from Tuesday","Nudging the Nudgers: A Field Experiment on Field Experimenters","Some Remarks on Some Remarks","Machine Learning for the Identification of Machine Learning"];
-const GRANT_TITLES=["A Randomised Controlled Trial of Randomised Controlled Trials","Big Data for Small Questions: A Five-Year Programme","Towards an Agent-Based Model of the Agent-Based Modelling Community","The Economics of Economics: Measuring What We Measure","Resilience, Sustainability and Inclusion: Three Words and a Budget","Frontier Methods for the Frontier: A Frontier"];
+const MS_TITLES=["Seventeen Instruments in Search of an Endogenous Variable","The Elasticity of Elasticity","Rational Expectations: A Survey of the Disappointed","A Note on Lemma 2 of a Paper We Do Not Cite","Does Money Matter? Evidence from People Who Have It","On the Optimality of Doing Nothing: Evidence from the Committee","Heterogeneous Agents with Homogeneous Conclusions","A Structural Model of the Reduced Form","The Long Run in the Short Run: Evidence from Tuesday","Nudging Toward the Exit: A Field Experiment in a Department","Concluding Remarks, Preliminary","Machine Learning Finds Something: A Preregistration"];
+const GRANT_TITLES=["A Randomised Controlled Trial of Randomised Controlled Trials","Big Data for Small Questions: A Five-Year Programme","Agent-Based Models for a Ministry That Has Asked for One","Measuring Wellbeing in Countries That Have Asked Us Not To","Resilience, Sustainability and Inclusion: Three Words and a Budget","Frontier Methods: A Five-Year Programme with No Frontier Specified"];
 function pickOnce(list,key){ g[key]=g[key]||{}; const avail=list.map((x,i)=>i).filter(i=>!g[key][i]); const i=avail.length?pick(avail):ri(0,list.length-1); g[key][i]=1; return list[i]; }
 /* {paper} names the paper in the drawer — the one the next submission sends.
    {qpaper} and {qjournal} name the paper under review longest — the one the
@@ -3459,7 +3459,7 @@ function runTerm(){
  if(octoberPass()){ render(); return; }
  if(presSearchReady() && !(g.mods.searchcool>g.turn) && Math.random()<0.3){ render(); presSearch(); return; }
 
- if(g.turn%2===0 && (g.vow==="NOBEL"||g.vow==="BOTH") && !g.won.NOBEL && Math.random()<0.45) octoberCard();   /* the year's laureates */
+ if(g.turn%2===0 && (g.vow==="NOBEL"||g.vow==="BOTH") && !g.won.NOBEL && Math.random()<0.3) octoberCard();   /* the year's laureates */
  if(Math.random()<0.4) lifeCard();        /* meanwhile: a life, mostly to no effect */
  if(pubs.length) pubCard(pubs);          /* news, not one of the two */
  g.draws=2; g.shown=pubs.length>0;
