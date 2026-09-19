@@ -316,6 +316,18 @@ writing.
 
 ---
 
+## The flaw
+
+Every draft the player sends has two hidden bits: whether the player saw a
+flaw (the scene says so: Lemma 2, the standard errors, page fourteen) and
+whether there is one (likelier the weaker the paper). The review pipeline
+reads them: a rejection can say the referees found it, or found something
+you had not seen, or rejected for reasons that never mention the thing you
+feared; a publication can say nobody saw it, which schedules "The Flaw,
+Found" six to eighteen terms later, or that Referee 2 called the thing you
+feared the best part. The draft card has twenty-two scenes across six
+groups (weak, solid, strong, best, clean, flawed), drawn without replacement.
+
 ## Once, by default
 
 Every event fires at most once per career. An event with `alt` texts can fire

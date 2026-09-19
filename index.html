@@ -388,7 +388,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.05.01";
+const VERSION="0.05.02";
 
 /* ============================================================
    THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
@@ -604,6 +604,7 @@ function fill(str,html){
   .replace(/\{ms\}/g,()=>(g.msPick=g.msPick||pickOnce(MS_TITLES,"msSeen")))
   .replace(/\{grant\}/g,()=>(g.grantPick=g.grantPick||pickOnce(GRANT_TITLES,"grantSeen")))
   .replace(/\{journalC\}/g,()=>(g.jcPick=g.jcPick||pick(JOURNALS.C.n.concat(JOURNALS.B.n.slice(0,2)))))
+  .replace(/\{age\}/g,()=>String(age()))
   .replace(/\{selfjn\}/g,()=>g.selfJn||"the journal")
   .replace(/\{worst\}/g,()=>{ const p=g.papers.slice().sort((a,b)=>a.q-b.q)[0]; return p?p.ti:"your early work"; })
   .replace(/\{(\w+)\}/g,(m,k)=>{
@@ -645,7 +646,7 @@ function newGame(){
   tdebt:0, shortlists:0, lostYears:0, collapses:0,
   alloc:{write:0,net:0,pub:0,serv:0,teach:0,rest:0},
   skip:0, ended:null, nobelDead:false, presDead:false, won:{}, taxes:[], fields:{}, usedTitles:{},
-  arcs:{}, arcsDone:{}, draws:0, shown:false, pendingSubmit:0, nextPaper:null, run:0, climbs:0, jokerSeen:{}, draftSeen:{}, lifeSeen:{}
+  arcs:{}, arcsDone:{}, draws:0, shown:false, pendingSubmit:0, nextPaper:null, run:0, climbs:0, jokerSeen:{}, draftSeen:{}, lifeSeen:{}, bombs:[]
  };
  for(const e of EVENTS) g.jit[e.id]=Math.random()*1.1-0.55;
 }
@@ -764,7 +765,7 @@ const EVENTS=[
 {id:"A4",ti:"Evaluations",b:[2,4],ex:{base:.6,tdebt:2.6},
  sc:"Your teaching scores have arrived. The mean is 2.1. The free-text comments have been forwarded to the chair by a parent, which is a sentence nobody in this building has heard before.",
  ch:[
- {t:"Take the workshop. Fix it.",fx:{K:4,B:5,mod:"teachfix"},say:"You learn, at forty, that you had been lecturing at the whiteboard rather than the room. It costs a term. It is not on any form."},
+ {t:"Take the workshop. Fix it.",fx:{K:4,B:5,mod:"teachfix"},say:"You learn, at {age}, that you had been lecturing at the whiteboard rather than the room. It costs a term. It is not on any form."},
  {t:"Point out that your research record is excellent.",fx:{N:-6,E:5,foe:{why:"you told the chair, in front of them, that the teaching did not matter",poisons:"vote"}},say:"The chair agrees with you, on the record, and privately reclassifies you as a problem to be managed rather than a colleague to be promoted."}]},
 
 {id:"A5",ti:"The Counteroffer",b:[2,4],ex:{base:.7,highR:1.4},ga:{R:45},
@@ -2334,7 +2335,7 @@ function submitPaper(o){
  const lag = o.lag ? ri(o.lag[0],o.lag[1]) : tier==="A+"? ri(5,9) : tier==="A"? ri(4,7) : ri(2,5);
  const pp=o.pp||g.nextPaper||makePaper(); g.nextPaper=null; if(o.f) pp.f=o.f;
  g.queue.push({ti:pp.ti, f:pp.f, tier, jn:o.jn||journalFor(tier,pp.f), q, due:g.turn+lag, rounds:o.rounds===undefined?0:o.rounds, bonusCites:o.cites||0,
-  pAcc:o.target?accProb(q,tier):undefined, vain:!!o.vain});
+  pAcc:o.target?accProb(q,tier):undefined, vain:!!o.vain, pflaw:!!o.pflaw, rflaw:!!o.rflaw});
  line("info","✉ Submitted: “"+g.queue[g.queue.length-1].ti+"” — out for review.");
  if(g.mods.bigpaper) delete g.mods.bigpaper;
 }
@@ -2351,12 +2352,15 @@ function reviewPass(){
    g.E=clamp(g.E-2,0,100);
    if(s.vain){ s.vain=false; g.B=clamp(g.B+4,0,100); g.E=clamp(g.E-3,0,100);
     line("bad","\u2717 Rejected at "+was+": \u201c"+s.ti+"\u201d, which was where it belonged. You take it personally. It goes to "+s.jn+"."); }
-   else line("bad","\u2717 Rejected at "+was+": \u201c"+s.ti+"\u201d goes out again, to "+s.jn+".");
+   else if(s.pflaw&&s.rflaw) line("bad","\u2717 Rejected at "+was+": they found it. Of course they found it. \u201c"+s.ti+"\u201d goes to "+s.jn+".");
+   else if(!s.pflaw&&s.rflaw){ s.pflaw=true; line("bad","\u2717 Rejected at "+was+": Referee 2 found something in \u201c"+s.ti+"\u201d that you had not seen. It goes to "+s.jn+", with the thing fixed, mostly."); }
+   else if(s.pflaw&&!s.rflaw) line("bad","\u2717 Rejected at "+was+", for reasons that do not mention the thing you were worried about. \u201c"+s.ti+"\u201d goes to "+s.jn+".");
+   else line("bad",pick(["\u2717 Rejected at "+was+": \u201c"+s.ti+"\u201d goes out again, to "+s.jn+".","\u2717 "+was+" says no, in four lines, one of them about scope. \u201c"+s.ti+"\u201d goes to "+s.jn+".","\u2717 Rejected at "+was+" after eleven months, which is the worst kind. \u201c"+s.ti+"\u201d goes to "+s.jn+"."]));
    continue;
   }
   if(s.rounds<1 && Math.random()<0.45){
    s.rounds++; s.due=g.turn+ri(2,4);
-   line("info","↻ R&R at "+s.jn+": three referees, one of whom wants a different paper.");
+   line("info",pick(["↻ R&R at "+s.jn+": three referees, one of whom wants a different paper.","↻ R&R at "+s.jn+": two reports, one of them signed, unfortunately.","↻ R&R at "+s.jn+": \u201cminor,\u201d says the editor, and lists nine.",(s.pflaw&&s.rflaw)?"↻ R&R at "+s.jn+": Referee 2 has found the thing. Referee 1 has not, and likes it.":"↻ R&R at "+s.jn+": a year, and a table nobody will read."]));
    continue;
   }
   out.push(publishPaper(s));
@@ -2373,6 +2377,13 @@ function publishPaper(s){
  if(s.tier==="A+"){ g.M=clamp(g.M+16,0,100); g.E=clamp(g.E+7,0,100); }
  else if(s.tier==="A"){ g.M=clamp(g.M+6,0,100); g.E=clamp(g.E+3,0,100); }
  else if(s.tier==="C"){ g.E=clamp(g.E-2,0,100); }
+ /* the flaw: seen by the player, by the referees, by neither */
+ if(s.pflaw!==undefined){
+  if(!s.pflaw&&s.rflaw){ line("info","\u25cb \u201c"+s.ti+"\u201d: nobody saw it. Not you, not the referees. It is in print."); g.bombs=g.bombs||[]; g.bombs.push({ti:s.ti,jn,due:g.turn+ri(6,18)}); }
+  else if(s.pflaw&&!s.rflaw){ line("good","\u25cb \u201c"+s.ti+"\u201d: the referees did not see the thing you were worried about. Referee 2 calls it the best part."); g.E=clamp(g.E+3,0,100); }
+  else if(s.pflaw&&s.rflaw) line("info","\u25cb \u201c"+s.ti+"\u201d: they saw it. They let it through, with a footnote.");
+  else if(s.q>=55){ line("good","\u25cb \u201c"+s.ti+"\u201d: clean. Referee 1 says so, in a sentence, which is rare."); g.E=clamp(g.E+2,0,100); }
+ }
  return g.papers[0];
 }
 
@@ -3268,6 +3279,20 @@ function litCard(){
  g.jtPick=null; g.jaPick=null; g.jbPick=null; g.jcPick=null;
  newsCard(LITERATURE[i],"THE LITERATURE","card quiet life");
 }
+/* a flaw nobody saw, found later, by somebody */
+function bombPass(){
+ g.bombs=g.bombs||[];
+ for(const b of g.bombs.slice()){
+  if(b.due>g.turn) continue;
+  g.bombs.splice(g.bombs.indexOf(b),1);
+  const it=pick([
+   {t:"The Flaw, Found",s:"A graduate student at Ostrander State has found, in \u201c"+b.ti+"\u201d ("+b.jn+"), the thing that neither you nor the referees saw. It was in the proof, or the standard errors, or the second footnote; it does not matter which. A comment is coming."},
+   {t:"An Email, Polite",s:"An email, polite, from a name you do not know, about \u201c"+b.ti+"\u201d: has the author noticed that, under the assumption in section 3, the main result does not hold? The author had not. The author does now."}
+  ]);
+  it.fx={E:-5,cites:40}; it.re=[["Write the reply.","Four pages. It concedes the point in paragraph two and spends three pages on why the point does not matter. The student is right. The reply is cited more than the comment."],["Concede it, in a footnote, in the next paper.","The footnote is generous and the student is thanked. The result, corrected, is smaller, and still true, and you are, for about a year, more careful."]];
+  newsCard(it,"THE LITERATURE","card quiet life");
+ }
+}
 function lifeCard(){
  g.lifeSeen=g.lifeSeen||{};
  const pool=LIFE.map((x,i)=>i).filter(i=>!g.lifeSeen[i]&&gateOK(LIFE[i].ga));
@@ -3624,6 +3649,7 @@ function runTerm(){
  if(octoberPass()){ render(); return; }
  if(presSearchReady() && !(g.mods.searchcool>g.turn) && Math.random()<0.3){ render(); presSearch(); return; }
 
+ bombPass();                                                 /* flaws nobody saw, found */
  /* one side card a term at most: October, else Meanwhile, else the literature */
  if(g.turn%2===0 && (g.vow==="NOBEL"||g.vow==="BOTH") && !g.won.NOBEL && Math.random()<0.3) octoberCard();
  else if(Math.random()<0.4) lifeCard();
@@ -3648,12 +3674,26 @@ const DRAFT_SC={
  solid:[
   "\u201c{paper}\u201d is finished, or finished enough. It has a result, an introduction that oversells the result, and a section 5 you hope nobody reads. The question is where. Aim high and it comes back, in a year, with three reports; aim low and it is in print by spring, where nobody will find it.",
   "\u201c{paper}\u201d is done. It is a proper paper: a question, an answer, a table that supports the answer, and a paragraph on limitations that is longer than you would like. Somebody will publish it. The question is who, and how long they will take.",
-  "You send \u201c{paper}\u201d to a friend for comments and the comments come back kind, which is not the same as enthusiastic. It is solid. Solid is what most careers are made of, and nobody has ever put it on a poster."
+  "You send \u201c{paper}\u201d to a friend for comments and the comments come back kind, which is not the same as enthusiastic. It is solid. Solid is what most careers are made of, and nobody has ever put it on a poster.",
+  "\u201c{paper}\u201d is finished. It is neither the best thing you have written nor the worst, and it will be, you suspect, the most cited, because it is the one that is easiest to cite. Where it goes will decide by how much.",
+  "You finish \u201c{paper}\u201d on a Tuesday afternoon without noticing, which is how most papers finish: not with a result but with the absence of anything left to do. You look for something left to do. There is nothing."
  ],
  strong:[
   "\u201c{paper}\u201d is finished and it is good. You know it is good the way one knows a room is warm. The result is clean, the proof is short, and the one obvious objection is dealt with in a footnote that you are slightly too pleased with.",
   "\u201c{paper}\u201d is the best thing you have written this year, and you have said so to two people, which is one more than is wise. The introduction does not oversell it, for once. The question is where to send something you actually believe in.",
-  "You finish \u201c{paper}\u201d at 1 a.m. and read it again at 7 and it is still good, which almost never happens. Where it goes will decide whether people find out."
+  "You finish \u201c{paper}\u201d at 1 a.m. and read it again at 7 and it is still good, which almost never happens. Where it goes will decide whether people find out.",
+  "\u201c{paper}\u201d is done and there is one thing in it that you are certain of, which is one more than usual. The rest is competent. The one thing is worth the rest, and possibly the journal, and possibly not.",
+  "You finish \u201c{paper}\u201d and send it to nobody, for a week, because you want to have it for a week before anyone tells you what it is. At the end of the week it is still good. Where it goes is now a question you can bear to ask."
+ ],
+ clean:[
+  "\u201c{paper}\u201d is finished and you have read it four times looking for the flaw, because there is always a flaw, and you cannot find it. This has happened to you once before. That paper was fine. This one, you think, is better than fine.",
+  "You give \u201c{paper}\u201d to the sharpest person you know and she gives it back with one comma. One comma. You look at the comma for a long time and then at the paper, which is clean all the way through, as far as either of you can see.",
+  "\u201c{paper}\u201d has no section you hope nobody reads. Every section is one you would like everyone to read. You do not trust this feeling and you have it anyway, and it is, for once, the right feeling, or it is the wrong one, and you will find out."
+ ],
+ flawed:[
+  "\u201c{paper}\u201d is done, and there is a thing in it. You know where it is: the assumption in Lemma 2, which is doing more work than the text admits. A referee who reads Lemma 2 carefully will find it. Most referees do not read Lemma 2 carefully. You are about to find out which kind you get.",
+  "\u201c{paper}\u201d is finished, and the standard errors are the kind that come from a specification chosen after looking. You know this. It is defensible. You have already written the defence, in your head, in the voice of a referee, and it is not entirely convincing, even to you.",
+  "There is a paragraph in \u201c{paper}\u201d that you have rewritten eleven times and that is still not true. It is on page fourteen. Nobody reads page fourteen. That is the plan, and it is a plan you are ashamed of, and it is the plan."
  ],
  best:[
   "\u201c{paper}\u201d is, you are fairly sure, the best thing you have ever written. You have been fairly sure of this before. It is the kind of paper people write one of, and you have now written one of it, and the only question is which of the four journals will have the privilege.",
@@ -3674,6 +3714,8 @@ const DRAFT_SAY={
 };
 const DRAFT_SHORT={
  weak:"\u201c{paper}\u201d is done, more or less. Where?",
+ clean:"\u201c{paper}\u201d is finished, and you cannot find the flaw. Where?",
+ flawed:"\u201c{paper}\u201d is finished, and you know where the thing in it is. Where does it go?",
  solid:"\u201c{paper}\u201d is finished. It is a paper. Where does it go?",
  strong:"\u201c{paper}\u201d is finished, and good. Where?",
  best:"\u201c{paper}\u201d. You know what this one is. Where?"
@@ -3690,12 +3732,18 @@ function submitCard(){
  const seen=q+(g.E-50)*0.4+ri(-5,5);            /* the paper as the ego reports it */
  const band= seen<38?"weak": seen<58?"solid": seen<76?"strong":"best";
  const vain=g.E>=65;
- card({append:true,kicker:"THE DRAFT",ti: band==="best"?"Where it belongs": band==="weak"?"Where to put it":"Where to send it",
-  sc:draftScene(band),
+ /* what the player sees is not always what is there */
+ let group=band; const r=Math.random();
+ if((band==="strong"||band==="best")&&r<0.45) group="clean"; else if(r<0.3) group="flawed";
+ const pflaw = group==="flawed" || band==="weak";                       /* the player sees a flaw */
+ const rflaw = Math.random() < clamp(0.85-q/120,0.12,0.8);              /* there is one */
+ const o=(t,l)=>({target:t,lag:l,q0:q,pflaw,rflaw});
+ card({append:true,kicker:"THE DRAFT",ti: band==="best"?"Where it belongs": band==="weak"?"Where to put it": group==="clean"?"Where it goes":"Where to send it",
+  sc:draftScene(group),
   ch:[
-   {t:"The top four.",why: vain?"where it belongs":"a year or more; likely to come back",fn(){ submitPaper({target:"A+",lag:[5,9],q0:q,vain}); return pick(DRAFT_SAY["A+"]); }},
-   {t:"A good field journal.",why: vain?"beneath it, arguably":"the sensible choice, which is the problem with it",fn(){ submitPaper({target:"A",lag:[4,7],q0:q}); return pick(DRAFT_SAY["A"]); }},
-   {t:"Somewhere quick.",why: vain?"unthinkable, but listed":"in print by spring",fn(){ submitPaper({target:"B",lag:[2,3],q0:q}); return pick(DRAFT_SAY["B"]); }}
+   {t:"The top four.",why: vain?"where it belongs":"a year or more; likely to come back",fn(){ submitPaper(Object.assign(o("A+",[5,9]),{vain})); return pick(DRAFT_SAY["A+"]); }},
+   {t:"A good field journal.",why: vain?"beneath it, arguably":"the sensible choice, which is the problem with it",fn(){ submitPaper(o("A",[4,7])); return pick(DRAFT_SAY["A"]); }},
+   {t:"Somewhere quick.",why: vain?"unthinkable, but listed":"in print by spring",fn(){ submitPaper(o("B",[2,3])); return pick(DRAFT_SAY["B"]); }}
   ]});
 }
 function nextCard(){
