@@ -277,6 +277,7 @@ header.mast .tag{
 .finalrow{font-family:"Space Mono",monospace;font-size:12px;color:var(--dim);margin-top:11px;line-height:1.7}
 .finalrow b{color:var(--chalk)}
 .remembers{font-size:13.5px;color:var(--dim);font-style:italic;margin-top:11px;line-height:1.5}
+.final .share{margin-top:12px;width:auto;padding:9px 16px;font-size:12px}
 
 /* ---------- footer ---------- */
 .cvlink{
@@ -388,7 +389,7 @@ footer .ver{font-family:"Space Mono",monospace;font-size:10px;color:var(--dimmer
 
 <script>
 'use strict';
-const VERSION="0.05.02";
+const VERSION="0.06.00";
 
 /* ============================================================
    THE YOUNG ECONOMIST’S GAME TO PROFESSIONAL SUCCESS — engine
@@ -552,7 +553,12 @@ const CAST={
  coauthor:"Dominic Fairweather", coauthorS:"Fairweather",
  mostcited:"Professor Gideon Marsh", mostcitedS:"Marsh",
  shouter:"Professor Rupert Coldstream", shouterS:"Coldstream",
- senior:"Professor Ambrose Kettlewell", seniorS:"Kettlewell"
+ senior:"Professor Ambrose Kettlewell", seniorS:"Kettlewell",
+ ines:"Ines Varga-Oyelaran", inesS:"Varga-Oyelaran",
+ journalist:"Tobias Quayle", journalistS:"Quayle",
+ publisher:"Hollis Marchbanks, of Marchbanks & Vane", publisherS:"Marchbanks",
+ doctor:"Dr. Priya Anand", doctorS:"Anand",
+ banker:"Kwame Asante-Brodie", bankerS:"Asante-Brodie"
 };
 /* who they are, for the click. Every new name in CAST needs a line here. */
 const BIOS={
@@ -578,6 +584,11 @@ const BIOS={
  coauthor:{role:"the coauthor who stopped replying",bio:"Dominic Fairweather is eighty percent of the way through a paper with you and four months into not answering email. His last message said \u201con it.\u201d He is going through a divorce, or a breakdown, or a sabbatical, and from the outside the three are indistinguishable."},
  mostcited:{role:"the department\u2019s most cited member",bio:"Professor Gideon Marsh brings in a third of the department\u2019s grant income and two thirds of its citations, and there is a complaint against him: three students, one pattern, six years. Everybody has known for five of them. He is charming at dinner and this is, at this point, evidence."},
  shouter:{role:"the named chair",bio:"Professor Rupert Coldstream has a named chair, no recent papers, and a teaching load of nine hours a year, about which he shouts. He was, in 2011, genuinely important. He is aware of the year. He would like you to be aware of it too."},
+ ines:{role:"the coauthor",bio:"Ines Varga-Oyelaran asked the question in the corridor that was better than the paper, and has been two years ahead ever since, at the same stage. She talks faster than you think and types the title page. Everything the two of you have written has her name first on it, and everything you have written since has her in the first footnote, which is where she says she prefers to be, and does not."},
+ journalist:{role:"the man who writes about the prize",bio:"Tobias Quayle writes about the prize every September, for a paper that runs the piece on the Monday before, and has been wrong eleven years out of fourteen, which he describes as a record. He asks for a quote about who should win. He is also, everyone understands, asking whether you think it should be you, and he can tell from the pause."},
+ publisher:{role:"the publisher",bio:"Hollis Marchbanks, of Marchbanks & Vane, has published forty textbooks and read, by his own account, two. He takes authors to lunch at a place with a cloakroom and uses the phrase \u201cthe next edition\u201d as other people use the weather. His royalty statements arrive in March and are, in every particular, correct and surprising."},
+ doctor:{role:"your doctor",bio:"Dr. Priya Anand has a file, and the file is open. She asks how many hours a week you work and writes down a larger number. She uses words slowly, in order, and the order is the thing to listen to. She reads the alumni magazine. She has never once said \u201cI told you so,\u201d and has never once needed to."},
+ banker:{role:"the student who went to the bank",bio:"Kwame Asante-Brodie was your student and was fine, and went to a bank, and is now worth a figure with a letter after it. He remembers your course better than you do. He has a boat, and a condition, and a sincere wish to put your name on something, and he does not see why the three should be in tension, and on his boat they are not."},
  senior:{role:"the senior colleague",bio:"Professor Ambrose Kettlewell has a window, a name that gets things read, and a reputation for having thought about doing it properly. He has coauthored with every junior person in the department in turn, and every one of them, later, tells the same story about the conference."}
 };
 /* things one is sent to judge */
@@ -2228,6 +2239,269 @@ const EVENTS=[
  {t:"Negotiate. Take the building.",fx:{K:6,S:8,N:2,E:-2},say:"Economics moves into the building with the fountain and keeps its name, on a floor, in letters slightly smaller than the school\\u2019s. The offices have windows. The seminar has a budget. The purists never forgive you and never leave."},
  {t:"Let it happen. Take the sabbatical.",fx:{B:-8,R:4,K:-3,N:-4},say:"It happens. You are in Lisbon. The department that hired you, in the technical sense, no longer exists, and you come back to a floor with a fountain and a lanyard, and the lanyard has the school\\u2019s name on it."}]}
 
+,
+
+/* ================================================================
+   BATCH 11 — the forum, the machine, the textbook, the council, Ines,
+   the body, the campaign, the market, the students, the seminar,
+   the grant, Harwich
+   ================================================================ */
+
+/* ---------- the forum ---------- */
+{id:"FO0",ti:"The Forum",b:[0,0],ex:{base:1},ga:{turn:2},once:1,
+ sc:"There is a forum. Everyone says they do not read it. It has a thread about your department, forty pages long, in which your advisor is called a word, your cohort is ranked, and you are, on page thirty-one, mentioned, once, with a question mark.",
+ ch:[
+ {t:"Read all forty pages.",fx:{N:1,E:-3,B:3,flag:"READ_FORUM"},say:"Forty pages. Page thirty-one is the worst page, and the question mark is the worst character on it. You close the tab. You open it again at two in the morning, which is when the forum is written."},
+ {t:"Close the tab.",fx:{E:1,B:-1,flag:"NOT_FORUM"},say:"You close the tab. Everyone in the building has read page thirty-one. They are kind to you for a week, which is how you know."},
+ {t:"Post.",fx:{E:4,N:-3,B:4,flag:"POSTED_FORUM"},say:"Anonymously, at two in the morning, a correction. It is accurate. It is recognised within the hour by its syntax, and the thread, which had been dying, is not."}]},
+
+{id:"FO1",ti:"The Thread About Your Hire",b:[1,2],ex:{base:1},ga:{seen:"FO0"},once:1,
+ sc:"There is a thread about your hire. Sixty posts. The consensus is that the department could have done better, that you were the “safe” choice, that your job market paper was “fine,” and that somebody in the department is posting, because post forty-one knows about the parking.",
+ ch:[
+ {t:"Work out who post forty-one is.",fx:{K:3,N:-2,E:-2,B:3},say:"It takes a week and a spreadsheet. It is the colleague who was nicest to you at the dinner. You say nothing. You are, at the next dinner, slightly less nice, and he notices, and posts about it."},
+ {t:"Read it once. Then never.",fx:{E:-2,B:1},say:"Once. The word “fine” is in your head for a year, in the voice of nobody, which is the forum’s voice."},
+ {t:"Send the thread to the chair.",fx:{K:2,N:3,E:-1},say:"The chair has read it. The chair has read every thread since 2019 and has a folder. The folder is, she says, “for later,” and you understand that there is a later."}]},
+
+{id:"FO2",ti:"The Thread About Your Talk",b:[2,3],ex:{base:1},ga:{seen:"FO0"},once:1,
+ sc:"You gave a talk at the meetings. There is a thread about it by the time you are back at the hotel. It is mostly about your shoes. One post, in the middle, is about the identification, and the post is right, and the poster knows something about your data that only a referee could.",
+ ch:[
+ {t:"Fix the identification. Thank nobody.",fx:{R:4,K:1,E:-1},say:"The fix takes a month. The paper is better. The referee, whoever they are, sees the fix in the next draft and posts, once, “better,” and that is the only review you will ever get that you believed."},
+ {t:"Reply, about the shoes.",fx:{P:3,N:2,E:3,B:2,flag:"POSTED_FORUM"},say:"Anonymously, a defence of the shoes. It is funny. It is, by the morning, the most-liked post in the thread, and the identification is forgotten, and so, for the moment, is the fix."},
+ {t:"Stop giving talks at the meetings.",fx:{N:-5,B:-3,R:2},say:"You stop. The meetings go on. The thread, after a while, finds a new pair of shoes."}]},
+
+{id:"FO3",ti:"The Thread, Years On",b:[3,4],ex:{base:1},ga:{seen:"FO0"},once:1,
+ sc:"The forum is being sued, or studied, or both, and a journalist has written to ask whether you would comment on the thread about you from the year you were hired. She attaches it. It is still there. Post forty-one is still there. So is your reply about the shoes, if you made one, and she has worked out that it was you.",
+ ch:[
+ {t:"Comment, on the record.",fx:{P:6,E:3,N:-2,K:2,flag:"SPOKE_ON_FORUM"},say:"You say what everyone says: that it was cruel, that it was read, that nobody admits reading it. The piece quotes you, and under the piece, within the hour, there is a thread."},
+ {t:"Decline, politely.",fx:{B:-2},say:"You decline. Four colleagues comment instead. Two of them are post forty-one, and they do not know it, and you do."},
+ {t:"Ask her to delete the thread.",fx:{E:-2,N:1},say:"She cannot. Nobody can. It is, she explains, the most permanent record the profession has ever kept of itself, and it is anonymous, and it is about shoes."}]},
+
+/* ---------- the machine ---------- */
+{id:"AI1",ti:"Four Minutes",b:[1,4],ex:{base:1},ga:{queue:1},once:1,
+ sc:"A referee report on “{qpaper}” arrives from {qjournal} eleven days after submission. It is four pages, fluent, and faintly wrong about everything in a way you recognise: it was written in four minutes by a model, by a referee who had a deadline, and it recommends a revision that would make the paper worse and longer.",
+ ch:[
+ {t:"Tell the editor.",fx:{K:3,N:-2,E:2,mod:"delay"},say:"The editor agrees that it reads that way, and cannot prove it, and gets a third report, from a human, nine months later, which says the same thing in worse prose."},
+ {t:"Answer the report with the same model, in four minutes.",fx:{R:-1,E:1,B:-3,mod:"accept",flag:"AI_REPORT"},say:"Four minutes. The response is fluent and faintly wrong and addresses every point, and the referee, who has a deadline, accepts it. The paper is published. Nobody involved has read it since March."},
+ {t:"Do the revision by hand. Properly.",fx:{R:3,B:5,K:1,mod:"delay"},say:"Three months. The paper is longer and worse and better in one place that the model did not ask about, and the referee does not notice the place, and you do."}]},
+
+{id:"AI2",ti:"The Student's Chapter",b:[2,4],ex:{base:1},once:1,
+ sc:"A student’s chapter arrives, and it is good, and it is not his. Not stolen: generated. The sentences have the smoothness of a thing that has never been unsure. The model is on page nine, in a citation to a paper that does not exist, by an author who does.",
+ ch:[
+ {t:"Ask for the prompt.",fx:{K:3,N:2,E:1},say:"He sends the prompt. It is eleven lines long and it is, you realise, the best piece of writing he has done, and you say so, and you tell him to write the chapter from the prompt, by hand, and he does, and it is worse and his."},
+ {t:"Report it.",fx:{K:2,N:-3,B:3,foe:{why:"you reported their student for the chapter",poisons:"vote"}},say:"The committee meets. The policy, it turns out, does not exist yet, and the committee writes one, slowly, around him, and he leaves before it is finished, for a job that pays for the thing he is good at, which is the prompt."},
+ {t:"Let it go. The chapter is good.",fx:{E:-3,R:-1,flag:"LET_CHAPTER_GO"},say:"It is good. It passes. He is, in nine years, a professor, and his students’ chapters are good, and smooth, and never unsure, and you read one at a conference and recognise the voice, which is nobody’s."}]},
+
+{id:"AI3",ti:"The Policy",b:[3,4],ex:{base:1},once:1,
+ sc:"The department would like a policy on the use of models, and you have been asked to draft it, because you are, the chair says, “thoughtful about it,” which means you have been heard complaining. The draft must cover referee reports, student chapters, grant applications, and the question nobody asks, which is your own papers.",
+ ch:[
+ {t:"Ban it, in writing.",fx:{K:3,P:3,N:-4,E:3,flag:"BANNED_MODEL"},say:"The policy is clear and unenforceable and is cited approvingly by three departments and ignored by all four. Your own next paper has a paragraph in it that you did not, strictly, write, and the policy does not, strictly, cover paragraphs."},
+ {t:"Require disclosure.",fx:{K:5,N:2},say:"Disclosure. Everyone discloses. The disclosures are themselves, by the second year, generated, and are fluent, and are faintly wrong about the extent of the use."},
+ {t:"Write a policy that says nothing, elegantly.",fx:{K:4,N:3,E:-2,B:-2},say:"Four pages that commit nobody to anything and read beautifully. The chair is delighted. A colleague asks, at the meeting, whether you wrote it yourself, and the room laughs, and you laugh, slightly later."}]},
+
+{id:"AI4",ti:"The Reproduction",b:[3,4],ex:{base:1},ga:{papers:3},once:1,
+ sc:"A graduate student has asked an agent to reproduce “{best}” from the published description, in an afternoon, as an exercise. It has. It has also, in the course of the afternoon, found the thing in section 4 and written a paragraph about it, and the student has, to her credit, written to you first.",
+ ch:[
+ {t:"Thank her. Correct it.",fx:{R:2,K:2,E:-4,N:3,cites:60},say:"A correction, co-authored with her, in which the agent is thanked in a footnote that took longer to phrase than the correction. The paper is cited slightly more afterwards, by people making the point about agents."},
+ {t:"Ask what else it found.",fx:{R:4,E:-2,B:4,flag:"ASKED_THE_AGENT"},say:"It found three things. Two were in the appendix and one was in your career, and she does not send the third, and you know it is there."},
+ {t:"Ask her not to circulate it.",fx:{E:-3,N:-4,foe:{why:"you asked them to sit on the reproduction",poisons:"referee"}},say:"She does not circulate it. The agent does, in a sense, since it is the same agent everybody uses, and the paragraph appears, unattributed, in four theses in two years."}]},
+
+{id:"AI5",ti:"The Ranking",b:[3,4],ex:{base:1,office:1.5},ga:{office:4},once:1,
+ sc:"The board has asked a model to rank the college’s departments by “impact per dollar.” The model has done so, in a table, with confidence intervals. Economics is fourth. Classics is first, for reasons the model explains in a paragraph that is fluent and that nobody on the board has questioned.",
+ ch:[
+ {t:"Explain the paragraph to the board.",roll:{stat:"K",pivot:60,
+   win:{fx:{K:6,N:3,E:4,run:2},say:"Forty minutes. The board understands, by the end, what a confidence interval is and what the model did to the denominator, and Classics is, in the revised table, eleventh, and the chair of Classics never forgives you for the forty minutes."},
+   lose:{fx:{K:-3,N:-4,E:-4,run:-1},say:"Forty minutes. The board nods. The table stands. Classics gets the new building, and the model, asked to explain the building, does so, fluently."}}},
+ {t:"Ask the model to rank the board.",fx:{E:6,N:-6,P:4,run:-2},say:"It does. The ranking is accurate and the paragraph is fluent and the board does not meet for a month, and when it does, the item is not on the agenda, and neither, for a while, is your contract renewal."}]},
+
+/* ---------- the textbook, after ---------- */
+{id:"TB2",ti:"The Second Edition",b:[3,4],ex:{base:1},ga:{since:["TEXTBOOK",8]},once:1,
+ sc:"{publisher} would like a second edition. The first has been assigned to forty thousand undergraduates and reviewed, on a website, by six thousand of them, with a mean of 2.3 and a modal comment that is one word. The second edition would need a new chapter on the thing that has happened since, and a new cover, and your attention, for a year.",
+ ch:[
+ {t:"Write the chapter. Keep the cover.",fx:{S:14,P:4,R:-4,B:6},say:"The chapter is good. Nobody reads it, because the instructors assign chapters one to nine, as they did before, and the new cover is, you are told, “fresher,” and the mean is 2.3."},
+ {t:"Let a junior colleague do it, for a share.",fx:{S:6,N:4,K:2,B:-3},say:"The junior colleague does it well and gets a third of the royalties and a line on the CV that says “with,” and the line does more for her than the third does, and you knew it would."},
+ {t:"Decline. Let it go out of print.",fx:{E:3,S:-4,R:2},say:"It goes out of print. It does not go out of PDF. You will meet it, in your students’ hands, for the rest of your life, with a cover you did not approve."}]},
+
+{id:"TB3",ti:"The PDF",b:[3,4],ex:{base:1},ga:{since:["TEXTBOOK",12]},once:1,
+ sc:"Your textbook is available, in full, as a PDF, on a website in a country that does not recognise the publisher, and has been downloaded three hundred thousand times, which is more than it has ever sold. {publisherS} has written to ask what you intend to do. The website has a review section. The mean is 4.1.",
+ ch:[
+ {t:"Nothing. The mean is 4.1.",fx:{E:4,S:-3,P:3,flag:"TEXTBOOK_PDF"},say:"You do nothing. The publisher does something, slowly, with lawyers. The PDF moves to a different country. The mean stays at 4.1, and you check it more often than the royalty statement."},
+ {t:"Help the publisher.",fx:{S:4,K:2,N:-2,E:-1},say:"You write to the website. The website writes back, from an address that is also a joke, that the book is good and should be free. You find that you half agree, and do not say so to {publisherS}."},
+ {t:"Post the PDF yourself, with a note.",fx:{P:8,S:-10,N:3,E:5,flag:"FREED_TEXTBOOK"},say:"The note says the book is free now and asks for nothing. The publisher ends the contract in a letter that uses the word “regret” in a way that does not mean it. The downloads reach a million. The mean goes to 4.4."}]},
+
+/* ---------- the council ---------- */
+{id:"PO1",ti:"The Testimony",b:[3,4],ex:{base:.9,highP:1.2},ga:{P:40},once:1,
+ sc:"A legislative committee would like you to testify, for eleven minutes, on a policy you have a paper about. The paper says one thing. The committee chair, whose staff have read the abstract, would like you to say another. The eleven minutes are televised.",
+ ch:[
+ {t:"Say what the paper says.",fx:{P:6,E:4,N:-2,flag:"TESTIFIED"},say:"Eleven minutes. You say what the paper says. The chair thanks you in a voice that will not invite you again, and a clip of the fourth minute is shared by people on both sides, each of whom thinks it is theirs."},
+ {t:"Say what the chair would like, carefully.",fx:{P:8,N:5,E:-4,R:-2,flag:"TESTIFIED_CAREFULLY"},say:"Eleven minutes. You say the other thing, with caveats that the transcript records and the clip does not. The chair invites you back. Your paper is cited, in the committee’s report, for the thing it does not say."},
+ {t:"Decline. Send the paper.",fx:{K:1,E:1,P:-2},say:"They read the abstract. Someone else testifies, less carefully, and is on the news, and is invited back."}]},
+
+{id:"PO2",ti:"The Council",b:[3,4],ex:{base:1},ga:{anyflag:["TESTIFIED","TESTIFIED_CAREFULLY"]},once:1,
+ sc:"An appointment to the national council of economic advisers: two years, a government salary, an office with a flag in it, and a seat at a table at which you will be asked, weekly, whether the thing the minister has already decided to do is a good idea.",
+ ch:[
+ {t:"Take it.",fx:{K:8,P:10,N:6,R:-6,S:-8,B:8,flag:"ON_COUNCIL"},say:"Two years. The flag is real. The table is real. You say, forty times, that it is not a good idea, and once, memorably, that it is, and the once is the thing you will be remembered for, in the department, by people who were not at the table."},
+ {t:"Decline. You are a researcher.",fx:{R:4,E:3,P:-3},say:"You decline. Someone from Calderon takes it and is, within a year, the most quoted economist in the country, and the quotes are mostly correct, and you read them on the train."}]},
+
+{id:"PO3",ti:"The Letter of Resignation",b:[3,4],ex:{base:1.2},ga:{flag:"ON_COUNCIL"},once:1,
+ sc:"The minister has decided to do the thing. It is the thing your paper, your testimony and your forty weekly answers were about. The announcement is Tuesday. There is a letter in your drawer that you wrote in month three, in case, and it is Monday.",
+ ch:[
+ {t:"Send the letter.",fx:{P:8,E:6,N:-4,K:2,S:4,flag:"RESIGNED_COUNCIL"},say:"The letter is four paragraphs and the third is the one they print. You are, for a week, the economist who resigned, and then you are an economist again, with a flag in a box in the garage."},
+ {t:"Stay. Fix it from inside.",fx:{K:6,P:-4,E:-6,N:4,flag:"STAYED_COUNCIL"},say:"You stay. The thing is done. It is, because of you, eleven percent less bad, which is a number you will cite at dinners for the rest of your life, to people who did not ask."},
+ {t:"Leak the letter. Stay.",fx:{P:5,K:-3,N:-6,E:2,foe:{why:"the letter, which they traced to you in a day",poisons:"search"}},say:"The letter is in the paper on Wednesday and you are in the office on Thursday, and everyone knows, and the minister, who is not a fool, moves your desk."}]},
+
+/* ---------- Ines ---------- */
+{id:"CO1",ti:"Ines",b:[1,3],ex:{base:1.1},once:1,
+ sc:"{ines} has a question about your paper, in the corridor, that is better than the paper. She is two years ahead of you, at the same stage, and she talks faster than you think, and by the end of the corridor there is a second paper, and it has two names on it, and one of them is hers.",
+ ch:[
+ {t:"Write it together.",fx:{N:6,R:4,mom:6,submit:{bias:1.0,lag:[3,5],q:8},flag:"INES"},say:"Eleven months. It is the best thing either of you has written and you both know which of you did which part and you will never, ever say. It goes out with two names, hers first, because she typed the title page."},
+ {t:"Write it alone. It was your paper.",fx:{R:5,E:4,N:-5,B:3,foe:{who:"{ines}",why:"you took the corridor idea and wrote it alone",poisons:"referee"}},say:"It was your paper. It is a good paper. She writes the better version in eight months with someone else, and cites you, correctly, in the first footnote, which is where you will stay."}]},
+
+{id:"CO2",ti:"Alphabetical",b:[2,4],ex:{base:1},ga:{flag:"INES"},once:1,
+ sc:"The third paper with {inesS}. She would like, this time, “contribution order,” which is a phrase that means her name first, and which is, on this paper, correct, and which will be read, by everyone who reads it, as a sentence about the two of you.",
+ ch:[
+ {t:"Agree. It is correct.",fx:{N:5,E:-3,K:2,R:1,flag:"CONTRIBUTION_ORDER"},say:"Her name first. It is correct. At the conference somebody says “the Varga-Oyelaran paper” in your hearing, and you say “yes, it is,” and it is."},
+ {t:"Insist on alphabetical. It is the convention.",fx:{E:4,N:-5,B:3,foe:{who:"{ines}",why:"the author order on the third paper",poisons:"committee"}},say:"Alphabetical. The convention. She agrees in an email that is one line long, and the fourth paper, which was going to exist, does not."},
+ {t:"Flip a coin, in front of her.",fx:{N:3,E:1,K:1},say:"You flip a coin. She laughs, which is the first time in a year. The coin says you. She says “best of three,” and wins, and it is contribution order after all, and you are both, somehow, pleased."}]},
+
+{id:"CO3",ti:"The Split",b:[2,4],ex:{base:1},ga:{flag:"INES"},once:1,
+ sc:"{inesS} has a new coauthor. He is younger, faster, and at Calderon, and the paper they are writing is the one you and she were going to write next, and she has told you about it in person, which is decent, and which does not help.",
+ ch:[
+ {t:"Wish her well. Mean it.",fx:{N:4,E:-4,B:-2,flag:"INES_WELL"},say:"You mean it, mostly. The paper is very good. You are thanked in the acknowledgments for “conversations,” and the conversations were eleven years long."},
+ {t:"Write the paper first, alone.",fx:{R:5,wip:30,E:3,N:-6,B:6,foe:{who:"{ines}",why:"you raced them to the paper you had planned together",poisons:"referee"}},say:"You are first by four months. Yours is worse. Theirs is cited; yours is cited by theirs, in a footnote that says “see also,” which is where you are, now, in her work."},
+ {t:"Ask to be on it.",fx:{N:2,E:-5,R:2},say:"You ask. There is a pause on the line that is the whole answer, and then a yes, and your name is third, and the paper is good, and you did the appendix."}]},
+
+{id:"CO4",ti:"The Joint Prize",b:[3,4],ex:{base:1},ga:{flag:"INES"},once:1,
+ sc:"A prize, for the body of work with {inesS}: the early papers, the one in the top four, the one that everyone cites. There is a ceremony and one speech, and the committee has asked, with great care, which of you will give it.",
+ ch:[
+ {t:"Let her give it.",fx:{N:6,E:-2,P:3,mom:6,flag:"INES_SPOKE"},say:"She gives it. It is about the corridor. She gets the corridor right, every detail, including the thing you said that she has never mentioned since, and she says it was the beginning, and it was."},
+ {t:"Give it yourself.",fx:{P:6,E:5,N:-3,mom:4},say:"You give it. It is good. It is about the work. She sits in the front row and claps at the right places, and afterwards somebody says “she should have spoken,” not to you, and you hear it."},
+ {t:"Give it together, alternating paragraphs.",fx:{N:5,P:4,E:2,mom:6},say:"Alternating paragraphs. It should not work and it does. Nobody can remember afterwards who said which part, which is, she says in the car, the point, and has been for twenty years."}]},
+
+/* ---------- the body ---------- */
+{id:"HE1",ti:"The Back",b:[2,4],ex:{base:.9,highB:1.2},once:1,
+ sc:"Your back has gone, on a Tuesday, lifting nothing. {doctor} says the word “postural” and the word “desk” and asks how many hours a day you sit, and you say a number, and she writes down a larger one.",
+ ch:[
+ {t:"The physiotherapist, twice a week.",fx:{B:-8,R:-2,S:-2,K:1,flag:"PHYSIO"},say:"Twice a week, for a year. The physiotherapist is the only person who asks how you are and listens to the answer, and the back is fine, and the paper is late, and the two facts are related."},
+ {t:"A standing desk. Carry on.",fx:{B:2,R:1,E:1},say:"A standing desk. You stand at it for a month and then sit at it, on a stool, which is worse. The back, in year three, goes again, on a Thursday, lifting nothing."},
+ {t:"Ignore it. It is a back.",fx:{B:5,R:2,flag:"IGNORED_BACK"},say:"It is a back. It is also, {doctor} will say later, with the file open, the first thing in the file, and the file gets longer."}]},
+
+{id:"HE2",ti:"Fifty-Eight",b:[3,4],ex:{base:.9},once:1,
+ sc:"A colleague two doors down has died, at fifty-eight, at his desk, on a Sunday, with a referee report open. The department is asked to speak at the memorial. His office has to be cleared. His students have to be reassigned. His referee report, the editor writes, is overdue.",
+ ch:[
+ {t:"Speak at the memorial.",fx:{N:4,B:4,E:-3,K:2},say:"You speak. You say he was kind, which was true, and that his work mattered, which was true for about nine years. His wife thanks you. His students are reassigned by Friday. The report is reassigned by Monday."},
+ {t:"Take his students.",fx:{K:3,N:5,B:8,R:-3},say:"Three students, each with a chapter he had read and you have not. You read them in a week. They are good. One of them is better than he said, and you tell her, and she cries, and it is not about the chapter."},
+ {t:"Finish his referee report.",fx:{R:1,K:2,B:3,E:-2,flag:"FINISHED_HIS_REPORT"},say:"You finish it. It is a good paper and he had seen the problem and written half a sentence about it, and you finish the sentence, and sign it with his initials, and the editor never knows, and the author does not either, and it is published."}]},
+
+{id:"HE3",ti:"The Check-Up",b:[4,4],ex:{base:1},ga:{since:["TENURED",22]},once:1,
+ sc:"{doctor}, with the file open, uses a word. It is not a serious word yet. It is the word before the serious word, and she says it slowly, and asks how many hours a week you work, and you say a number, and she does not write anything down, which is worse.",
+ ch:[
+ {t:"Slow down. Mean it.",fx:{B:-16,R:-5,N:-2,E:-2,K:1,flag:"SLOWED"},say:"You slow down. It takes a year to learn how. The papers are fewer and slightly better, and the seminar notices, and says nothing, and the word before the serious word is not said again, for a long time."},
+ {t:"Carry on. There is a paper.",fx:{B:8,R:4,E:2,flag:"IGNORED_DOCTOR"},say:"There is always a paper. This one is good. {doctor} reads about it, in the alumni magazine, and does not write, and the file is open on her desk, and it is thick."},
+ {t:"A second opinion.",fx:{K:1,B:2,S:-2},say:"The second opinion is the same opinion, from a man, in a nicer room, for more money. You take the second opinion seriously. This is noted, by both of them, in both files."}]},
+
+/* ---------- the campaign ---------- */
+{id:"NC3",ti:"The Journalist",b:[3,4],ex:{base:.9,highP:1},ga:{R:50},tr:"nobel",once:1,
+ sc:"{journalist} writes about the prize. He writes about it in September, every year, for a paper that runs the piece on the Monday before, and he would like, this year, a quote from you about who should win. He does not say that the quote is also a way of finding out whether you think it should be you.",
+ ch:[
+ {t:"Give him a name. Not yours.",fx:{N:4,P:3,E:-1,flag:"QUAYLE"},say:"You give him a name. It is a good name. The piece runs with your quote in the fourth paragraph, and the name wins, three years later, and cites the piece, and you, at the dinner, in a subordinate clause."},
+ {t:"Give him three names, including, obliquely, yours.",fx:{P:5,E:4,N:-2,flag:"QUAYLE"},say:"Three names. He prints two. The piece runs on the Monday, and on the Tuesday a colleague says “I saw you were modest in the paper,” and the word does not mean what it means."},
+ {t:"Decline. It is unseemly.",fx:{E:2,P:-2},say:"You decline, in a line. He quotes the line. It is the most quoted thing you say that year, and it is about not saying things."}]},
+
+{id:"NC1",ti:"Stockholm, in June",b:[4,4],ex:{base:1},ga:{R:55},tr:"nobel",once:1,
+ sc:"An invitation to a symposium in Stockholm, in June, on your topic. Twelve speakers, three of them laureates, a boat, and a dinner at which the chair of the committee, who is not supposed to be there, is there, and sits next to you, and asks about the second paper.",
+ ch:[
+ {t:"Go. Talk about the second paper.",fx:{N:8,mom:10,E:6,P:4,B:4,flag:"SYMPOSIUM"},say:"You talk about the second paper on the boat, at the dinner, and at breakfast, and the chair of the committee listens each time as if it were the first, and says, at the airport, “we will see,” and you will spend the next decade on the word “we.”"},
+ {t:"Go. Talk about someone else’s paper.",fx:{N:6,E:-2,K:2,flag:"SYMPOSIUM"},say:"You talk about someone else’s paper, generously. The chair of the committee notices the generosity, and writes it down, in a notebook, and you will never know in which column."},
+ {t:"Decline. June is for writing.",fx:{R:5,wip:20,E:1,N:-4},say:"June is for writing. The symposium happens without you. The second paper is better for June. The committee does not read it on a boat."}]},
+
+{id:"NC2",ti:"The List",b:[4,4],ex:{base:1},ga:{cites:1500},tr:"nobel",once:1,
+ sc:"A company that counts citations has published its list of people who might win, this year or soon, and you are on it, between a man who died in March and a woman who will win in two years. The list is reported. Your mother calls.",
+ ch:[
+ {t:"Say nothing. Check the list daily.",fx:{E:8,P:6,B:4,flag:"LISTED"},say:"You check it daily. It does not change. In October the phone does not ring, and the list, in November, has a new name on it, and yours is still there, which is what the list is for."},
+ {t:"Say, publicly, that lists are silly.",fx:{E:4,P:4,N:2,flag:"LISTED"},say:"Lists are silly. You say so, in print, with a smile the photographer asked for. The piece is headlined with the list. Your mother keeps the piece."}]},
+
+/* ---------- the market, before the offers ---------- */
+{id:"JM1",ti:"The Hotel Room",b:[0,0],ex:{base:1.3},ga:{turn:4},once:1,
+ sc:"The meetings. Eleven interviews in two days, each thirty minutes, each in a hotel suite with a bed in it that everyone pretends is not there. The fourth interview is with a department you want. The chair asks what your paper is about and then, at minute nine, looks at his phone, and you have twenty-one minutes left and a bed to not look at.",
+ ch:[
+ {t:"Keep going. Finish the pitch.",fx:{R:1,E:2,N:3},say:"You finish. He looks up at minute twenty-six and asks a good question, and you answer it, and he writes something down, and it is the only thing he writes down all day, and you will never know what."},
+ {t:"Stop. Ask him what he is working on.",fx:{N:6,K:3,E:-1},say:"He puts the phone down. Nineteen minutes about his paper, which is stuck, and you see where, and say so, gently, and he is, by the end, interviewing himself. You are invited to the flyout. His paper is unstuck, and does not cite you."},
+ {t:"Look at the bed.",fx:{E:-3,B:3,N:-1},say:"You look at the bed. He sees you look at the bed. Nobody says anything. It is the longest twenty-one minutes of the year, and there are nine more interviews, and in each of them there is a bed."}]},
+
+/* ---------- the students ---------- */
+{id:"ST2",ti:"The Chapter",b:[2,4],ex:{base:.9},once:1,
+ sc:"A student’s thesis chapter has a section that is, word for word, a section of a working paper from Thromber. Not generated: copied. He is a good student. The working paper is unpublished. Nobody has noticed except you, at two in the morning, with both documents open.",
+ ch:[
+ {t:"Report it.",fx:{K:3,N:-3,E:-2,B:4,flag:"REPORTED_CHAPTER"},say:"The committee meets. He is gone by the summer. He writes, four years later, from a bank, to say you were right, and to ask for a reference, and you write it, and it is honest, and he gets the job."},
+ {t:"A quiet word. Rewrite it.",fx:{K:1,N:2,E:-1,flag:"QUIET_PLAGIARISM"},say:"A quiet word. He rewrites the section in a week, badly, and then well, and the thesis passes, and nobody knows, and he knows that you know, and it is in every email he sends you for ten years."},
+ {t:"Say nothing. He is a good student.",fx:{E:-4,K:-2,flag:"IGNORED_CHAPTER"},say:"You say nothing. It passes. The working paper is published two years later, by the Thromber author, who has read the thesis, and who writes to you, and the email is short."}]},
+
+{id:"ST3",ti:"The Section, Published",b:[3,4],ex:{base:1.2},ga:{anyflag:["QUIET_PLAGIARISM","IGNORED_CHAPTER"]},once:1,
+ sc:"The student is a professor now, somewhere small, and the chapter is a paper, and the section is in it, and the Thromber author has found it and has written to the journal, and to the student’s dean, and to you, since your name is on the thesis as supervisor, and the email has an attachment.",
+ ch:[
+ {t:"Tell the truth. All of it.",fx:{K:3,N:-5,E:-4,P:-3,flag:"TOLD_TRUTH_CHAPTER"},say:"All of it, including the quiet word, if there was one. The student loses the job. The Thromber author thanks you, coldly. Your name stays on the thesis, in the library, where it is."},
+ {t:"Say you did not see it at the time.",fx:{E:-6,N:2,B:5,foe:{why:"the section, and what you said you had not seen",poisons:"committee"}},say:"You did not see it at the time. This is a sentence. It is believed by the journal and not by the Thromber author, who has, in the attachment, the date on the thesis, and your signature, and a long memory."},
+ {t:"Defend the student.",fx:{N:3,K:-3,E:2,P:-4,foe:{why:"you defended the student who copied their section",poisons:"referee"}},say:"You defend him. It costs you the Thromber author, forever, and the journal, for a while, and it saves the student, who sends a card every year on the date, which you had not noticed was a date."}]},
+
+{id:"ST1",ti:"The Student Who Went to the Bank",b:[3,4],ex:{base:.9},ga:{papers:2},once:1,
+ sc:"{banker} was your student. He was fine. He went to a bank. He is now, according to a magazine, worth a figure with a letter after it, and he would like to endow a chair in your name, at your college, with one condition, which he will explain over dinner on his boat.",
+ ch:[
+ {t:"Go to the boat. Hear the condition.",fx:{N:6,S:12,P:4,E:5,B:3,flag:"BANKER_CHAIR"},say:"The condition is that the chair be in “applied” something, and that he sit on the appointment committee. You say yes. The chair exists. The first holder is good, and was his idea, and the second is his nephew, and you are retired by then, and the chair has your name on it."},
+ {t:"Take the money. Skip the boat.",fx:{S:8,N:2,E:2,K:2},say:"The money arrives without the condition, because you did not go to the boat to hear it. The chair is in whatever the dean decides. He is, you hear, slightly hurt, and sends a card at Christmas, from the boat."},
+ {t:"Decline. Tell him why.",fx:{E:6,N:-3,P:2,S:-4,flag:"DECLINED_BANKER"},say:"You tell him why, which is that a chair with a condition is not a chair. He listens. He endows it at Calderon instead, with the condition, and it has someone else’s name on it, and the someone else is fine with the condition."}]},
+
+/* ---------- the seminar ---------- */
+{id:"SE1",ti:"The Seminar Organiser",b:[2,3],ex:{base:1.1},once:1,
+ sc:"You have been made seminar organiser, which is a job, and a budget, and twenty-six Thursdays. The budget is for travel and dinner. The chair says to invite “the best people,” and the department means by this three different things, and you must pick one.",
+ ch:[
+ {t:"Invite the famous.",fx:{N:6,B:4,K:1,P:2,flag:"FAMOUS_SEMINAR"},say:"The famous come, or send regrets, or come and leave before the dinner. The seminar is well attended. The dinners cost the budget by March. The famous remember you, some of them, as the one who organised, which is a category."},
+ {t:"Invite the young.",fx:{N:5,K:3,R:2,flag:"YOUNG_SEMINAR"},say:"The young come, and stay for dinner, and talk, and three of them are, in a decade, the famous, and they remember the dinner, and you, and one of them says so in a speech, with your name in it."},
+ {t:"Invite your coauthors.",fx:{N:-3,R:3,E:3,B:-2,flag:"COAUTHOR_SEMINAR"},say:"Your coauthors come. The seminar is, for a year, a running conversation about your papers, with a budget. The department notices. The word “clique” is used, in the corridor, and then in a meeting, and then in a letter."}]},
+
+{id:"SE2",ti:"The Speaker Who Did Not Come",b:[2,4],ex:{base:1},ga:{seen:"SE1"},once:1,
+ sc:"The speaker has cancelled at noon, for Thursday at four, by email, with a reason involving an airport. Thirty people will be in the room. There is a sandwich order. The chair, passing your door, says “I am sure you will sort something out,” which is the sentence that made you the organiser.",
+ ch:[
+ {t:"Give the talk yourself.",fx:{R:2,P:2,E:4,B:3},say:"You give the talk. It is a paper you had not meant to show anyone for a year, and the room is kind, and the two questions at the end are the two problems, and you had known about one of them."},
+ {t:"Ask the fourth-year to give hers.",fx:{N:4,K:2,E:-1,flag:"GAVE_STUDENT_SLOT"},say:"She gives it, with four hours’ notice and no sleep, and it is the best seminar of the year, and the room knows it, and she gets a job out of a question somebody asks at minute fifty, and she never forgets who cancelled, or who did not."},
+ {t:"Cancel. Eat the sandwiches.",fx:{K:-1,B:-2,N:-1},say:"Thirty people eat the sandwiches at four and go home. It is, several of them say, the best seminar of the year. The chair does not say this."}]},
+
+{id:"SE3",ti:"The Famous Speaker",b:[3,4],ex:{base:.9},ga:{seen:"SE1"},once:1,
+ sc:"The famous speaker has come. The talk was good. The dinner is at the place the department can afford once a year, and at the dinner, over the second bottle, the famous speaker explains, to the table, what is wrong with the department, by name, accurately, and asks you, as the organiser, whether you agree.",
+ ch:[
+ {t:"Laugh. Pour the wine.",fx:{N:3,E:-3,K:1},say:"You laugh. The table laughs. The famous speaker is right, and everyone at the table will remember who laughed, and in what order, and you were first."},
+ {t:"Disagree, specifically.",fx:{E:6,N:-4,K:2,R:1,foe:{why:"you corrected them at their own dinner, about your department",poisons:"search"}},say:"You disagree, with three specifics, two of which are true. The table goes quiet. The famous speaker says “fair,” and does not mean it, and is on a committee in 2041, and remembers the dinner better than the talk."},
+ {t:"Pay the bill. Say nothing.",fx:{K:3,S:-2,E:-2,N:2},say:"You pay. It is more than the budget and you cover the difference and say nothing, and the chair hears about the dinner anyway, from the famous speaker, who is, at least, accurate."}]},
+
+/* ---------- the grant, after ---------- */
+{id:"GA1",ti:"The Grant Audit",b:[2,4],ex:{base:1},ga:{since:["FUNDED",6]},once:1,
+ sc:"The council is auditing the grant. They would like receipts: for the conference in year one, the laptop, the “dissemination,” and a dinner in Lisbon with four people on it, two of whom were not on the grant, and one of whom you cannot, now, name.",
+ ch:[
+ {t:"Find the receipts. All of them.",fx:{K:4,B:6,R:-2},say:"Three weeks. The receipts are found, in a drawer, a shoebox and an email to yourself from 2033. The dinner is disallowed. You pay it back. The fourth person at the dinner was, it turns out, the auditor’s predecessor."},
+ {t:"Let the administrator handle it.",fx:{K:1,N:2,B:-2,S:-3},say:"{admin} handles it. The receipts appear. The dinner is reclassified as “engagement.” You do not ask how, and she does not say, and the grant is clean, and so, for the moment, are you."},
+ {t:"Argue the dinner.",fx:{E:3,K:-2,N:-3,B:3,foe:{why:"the eleven-page memo about a dinner in Lisbon",poisons:"committee"}},say:"Eleven pages on the research value of the dinner. The auditor reads them. The dinner is disallowed, and the memo is in the file, and the file is read by the next panel, slowly."}]},
+
+{id:"GA2",ti:"The Final Report",b:[2,4],ex:{base:1},ga:{since:["FUNDED",12]},once:1,
+ sc:"The final report. Section 4 is headed “Impact” and is eleven pages long in the template, and the grant produced three papers, one of them good, and a workshop, and a postdoc who is now in a bank. The template has a box for “policy uptake,” and the box is large.",
+ ch:[
+ {t:"Write it honestly.",fx:{K:2,E:2,N:-1,flag:"HONEST_REPORT"},say:"Three papers, one workshop, one postdoc in a bank. The box for policy uptake says “none to date.” The council’s officer reads it and writes, in the margin, “refreshing,” and the next application is scored, by someone else, as “low impact.”"},
+ {t:"Fill the box.",fx:{K:4,P:3,E:2,N:2,flag:"INFLATED_REPORT"},say:"The box is filled. A minister once mentioned a number from the second paper, and the number is now “uptake,” and the postdoc in the bank is “knowledge exchange,” and the report is held up, at a council meeting, as a model, and you are asked to train others."},
+ {t:"Have the postdoc write it, from the bank.",fx:{N:3,K:1,B:-3,E:-1},say:"He writes it, from the bank, in a weekend, in the bank’s prose, and it is the best final report the council has ever received, and it contains the word “leverage” nine times, and it is, in every particular, true."}]},
+
+/* ---------- Harwich, for those who want it ---------- */
+{id:"HW1",ti:"The Harwich Alumni Dinner",b:[2,4],ex:{base:1},ga:{vowin:["PRES","BOTH"],N:30},tr:"pres",once:1,
+ sc:"You are at a Harwich alumni dinner, as somebody’s guest, in a room with a ceiling. At your table: a trustee, a trustee’s spouse, a man who gives, a woman who decides what the man gives to, and one person who reads papers, who is at the far end, and who is looking at you.",
+ ch:[
+ {t:"Work the table.",fx:{N:6,K:3,E:1,flag:"HARWICH_FRIEND"},say:"You work the table. The trustee remembers your name by dessert and your face by the port, and asks for a card, and you have one, which was the whole plan, and he knows it, and does not mind."},
+ {t:"Talk to the one who reads papers.",fx:{R:2,N:3,E:2},say:"The one who reads papers has read yours. Ninety minutes, at the far end, about section 4. The trustee leaves without your name. The one who reads papers is, you learn later, the trustee’s daughter, and tells him."},
+ {t:"Leave after the main course.",fx:{B:-3,N:-2},say:"You leave. The room with the ceiling continues without you, and will, and the person who invited you does not invite you again, and says, when asked, that you “had an early flight,” which you did not."}]},
+
+{id:"HW2",ti:"The Trustee Who Remembers",b:[3,4],ex:{base:1},ga:{since:["HARWICH_FRIEND",8]},tr:"pres",once:1,
+ sc:"The trustee from the dinner is on the Harwich board now, and has written. He remembers the port. He would like a favour: a place in your graduate programme for a young man who is, he writes, “very promising,” and who is, the file reveals, his nephew, and who is not.",
+ ch:[
+ {t:"Oblige.",fx:{K:2,N:4,E:-4,R:-1,flag:"HARWICH_OWED"},say:"The nephew is admitted. He is fine. He leaves after a year, for a bank, with a letter from you that is honest and short. The trustee remembers the favour longer than the nephew remembers the programme."},
+ {t:"Decline. Say why.",fx:{E:4,N:-4,K:1,flag:"HARWICH_DECLINED"},say:"You decline, with the file. The trustee writes back that he understands, and he does, and he remembers that too, and the two memories sit in him side by side for eleven years, until a search."},
+ {t:"Admit him. Make him earn it.",fx:{K:4,N:2,B:4},say:"He is admitted and assigned to you. He is not promising. He is, by year three, with your attention and against his inclination, adequate, and finishes, and the trustee believes the file was wrong, and you let him."}]}
+
 ];
 
 /* ============================================================
@@ -2239,6 +2513,17 @@ const EVENTS=[
 const ARCS=[
  {id:"advisor",    steps:["P1","P11","G6"],           gap:[3,6]},
  {id:"selfref",    steps:["Y1","Y2G","Y2H"],          gap:[10,16]},
+ {id:"forum",      steps:["FO0","FO1","FO2","FO3"],   gap:[6,12]},
+ {id:"machine",    steps:["AI1","AI2","AI3","AI4"],   gap:[5,9]},
+ {id:"textbook",   steps:["N19","TB2","TB3"],         gap:[6,10]},
+ {id:"council",    steps:["PO1","PO2","PO3"],         gap:[4,8]},
+ {id:"ines",       steps:["CO1","CO2","CO3","CO4"],   gap:[6,10]},
+ {id:"body",       steps:["HE1","HE2","HE3"],         gap:[8,14]},
+ {id:"campaign",   steps:["NC3","NC1","NC2"],         gap:[6,10]},
+ {id:"chapter",    steps:["ST2","ST3"],               gap:[8,12]},
+ {id:"seminar",    steps:["SE1","SE2","SE3"],         gap:[4,8]},
+ {id:"grantrun",   steps:["G1","GA1","GA2"],          gap:[5,8]},
+ {id:"harwich",    steps:["HW1","HW2"],               gap:[8,12]},
  {id:"kansas",     steps:["Z1","Z2"],                 gap:[5,9]},
  {id:"aida",       steps:["Z5","Z6","Z6T"],           gap:[8,16]},
  {id:"statue",     steps:["Y5","Y6A","Y6B","Y6C"],    gap:[2,4]},
@@ -2568,6 +2853,8 @@ function gateOK(ga){
  if(ga.noflag&&g.flags[ga.noflag]) return false;
  if(ga.tdebt&&g.tdebt<ga.tdebt) return false;
  if(ga.seen&&!g.seen[ga.seen]) return false;
+ if(ga.turn&&g.turn<ga.turn) return false;
+ if(ga.vowin&&!ga.vowin.includes(g.vow)) return false;
  if(ga.ladder&&!(g.office>=4&&!g.won.PRES&&(g.run||0)>=3&&betterCollege())) return false;
  if(ga.nobelhope&&!(g.vow!=="PRES"&&!g.won.NOBEL&&!g.nobelDead&&g.rank>=4&&age()>=50)) return false;
  if(ga.field&&!(g.fields&&g.fields[ga.field])) return false;
@@ -2751,6 +3038,7 @@ function octoberPass(){
  if(!nobelEligible()) return false;
  const p = sig(-8.6 + 2.5*g.M/100 + 2.0*g.N/100 + 1.2*g.P/100 + 1.0*g.R/100
               + 1.7*prestige() + (g.flags.CHAIR?0.8:0) + 0.9*clamp(g.cites/3000,0,1.2)
+              + (g.flags.LISTED?0.4:0) + (g.flags.SYMPOSIUM?0.3:0)
               - 0.3*foesOf("committee"));
  if(Math.random()<p){ end("NOBEL"); return true; }
  if(Math.random()<p*4.5){
@@ -2780,7 +3068,8 @@ function presSearch(){
  const tp=UNIS[g.target].p;
  const rivalOn = g.seen.P10 ? (g.flags.GRACIOUS ? 0.3 : -0.2) : 0;
  const rivalLine = g.seen.P10 ? (g.flags.GRACIOUS ? " {rival} is on the committee, and remembers that you were decent to her when it cost something." : " {rival} is on the committee. She remembers the lunch.") : "";
- const p = sig(-7.0 + rivalOn + 3.1*g.K/100 + 2.5*g.N/100 + 1.0*g.P/100 + 0.7*g.R/100
+ const owed = g.flags.HARWICH_OWED ? 0.4 : g.flags.HARWICH_DECLINED ? -0.2 : 0;
+ const p = sig(-7.0 + rivalOn + owed + 3.1*g.K/100 + 2.5*g.N/100 + 1.0*g.P/100 + 0.7*g.R/100
               + 2.2*prestige() + (sitting?1.2+0.15*clamp(g.run||0,0,8)+0.3*(g.climbs||0):0)
               - 3.4*Math.max(0,tp-prestige())*(sitting?0.5:1)
               + (g.flags.CANDID?-0.2:0.2) - 0.5*foesOf("search"));
@@ -2835,6 +3124,18 @@ const ENDTEXT={
  TIME:()=>["Emeritus","They give you an office on the fourth floor with a window facing the car park, and a mug. The seminar still invites you. You still go. About once a term someone young asks you a question that indicates they have actually read \u201c{best}\u201d, and it is worth the entire afternoon."]
 };
 const EPITHETS={
+ READ_FORUM:"read all forty pages", POSTED_FORUM:"posted on the forum, once", SPOKE_ON_FORUM:"went on the record about the forum",
+ AI_REPORT:"answered the model with the model", BANNED_MODEL:"banned the model, in writing", ASKED_THE_AGENT:"asked what else it found",
+ TEXTBOOK_PDF:"watched the mean go to 4.1", FREED_TEXTBOOK:"gave the textbook away",
+ TESTIFIED:"said what the paper said, on television", TESTIFIED_CAREFULLY:"said the other thing, carefully", ON_COUNCIL:"sat at the table with the flag", RESIGNED_COUNCIL:"sent the letter", STAYED_COUNCIL:"made it eleven percent less bad",
+ INES:"wrote with Ines Varga-Oyelaran", CONTRIBUTION_ORDER:"agreed to contribution order", INES_SPOKE:"let her give the speech",
+ PHYSIO:"went to the physiotherapist, twice a week", IGNORED_BACK:"ignored the back", SLOWED:"slowed down, when told to", IGNORED_DOCTOR:"did not slow down, when told to", FINISHED_HIS_REPORT:"finished his referee report, in his initials",
+ QUAYLE:"gave Quayle a name", SYMPOSIUM:"went to Stockholm in June", LISTED:"was on the list",
+ REPORTED_CHAPTER:"reported the chapter", QUIET_PLAGIARISM:"had a quiet word, and no more", TOLD_TRUTH_CHAPTER:"told the truth about the chapter, all of it",
+ BANKER_CHAIR:"has a chair with their name on it, and a condition", DECLINED_BANKER:"declined the boat",
+ YOUNG_SEMINAR:"invited the young", COAUTHOR_SEMINAR:"ran the seminar for the coauthors", GAVE_STUDENT_SLOT:"gave the student the slot, at four hours\u2019 notice",
+ INFLATED_REPORT:"filled the box", HONEST_REPORT:"wrote \u201cnone to date\u201d in the box",
+ HARWICH_OWED:"did the trustee the favour", HARWICH_DECLINED:"declined the trustee, with the file",
  SPOKE_OF_TEACHING:"gave the speech about the nine thousand",
  STATUE_HEADLINE:"said the sentence twice, the second time on camera",
  EXPOSED_REPORT:"was found out, at a bar",
@@ -3075,7 +3376,25 @@ function end(kind){
   sc: body + (met?full:thin) + (traits.length?`<div class="remembers">The field remembers: ${traits.join(" · ")}.</div>`:""),
   ch:[{t:"Begin again.",fn(){ setTimeout(boot,60); return ""; }}]
  });
+ const fin=$("cardslot").querySelector(".final");
+ if(fin){ const b=document.createElement("button"); b.className="go share"; b.id="sharecv"; b.textContent="Copy the career"; fin.appendChild(b); b.onclick=()=>shareCareer(b,t,traits); }
  render();
+}
+/* a plain-text version of the ending, for posting */
+function shareCareer(btn,endTitle,traits){
+ const vow={NOBEL:"the Nobel Prize",PRES:"the presidency of Harwich College",BOTH:"both"}[g.vow]||g.vow;
+ const url=/^https?:/.test(location.href)?location.href.split("#")[0]:"https://steffenhuck.github.io/academia/";
+ const lines=[
+  "The Young Economist\u2019s Game to Professional Success",
+  "I vowed "+vow+". Ending: "+endTitle+(vowMet()?" \u2014 vow met.":" \u2014 vow not met."),
+  title()+", "+uniName()+", age "+age()+".",
+  g.papers.length+" papers, "+aplus()+" in the top four, "+Math.round(g.cites).toLocaleString()+" citations, h-index "+hIndex()+". Terminal salary "+salaryTxt()+". Enemies made: "+g.enemies.length+".",
+  traits.length?"The field remembers: "+traits.join("; ")+".":"",
+  url];
+ const text=lines.filter(Boolean).join("\n");
+ const done=()=>{ btn.textContent="Copied"; setTimeout(()=>btn.textContent="Copy the career",2500); };
+ const fallback=()=>{ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); done(); }catch(e){ prompt("Copy this:",text); } ta.remove(); };
+ if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done,fallback); else fallback();
 }
 function nobelInterlude(){
  g.ended=null;
@@ -3197,6 +3516,12 @@ const LIFE=[
  {t:"Exhaustive",ga:{since:["DEFENDED",10]},s:"Somebody has cited the forty-page appendix. Not the paper: the appendix, as a contribution in its own right, in a survey of robustness methods, which describes it as \u201cexhaustive.\u201d You read the word twice."},
  {t:"The Summit",ga:{since:["FLOWERS",10]},s:"A photograph from a summit, from the student with the legs. He is standing on them. The caption is one word and the word is your name and a question mark, and it takes you a moment to understand that he is asking whether you are proud, and you are."},
  {t:"Three Stars",ga:{since:["METEOR_DRAWER",10]},s:"The Calderon paper is out: the meteor, the county, the coefficient, three stars. It is a good paper. The town is called the treated unit. You feel what you were hoping to feel, and then something else.",re:[["Read it twice.","The second time you see what they did with the standard errors, and it is clever, and it is what you would have done, in the drawer, alone."],["Do not read it.","You do not read it. You read the abstract, which is the same thing, slower."]]},
+ {t:"The Summary",s:"You ask a model to summarise your best paper, to see. It does, in four sentences, fluently, and the third sentence is a result you did not find and would have liked to.",ga:{papers:1},re:[["Check whether it is true.","It is not. It is, however, publishable, and somebody will."],["Close the window.","You close the window. The sentence stays open."]]},
+ {t:"The Extension",s:"A student would like an extension for a wedding. The wedding is his own. You grant it, and ask, at the end of the email, whether he is sure, and delete the question before sending, which is the right decision, and not the first one."},
+ {t:"The Parking Space",s:"The department has been given one named parking space and has spent two meetings on it. It goes, by a vote of nine to seven, to the person who does not drive, who accepts it, and parks a bicycle in it, which is discussed at a third meeting."},
+ {t:"The Flu",s:"You have the flu. You cancel the seminar, the lecture and the referee report, in that order, and the order is noted by nobody but you, and it is the correct order, and that is the worrying part."},
+ {t:"The Group Photo",s:"The department photograph, on the steps. You are in the second row, slightly to the left of the centre, between a person who will be dean and a person who will leave, and you do not yet know which is which, and neither do they."},
+ {t:"The Wi-Fi",s:"The faculty Wi-Fi has changed its password. The new one is the old one with a number on the end. The number is the year. It takes the department a week to work this out, and three of the people who work it out have papers on information."},
  {t:"The Ambulance",s:"An ambulance in the street at two in the morning, for a house three doors down. Everyone is fine, it turns out. You stand at the window in the dark for some time anyway, and the standing is, you think, some kind of a prayer, and you are not sure to whom."}
 ];
 /* October: the year's laureates, for players who want the call. On some
@@ -3224,6 +3549,8 @@ const OCTOBERS=[
  {t:"The Discussant",b:[2,4],ga:{seen:"P8"},s:"The prize goes to three people, one of whom is {discussant}, who discussed your paper and said it was \u201cconfused.\u201d He has, in the scientific background, a paragraph. You have, in the scientific background, nothing, and a memory of the room.",fx:{E:-3,R:1},re:[["Send congratulations.","He replies, in German, with a sentence you have translated three times and still cannot settle."],["Reread your paper.","It was not confused. It was, in one place, unclear, and the place was the place he asked about."]]},
  {t:"Your Cohort",b:[3,4],ga:{seen:"P10"},s:"The prize goes to {rival}. Your cohort. The same September. The scientific background has a paragraph about her job market paper, the one she gave at Harwich, and you remember the lunch, and the lunch remembers you.",fx:{E:-8,B:3},re:[["Send a note.","She replies within the day. It is warm. It is the warmth that does it."],["Send nothing.","Everyone else sends something. She notices the gap, and is gracious about it, later, in public, which is worse."]]},
  {t:"Your Student",b:[4,4],ga:{since:["FIRST_STUDENT",34]},s:"The prize goes to {student}. Your first student. The one with the idea, in her second year, that you took on properly. The lecture, in December, thanks you by name, in the second sentence, before the funders.",fx:{E:2,N:3,P:2},re:[["Watch the lecture.","You watch it four times. The second sentence does not change."],["Write to her.","She writes back: \u201cit was always your idea.\u201d It was not. It is the kindest lie you will ever be told, and you keep it."]]},
+ {t:"Quayle, on the Monday",b:[3,4],ga:{seen:"NC3"},s:"{journalist}\u2019s piece runs on the Monday, as it does. This year it names three people. You read it twice to see whether you are one of them, and you are not, and the third name is yours, in the last paragraph, as \u201calso mentioned,\u201d which is a category.",fx:{E:-2,P:2},re:[["Write to Quayle.","He writes back within the hour that \u201calso mentioned\u201d is where everyone starts, and names four laureates who started there, and you look up the four, and it is true."],["Keep the piece.","It goes in the drawer with the clock. The drawer is, by now, a kind of CV."]]},
+ {t:"The Machine",b:[2,4],s:"The prize goes to the person who built the model everyone uses. He is not an economist. The committee explains, in the scientific background, that the model has contributed to economics, and the explanation was, three people at dinner agree, written by the model.",fx:{E:-3},re:[["Ask the model what it thinks.","It thinks the prize was well deserved and offers to draft a congratulatory note, in your voice, which it does, and the note is better than yours would have been."],["Say the obvious thing at dinner.","You say it. Everyone agrees. Everyone has said it already, to the model."]]},
  {t:"The Wrong One",b:[2,4],s:"The prize goes to the right person for the wrong paper. Everyone who knows says so, at dinner, for a month, with the confidence of people who will never be asked.",fx:{N:1},re:[["Say which paper it should have been.","Everyone agrees, and each of them names a different paper."],["Say the prize is always right.","A silence at the table, and then somebody says \u201cwell,\u201d and the dinner continues, without you."]]}
 ];
 function octoberCard(){
@@ -3269,6 +3596,9 @@ const LITERATURE=[
  {t:"WTF",s:"\u201cWTF, or Why Retiring from Academic Economics Is the Smart Option\u201d has been published in a journal so far down the list that the list ends. It is forwarded to you by three people, separately, without comment. You read it on a Sunday.",b:[3,4],ga:{since:["TENURED",20]},fx:{B:-2}},
  {t:"Gasoline",s:"\u201cGasoline\u201d is out in {topjournal}. One word in the title, forty-one pages under it, and the most cited paper of the year. There is a movement now for one-word titles. It will last until the first one is rejected.",b:[1,4],re:[["Read it.","Forty-one pages. It is about gasoline."],["Admire it.","One word. You have never managed one word."],["Shrug.","It is, when all is said, about gasoline."]]},
  {t:"An Economic Theory",s:"\u201cAn Economic Theory of Porn\u201d is out in {topjournal}, with a lead editor\u2019s note about the importance of the market. In the same month, \u201cAn Economic Theory of Love\u201d appears in {cjournal}, without a note.",b:[1,4],re:[["Read both.","The one about love is better. It has a proof. Nobody will ever know."],["Read the editor\u2019s note.","It uses the word \u201cmarket\u201d nine times and the word \u201cimportant\u201d four times, and one of the fours is doing something."]]},
+ {t:"Four Minutes, Measured",s:"\u201cWhy Referees Are Now Faster: Evidence from Four Minutes\u201d is in {ajournal}. The paper was refereed in eleven days. The reports, the editor notes in a footnote, were \u201cunusually fluent.\u201d",b:[2,4],re:[["Read the footnote twice.","The footnote was also, you suspect, written in four minutes, and is the best thing in the paper."],["Time your own next report.","Three hours. You feel, for the three hours, like a craftsman, and then like a fool, and the second feeling is also correct."]]},
+ {t:"The End of Section 5",s:"\u201cLarge Language Models and the End of Section 5\u201d is out in {topjournal}. The argument is that nobody reads section 5 and the model can write it, and the paper\u2019s section 5 is, the authors confirm in a footnote, written by the model, and is the best section.",b:[2,4]},
+ {t:"A Replication, by a Machine",s:"\u201cAn Agent Replicates Forty Papers in an Afternoon: What Survived\u201d is in {bjournal}. Twenty-two survived. The list of the eighteen is in the appendix. You check it before you read the abstract, which is what everyone did, which is why it is in {bjournal}.",b:[3,4],ga:{papers:3},re:[["Check the appendix.","You are not in it. You read the abstract with a lightness that lasts until you remember the forty were chosen at random."],["Do not check.","You do not check. Three people email you to say you are not in it, and one of them adds \u201cthis time.\u201d"]]},
  {t:"Hard Data",s:"\u201cThe IFI That Outperformed Them All: Some Hard Data\u201d is in {ajournal}. The data are hard. The institution is not named, for legal reasons, and everyone knows which one it is, for the same reasons.",b:[2,4]}
 ];
 function litCard(){
@@ -3334,6 +3664,14 @@ const JOKERS=[
  {id:"J8",ti:"The Other One",w:.5,b:[2,4],ga:{papers:1},
   sc:"There is another economist with your name. A better one, on some measures, in a field you do not work in. A search engine has decided you are the same person, and so, this year, has a prize committee.",
   ch:[{t:"Say nothing until the cheque clears.",fx:{cites:250,E:5,N:3,P:3},say:"The cheque clears. The citation index merges you for two years and separates you again, and you lose two hundred and fifty citations you never earned, and mind more than you should."}]},
+ {id:"J9",ti:"The Expert Witness",w:.8,b:[3,4],ga:{papers:3},
+  sc:"A law firm would like you as an expert witness in a case about the thing your second paper is about. The rate is $2,400 an hour. The case will take a year. The other side\u2019s expert is somebody you have refereed.",
+  ch:[{t:"Take the case.",fx:{S:30,B:6,P:-2,K:3,N:-2,flag:"EXPERT"},say:"A year. The deposition takes nine hours and the other side\u2019s expert is, under oath, right about paragraph 9, and you are right about the rest, and the rest is what the jury hears. The cheque clears. The paper is now \u201cthe paper from the case,\u201d in a tone."},
+      {t:"Decline. The paper is not for sale.",fx:{E:4,R:2,N:1},say:"Somebody else takes it, for less, and is wrong about paragraph 9, and the case is lost, and the paper is cited in the judgment as \u201ccontested,\u201d which it was not, until the case."}]},
+ {id:"J10",ti:"The Viral Lecture",w:.8,b:[2,4],
+  sc:"A student has filmed eleven minutes of your lecture, the part where you lost your temper with a diagram, and it is everywhere. It is, you are told, \u201cwholesome.\u201d You are, for a week, the economist who shouted at a diagram, and the diagram has a fan account.",
+  ch:[{t:"Lean in. Do the interviews.",fx:{P:14,E:6,N:4,B:4,flag:"VIRAL_LECTURE"},say:"Four interviews, a podcast, a request for the diagram. The lecture is full for three years, with people who are waiting for the diagram, and the diagram does not, again, let you down."},
+      {t:"Ask for it to be taken down.",fx:{P:4,E:-2,K:1},say:"It is taken down, from one place, and goes up in eleven others, and the asking is itself a clip, and the clip is, you are told, \u201cless wholesome.\u201d"}]},
  /* the magical ones */
  {id:"JX1",ti:"The Call from Harwich",w:.1,b:[3,4],when:()=>!!g.won.NOBEL&&!g.won.PRES&&!!g.target,
   sc:"The chair of the Harwich board is on the phone. Their president has resigned, suddenly, for reasons the papers will have by Friday, and the board has met, and the board would like a laureate, and the board has had the wit to notice that there is one who has run a meeting.",

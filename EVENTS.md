@@ -156,7 +156,7 @@ Also: `{office:1}` (at least department chair; `2` dean, `3` vice-president, `4`
 president; the head of St Cuthbert's is called Provost), `{tenured:1}`, `{flags:["A","B"]}` — all of several flags — and
 `{since:["FLAG",6]}` — the flag was set at least six terms ago;
 `{anyflag:["A","B"]}` — at least one of several; `{noflag:"A"}` — the flag is
-*not* set, for the other half of a pair like `Y9`/`Y9H`; `{seen:"C4"}` — the player has seen that event, whichever choice they made
+*not* set, for the other half of a pair like `Y9`/`Y9H`; `{turn:4}` — not before that term (the hotel room interviews at the end of the PhD); `{vowin:["PRES","BOTH"]}` — only for those vows (the Harwich dinner); `{seen:"C4"}` — the player has seen that event, whichever choice they made
 (the cheapest way to give a character a second scene); `{tdebt:8}` — the
 hidden teaching debt (one point a term without teaching, two off per teaching
 point) has reached that level. `Y10` is how neglected teaching eventually
@@ -296,7 +296,7 @@ A Nobel-vow player who accepts a presidency (N14, or the Harwich committee in
 G21) gets **The exit upward** — the office, the salary, and a phone that does
 not ring for presidents. The vow is unmet, so the card closes on salary.
 
-## What exists (233 events)
+## What exists (268 events)
 
 Events *available* at each rank, counting the ones whose band spans it:
 
@@ -356,6 +356,26 @@ directly, a small drift each term from the know-how level. At `run` 4 and a
 better college on the list, `PL1` The Better Offer fires (up to three times)
 and taking it moves the presidency up a rung. Rungs and `run` warm the
 Harwich search. `ga:{ladder:1}` is the gate; `{better}` names the college.
+
+## The ten long storylines (v0.06)
+
+`forum` FO0–FO3: the anonymous forum, from page thirty-one at the PhD to the
+journalist's request decades on. `machine` AI1–AI4 (+AI5 for presidents): the
+four-minute referee report, the generated chapter, the policy, the agent that
+reproduces your best paper in an afternoon. `textbook` N19→TB2→TB3: the second
+edition and the PDF with a mean of 4.1. `council` PO1–PO3: testimony, the
+council with the flag, the letter in the drawer. `ines` CO1–CO4: a coauthor
+for a career, from the corridor to the joint prize. `body` HE1–HE3: the back,
+the colleague at fifty-eight, the doctor's word before the serious word.
+`campaign` NC3→NC1→NC2 (Nobel track): Quayle's quote, Stockholm in June, the
+list; `LISTED` and `SYMPOSIUM` add to the October roll. `chapter` ST2→ST3:
+the copied section and its return. `seminar` SE1–SE3: the organiser's year.
+`grantrun` G1→GA1→GA2: the audit and the final report. `harwich` HW1→HW2
+(presidency track): the alumni dinner and the trustee's favour; `HARWICH_OWED`
+and `HARWICH_DECLINED` move the search.
+
+New cast: Ines Varga-Oyelaran, Tobias Quayle, Hollis Marchbanks, Dr. Priya
+Anand, Kwame Asante-Brodie — all with bios.
 
 ## Second scenes
 
@@ -428,6 +448,13 @@ return "…"; }`. The outcome then gets a Continue button, the slot is cleared,
 and the next card opens at once. `Z4` → `PRANK2` → `PRANK3` is the prank
 call, escalating within a single morning; the exits from the chain are
 ordinary `fx` choices.
+
+## The career, copied
+
+The ending card has a "Copy the career" button: a plain-text summary (vow,
+ending, rank and place, papers, citations, salary, enemies, what the field
+remembers, the link) for posting. It uses the clipboard where allowed and
+falls back to a prompt.
 
 ## Tense
 
